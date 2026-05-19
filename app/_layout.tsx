@@ -1,24 +1,44 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
+import { View } from "react-native";
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { ThemeProvider } from "@/hooks/use-theme";
+import { QueryProvider } from "@/hooks/providers/query-provider";
+import { AuthProvider } from "@/hooks/auth/use-auth";
+import "../global.css"
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function RootLayoutNav() {
+  const backgroundColor = '#FFFFFF';
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+    <View style={{ flex: 1, backgroundColor }}>
+      <StatusBar style="dark" backgroundColor={backgroundColor} />
+      <Stack
+        screenOptions={{
+          contentStyle: { flex: 1, backgroundColor },
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor },
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="admin" />
+        <Stack.Screen name="manager" />
+        <Stack.Screen name="receptionist" />
+        <Stack.Screen name="maintinence" />
       </Stack>
-      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <RootLayoutNav />
+        </AuthProvider>
+      </QueryProvider>
     </ThemeProvider>
   );
 }
