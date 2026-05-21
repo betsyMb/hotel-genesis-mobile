@@ -11,6 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 function CheckInCard({ item, onCheckIn }: { item: Reservation; onCheckIn: (r: Reservation) => void }) {
   const checkIn = new Date(item.check_in_date);
   const checkOut = new Date(item.check_out_date);
+  console.log({item})
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const checkInStr = checkIn.toISOString().split("T")[0];
@@ -107,7 +108,12 @@ export default function ReceptionistCheckinScreen() {
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
 
+  const reservationsWithOccupancy = new Set(
+    occupancies?.filter((o) => o.id_reservation != null).map((o) => o.id_reservation) || []
+  );
+
   const todayCheckIns = upcomingReservations.filter((r: Reservation) => {
+    if (reservationsWithOccupancy.has(r.id_reservation)) return false;
     const checkInDate = new Date(r.check_in_date).toISOString().split("T")[0];
     return checkInDate <= todayStr;
   });

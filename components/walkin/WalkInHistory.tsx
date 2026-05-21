@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  View, FlatList, TouchableOpacity, Modal, RefreshControl, ScrollView,
+  View, FlatList, TouchableOpacity, RefreshControl,
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -23,12 +23,12 @@ function formatDateShort(iso: string) {
 }
 
 function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | null; visible: boolean; onClose: () => void }) {
-  if (!item) return null;
+  if (!visible || !item) return null;
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <View className="absolute inset-0 z-50">
       <View className="flex-1 justify-end bg-black/50">
-        <View className="bg-white dark:bg-gray-900 rounded-t-3xl max-h-[85%]">
+        <View className="bg-white dark:bg-gray-900 rounded-t-3xl">
           <View className="flex-row items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
             <ThemedText type="title">Check-out Details</ThemedText>
             <TouchableOpacity
@@ -39,7 +39,7 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
             </TouchableOpacity>
           </View>
 
-          <ScrollView className="p-5">
+          <View className="p-5">
             <View className="bg-[#6366F1]/5 rounded-xl p-4 mb-4 flex-row items-center">
               <View className="w-12 h-12 rounded-xl bg-[#6366F1]/10 items-center justify-center mr-4">
                 <MaterialIcons name="hotel" size={28} color="#6366F1" />
@@ -111,10 +111,10 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
                 </View>
               </View>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
-    </Modal>
+    </View>
   );
 }
 
@@ -222,6 +222,7 @@ export function WalkInHistory() {
           ListEmptyComponent={renderEmpty}
           contentContainerClassName="pb-8"
           className="px-5"
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={isLoading} onRefresh={refetch} />
           }

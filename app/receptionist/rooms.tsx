@@ -28,6 +28,7 @@ export default function ReceptionistRoomsScreen() {
         keyExtractor={(item) => item.id_room.toString()}
         renderItem={({ item }) => <RoomCard item={item} />}
         contentContainerClassName="px-4 py-4"
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No rooms found" /> : null}
       />
     </ThemedView>

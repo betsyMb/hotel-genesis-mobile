@@ -40,7 +40,7 @@ export default function ManagerProfileScreen() {
           </View>
         </View>
 
-        <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-5">
+        <ThemedView className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-5">
           <View className="px-4 pt-4 pb-2">
             <ThemedText className="text-xs font-semibold text-[#0EA5E9] uppercase">Account Information</ThemedText>
           </View>
@@ -49,9 +49,9 @@ export default function ManagerProfileScreen() {
           <ProfileRow icon="fingerprint" label="User ID" value={`#${user?.id_user}`} isLast={false} />
           <ProfileRow icon="badge" label="Full Name" value={user?.full_name || ""} isLast={false} />
           <ProfileRow icon="work" label="Role" value={userRole} isLast />
-        </View>
+        </ThemedView>
 
-        <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-5">
+        <ThemedView className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-5">
           <View className="px-4 pt-4 pb-2">
             <ThemedText className="text-xs font-semibold text-[#0EA5E9] uppercase">Settings</ThemedText>
           </View>
@@ -59,7 +59,7 @@ export default function ManagerProfileScreen() {
           <SettingRow icon="notifications" iconColor="#0EA5E9" title="Notifications" subtitle="Email & push alerts" />
           <SettingRow icon="security" iconColor="#8B5CF6" title="Security" subtitle="Password & privacy" />
           <SettingRow icon="help-outline" iconColor="#F59E0B" title="Help & Support" subtitle="FAQs and contact" />
-        </View>
+        </ThemedView>
 
         <TouchableOpacity
           className="flex-row items-center justify-center py-4 rounded-2xl bg-red-50 dark:bg-red-900/20"

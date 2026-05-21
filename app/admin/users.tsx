@@ -91,6 +91,7 @@ export default function AdminUsersScreen() {
           />
         )}
         contentContainerClassName="px-4 py-4"
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={!isLoading ? <EmptyState icon="people" title="No users found" /> : null}
       />
 

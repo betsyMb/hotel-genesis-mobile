@@ -4,40 +4,46 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/index.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/receptionist/_layout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/receptionist/checkin.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/receptionist/checkout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/receptionist/profile.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/receptionist/reservations.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/receptionist/rooms.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/babel.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/ThemedButton.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/ThemedTextInput.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/schema.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/global.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/metro.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nativewind-env.d.ts" afterDir="false" />
+    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="feature">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/explore.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(auth)/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(auth)/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/booking.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/booking.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/home.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/modal.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/external-link.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ExternalLink.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/haptic-tab.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/HapticTab.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/hello-wave.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/HelloWave.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/parallax-scroll-view.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/themed-text.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ThemedText.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/themed-view.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ThemedView.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ui/collapsible.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/collapsible.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/use-theme-color.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/use-theme-color.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/maintenance.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reports.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reservations.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/users.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/users.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/maintinence/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/maintinence/users.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/manager/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/manager/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/manager/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/reports.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/manager/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/rooms.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/receptionist/checkin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/checkin.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/receptionist/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/reservations.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/receptionist/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/rooms.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/RoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/RoomCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/StatBadge.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/StatBadge.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/StatusPickerModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/StatusPickerModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/UserCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/UserCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/api/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/rooms/use-rooms.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/rooms/use-rooms.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/use-theme.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/use-theme.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +111,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.32098.106" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.33514.14" />
       </set>
     </attachedChunks>
   </component>
@@ -123,11 +129,52 @@
       <workItem from="1777420099822" duration="14623000" />
       <workItem from="1777987093564" duration="753000" />
       <workItem from="1778459164418" duration="6698000" />
-      <workItem from="1779121610152" duration="9163000" />
+      <workItem from="1779121610152" duration="17740000" />
+      <workItem from="1779381669916" duration="11026000" />
     </task>
+    <task id="LOCAL-00001" summary="feature: reservations">
+      <option name="closed" value="true" />
+      <created>1779155677474</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779155677474</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feature">
+      <option name="closed" value="true" />
+      <created>1779155690573</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779155690573</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feature: reservations" />
+    <MESSAGE value="feature" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/app/receptionist/checkin.tsx</url>
+          <line>24</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/app/admin/maintenance.tsx</url>
+          <line>12</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

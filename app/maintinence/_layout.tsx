@@ -12,7 +12,6 @@ import { RoleGuard } from "@/components/RoleGuard";
 
 const maintenanceLinks = [
   { name: "maintenance", title: "Maintenance", icon: "build" },
-  { name: "users", title: "Users", icon: "people" },
 ];
 
 function DrawerContent(props: DrawerContentComponentProps) {
@@ -114,7 +113,6 @@ function MaintenanceDrawer() {
       })}
     >
       <Drawer.Screen name="maintenance" options={{ title: "Maintenance" }} />
-      <Drawer.Screen name="users" options={{ title: "Users" }} />
     </Drawer>
   );
 }

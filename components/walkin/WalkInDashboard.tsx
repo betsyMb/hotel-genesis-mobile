@@ -107,6 +107,7 @@ export function WalkInDashboard() {
               const result = await walkinCheckout.mutateAsync({
                 room_id: occupancy.id_room,
               });
+              refetch();
               Alert.alert(
                 "Check-out successful",
                 `Room ${result.room_number}\n${guestName}\n${result.total_nights} night${result.total_nights !== 1 ? "s" : ""}\nChecked in: ${formatDate(result.checked_in)}\nChecked out: ${formatDate(result.checked_out)}`,

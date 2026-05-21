@@ -50,11 +50,10 @@ export default function RegisterScreen() {
     setIsLoading(true);
 
     try {
-      await api.post(ENDPOINTS.users.base, {
+      await api.postPublic(ENDPOINTS.auth.register, {
         full_name: fullName,
         email,
-        password_hash: password,
-        id_rol: 5,
+        password,
       });
 
       const user = await login(email, password);

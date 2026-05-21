@@ -21,7 +21,7 @@ export function RoomCard({ item, onEdit, onDelete, showActions = true }: RoomCar
   const status = statusConfig[item.room_status] || statusConfig.available;
 
   return (
-    <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
+    <View className="border border-gray-300 bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
       <View className="p-4">
         <View className="flex-row justify-between items-start">
           <View className="flex-row items-center flex-1">

@@ -3,7 +3,7 @@ import { FlatList, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useUpdateRoom } from "@/hooks";
-import { Room } from "@/hooks/api/types";
+import { Room, MaintenanceTask } from "@/hooks/api/types";
 import { EmptyState, StatBadge } from "@/components/shared";
 import { MaintenanceRoomCard } from "@/components/maintinence";
 
@@ -12,10 +12,32 @@ export default function MaintenanceTasksScreen() {
   const updateRoom = useUpdateRoom();
   const [filter, setFilter] = useState<"all" | "maintenance">("all");
 
-  async function handleToggleMaintenance(room: Room) {
+  async function handleMarkMaintenance(room: Room, tasks: MaintenanceTask[]) {
     try {
-      await updateRoom.mutateAsync({ id: room.id_room, data: { room_status: "available" as any } });
-      refetch();
+      await updateRoom.mutateAsync({
+        id: room.id_room,
+        data: {
+          room_status: "maintenance" as any,
+          maintenance_tasks: tasks,
+        },
+      });
+      await refetch();
+      Alert.alert("Success", `Room ${room.room_number} is now in maintenance`);
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function handleMarkAvailable(room: Room, tasks: MaintenanceTask[]) {
+    try {
+      await updateRoom.mutateAsync({
+        id: room.id_room,
+        data: {
+          room_status: "available" as any,
+          maintenance_tasks: tasks,
+        },
+      });
+      await refetch();
       Alert.alert("Success", `Room ${room.room_number} is now available`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
@@ -39,13 +61,13 @@ export default function MaintenanceTasksScreen() {
 
         <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
           <TouchableOpacity
-            className={`flex-1 py-2 rounded-lg items-center ${filter === "all" ? "bg-white dark:bg-gray-700 shadow-sm" : ""}`}
+            className={`flex-1 py-2 rounded-lg items-center ${filter === "all" ? "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600" : ""}`}
             onPress={() => setFilter("all")}
           >
             <ThemedText className={`text-sm font-semibold ${filter === "all" ? "text-[#0EA5E9]" : "opacity-60"}`}>All</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity
-            className={`flex-1 py-2 rounded-lg items-center ${filter === "maintenance" ? "bg-white dark:bg-gray-700 shadow-sm" : ""}`}
+            className={`flex-1 py-2 rounded-lg items-center ${filter === "maintenance" ? "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600" : ""}`}
             onPress={() => setFilter("maintenance")}
           >
             <ThemedText className={`text-sm font-semibold ${filter === "maintenance" ? "text-[#0EA5E9]" : "opacity-60"}`}>Maintenance ({maintenanceCount})</ThemedText>
@@ -57,9 +79,14 @@ export default function MaintenanceTasksScreen() {
         data={filteredRooms}
         keyExtractor={(item) => item.id_room.toString()}
         renderItem={({ item }) => (
-          <MaintenanceRoomCard item={item} onToggle={handleToggleMaintenance} />
+          <MaintenanceRoomCard
+            item={item}
+            onMarkMaintenance={handleMarkMaintenance}
+            onMarkAvailable={handleMarkAvailable}
+          />
         )}
         contentContainerClassName="px-4 py-4"
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           !isLoading ? (
             <EmptyState icon="check-circle" title="No rooms in maintenance" />

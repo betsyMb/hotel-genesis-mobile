@@ -1,6 +1,7 @@
-import { ScrollView, View, ActivityIndicator, TouchableOpacity, FlatList } from "react-native";
+import { ScrollView, View, ActivityIndicator, TouchableOpacity, FlatList, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { useAuth, useRooms, useReservations } from "@/hooks";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -28,9 +29,11 @@ export default function HomeScreen() {
     );
   }
 
+  const backgroundColor = useThemeColor({}, "background");
+
   return (
-    <ScrollView className="flex-1">
-      <ThemedView className="px-5 pt-6 pb-4">
+    <ScrollView className="flex-1" style={{ backgroundColor }}>
+      <View className="px-5 pt-6 pb-4">
         <View className="flex-row justify-between items-center mb-6">
           <View>
             <ThemedText className="text-lg opacity-60">Welcome back</ThemedText>
@@ -65,7 +68,7 @@ export default function HomeScreen() {
           />
         </View>
 
-        <View className="bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] rounded-2xl p-5 mb-6">
+        <View className="bg-[#0EA5E9] rounded-2xl p-5 mb-6">
           <View className="flex-row items-center justify-between">
             <View className="flex-1">
               <ThemedText className="text-white/80 text-sm">Quick Action</ThemedText>
@@ -91,7 +94,7 @@ export default function HomeScreen() {
             <ThemedText className="text-[#0EA5E9] font-semibold text-sm">View All</ThemedText>
           </TouchableOpacity>
         </View>
-      </ThemedView>
+      </View>
 
       <View className="px-5 pb-6">
         <FlatList
@@ -133,7 +136,7 @@ export default function HomeScreen() {
         />
       </View>
 
-      <ThemedView className="px-5 pb-8">
+      <View className="px-5 pb-8">
         <View className="flex-row justify-between items-center mb-3">
           <ThemedText type="subtitle">Recent Bookings</ThemedText>
           <TouchableOpacity onPress={() => router.push("/(tabs)/booking")}>
@@ -194,7 +197,7 @@ export default function HomeScreen() {
             <ThemedText className="mt-2 opacity-60">No bookings yet</ThemedText>
           </View>
         )}
-      </ThemedView>
+      </View>
     </ScrollView>
   );
 }

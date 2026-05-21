@@ -1,41 +1,11 @@
-import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useRooms, useCreateRoom, useUpdateRoom } from "@/hooks";
-import { Room } from "@/hooks/api/types";
-import { EmptyState, StatBadge, RoomCard, RoomFormModal } from "@/components/shared";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useRooms } from "@/hooks";
+import { EmptyState, StatBadge } from "@/components/shared";
 
 export default function ManagerRoomsScreen() {
-  const { data: rooms, isLoading, refetch } = useRooms();
-  const createRoom = useCreateRoom();
-  const updateRoom = useUpdateRoom();
-
-  const [showForm, setShowForm] = useState(false);
-  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
-
-  async function handleCreate(data: Partial<Room>) {
-    try {
-      await createRoom.mutateAsync(data as any);
-      refetch();
-      Alert.alert("Success", "Room created!");
-    } catch (err: any) {
-      Alert.alert("Error", err.message);
-    }
-  }
-
-  async function handleUpdate(data: Partial<Room>) {
-    if (!editingRoom) return;
-    try {
-      await updateRoom.mutateAsync({ id: editingRoom.id_room, data });
-      refetch();
-      setEditingRoom(null);
-      Alert.alert("Success", "Room updated!");
-    } catch (err: any) {
-      Alert.alert("Error", err.message);
-    }
-  }
+  const { data: rooms, isLoading } = useRooms();
 
   const stats = {
     total: rooms?.length || 0,
@@ -46,37 +16,54 @@ export default function ManagerRoomsScreen() {
 
   return (
     <ThemedView className="flex-1">
-      <View className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
+      <ThemedView className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
         <View className="flex-row gap-2 mb-3">
           <StatBadge label="Total" value={stats.total} color="#0EA5E9" />
           <StatBadge label="Free" value={stats.available} color="#10B981" />
           <StatBadge label="Used" value={stats.occupied} color="#EF4444" />
           <StatBadge label="Maint." value={stats.maintenance} color="#F59E0B" />
         </View>
-      </View>
+      </ThemedView>
 
       <FlatList
         data={rooms || []}
         keyExtractor={(item) => item.id_room.toString()}
         renderItem={({ item }) => (
-          <RoomCard item={item} onEdit={(r) => { setEditingRoom(r); setShowForm(true); }} />
+          <ThemedView className="rounded-2xl shadow-sm overflow-hidden mb-3 border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <View className="p-4">
+              <View className="flex-row justify-between items-start">
+                <View className="flex-row items-center">
+                  <View className="w-12 h-12 rounded-xl bg-blue-400 items-center justify-center mr-3">
+                    <ThemedText className="text-sm font-bold">{item.room_number}</ThemedText>
+                  </View>
+                  <View>
+                    <ThemedText type="defaultSemiBold">Room {item.room_number}</ThemedText>
+                    <ThemedText className="text-sm opacity-60">
+                      {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)} · Floor {item.floor}
+                    </ThemedText>
+                  </View>
+                </View>
+                <View className={`px-2.5 py-1 rounded-full ${item.room_status === "available" ? "bg-green-500/20" : item.room_status === "occupied" ? "bg-red-500/20" : "bg-amber-500/20"}`}>
+                  <ThemedText className={`text-xs font-semibold ${item.room_status === "available" ? "text-green-600" : item.room_status === "occupied" ? "text-red-500" : "text-amber-600"}`}>
+                    {item.room_status.charAt(0).toUpperCase() + item.room_status.slice(1)}
+                  </ThemedText>
+                </View>
+              </View>
+              <View className="flex-row items-center mt-3 gap-4">
+                <View>
+                  <ThemedText className="text-xs opacity-60">Capacity</ThemedText>
+                  <ThemedText className="text-sm font-semibold">{item.capacity || "—"} guests</ThemedText>
+                </View>
+                <View>
+                  <ThemedText className="text-xs opacity-60">Price</ThemedText>
+                  <ThemedText className="text-sm font-semibold">${item.price_per_night}/night</ThemedText>
+                </View>
+              </View>
+            </View>
+          </ThemedView>
         )}
         contentContainerClassName="px-4 py-4"
         ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No rooms found" /> : null}
-      />
-
-      <TouchableOpacity
-        className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
-        onPress={() => { setEditingRoom(null); setShowForm(true); }}
-      >
-        <MaterialIcons name="add" size={28} color="white" />
-      </TouchableOpacity>
-
-      <RoomFormModal
-        visible={showForm}
-        onClose={() => { setShowForm(false); setEditingRoom(null); }}
-        onSubmit={editingRoom ? handleUpdate : handleCreate}
-        editingRoom={editingRoom}
       />
     </ThemedView>
   );

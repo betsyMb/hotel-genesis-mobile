@@ -1,9 +1,12 @@
-const BASE_URL = 'http://localhost:3000';
-// const BASE_URL = 'http://192.168.68.100:3000';
+// const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'http://192.168.0.102:3000';
+
+console.log({BASE_URL})
 
 export const ENDPOINTS = {
   auth: {
     login: `${BASE_URL}/auth/login`,
+    register: `${BASE_URL}/auth/register`,
   },
   roles: {
     base: `${BASE_URL}/roles`,
@@ -16,6 +19,7 @@ export const ENDPOINTS = {
   rooms: {
     base: `${BASE_URL}/rooms`,
     byId: (id: number) => `${BASE_URL}/rooms/${id}`,
+    tasks: (id: number) => `${BASE_URL}/rooms/${id}/tasks`,
   },
   reservations: {
     base: `${BASE_URL}/reservations`,
@@ -52,6 +56,12 @@ export interface User {
   is_active?: boolean;
 }
 
+export interface MaintenanceTask {
+  id: string;
+  description: string;
+  completed: boolean;
+}
+
 export interface Room {
   id_room: number;
   room_number: string;
@@ -64,6 +74,8 @@ export interface Room {
   has_view?: boolean;
   has_balcony?: boolean;
   room_status: 'available' | 'occupied' | 'maintenance' | 'reserved';
+  maintenance_notes?: string;
+  maintenance_tasks?: MaintenanceTask[];
 }
 
 export interface Reservation {

@@ -24,7 +24,7 @@ export function ReservationCard({ item, onEdit, onStatusChange }: ReservationCar
   const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
+    <View className="border border-gray-300 bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
       <View className="p-4">
         <View className="flex-row justify-between items-start mb-3">
           <View className="flex-row items-center">

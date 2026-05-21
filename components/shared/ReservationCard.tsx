@@ -16,17 +16,19 @@ interface ReservationCardProps {
   onEdit?: (r: Reservation) => void;
   onDelete?: (id: number) => void;
   onStatusChange?: (r: Reservation) => void;
+  onCheckIn?: (r: Reservation) => void;
+  onCheckOut?: (r: Reservation) => void;
   showActions?: boolean;
 }
 
-export function ReservationCard({ item, onEdit, onDelete, onStatusChange, showActions = true }: ReservationCardProps) {
+export function ReservationCard({ item, onEdit, onDelete, onStatusChange, onCheckIn, onCheckOut, showActions = true }: ReservationCardProps) {
   const status = statusConfig[item.reservation_status] || statusConfig.pending;
   const checkIn = new Date(item.check_in_date);
   const checkOut = new Date(item.check_out_date);
   const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
+    <View className="border border-gray-300 bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
       <View className="p-4">
         <View className="flex-row justify-between items-start mb-3">
           <View className="flex-row items-center flex-1">
@@ -95,10 +97,28 @@ export function ReservationCard({ item, onEdit, onDelete, onStatusChange, showAc
           </View>
         )}
 
-        {showActions && (onEdit || onDelete) && (
-          <View className="flex-row justify-end mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+        {showActions && (onEdit || onDelete || onCheckIn || onCheckOut) && (
+          <View className="flex-row justify-end mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 gap-2">
+            {(item.reservation_status === "pending" || item.reservation_status === "confirmed") && onCheckIn && (
+              <TouchableOpacity
+                className="flex-row items-center px-3 py-1.5 rounded-lg bg-green-500"
+                onPress={() => onCheckIn(item)}
+              >
+                <MaterialIcons name="login" size={16} color="white" />
+                <ThemedText className="ml-1 text-xs font-semibold text-white">Check In</ThemedText>
+              </TouchableOpacity>
+            )}
+            {onCheckOut && (
+              <TouchableOpacity
+                className="flex-row items-center px-3 py-1.5 rounded-lg bg-red-500"
+                onPress={() => onCheckOut(item)}
+              >
+                <MaterialIcons name="logout" size={16} color="white" />
+                <ThemedText className="ml-1 text-xs font-semibold text-white">Check Out</ThemedText>
+              </TouchableOpacity>
+            )}
             {onEdit && (
-              <TouchableOpacity className="flex-row items-center px-3 py-1.5 mr-2" onPress={() => onEdit(item)}>
+              <TouchableOpacity className="flex-row items-center px-3 py-1.5" onPress={() => onEdit(item)}>
                 <MaterialIcons name="edit" size={16} color="#3B82F6" />
                 <ThemedText className="ml-1 text-xs font-semibold text-blue-500">Edit</ThemedText>
               </TouchableOpacity>

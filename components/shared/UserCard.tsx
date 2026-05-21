@@ -30,7 +30,7 @@ export function UserCard({ item, onEdit, onDelete }: UserCardProps) {
   const roleIcon = roleIcons[item.role] || "person";
 
   return (
-    <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
+    <View className="border border-gray-300 bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3">
       <View className="p-4">
         <View className="flex-row items-center">
           <View className="w-14 h-14 rounded-xl items-center justify-center mr-3" style={{ backgroundColor: `${roleColor}15` }}>

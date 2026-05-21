@@ -87,7 +87,11 @@ export default function ReceptionistReservationsScreen() {
 
         <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
           {["all", "pending", "confirmed"].map((f) => (
-            <TouchableOpacity key={f} className={`flex-1 py-2 rounded-lg items-center ${filter === f ? "bg-white dark:bg-gray-700 shadow-sm" : ""}`} onPress={() => setFilter(f)}>
+            <TouchableOpacity
+              key={f}
+              className={`flex-1 py-2 rounded-lg items-center ${filter === f ? "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600" : ""}`}
+              onPress={() => setFilter(f)}
+            >
               <ThemedText className={`text-sm font-semibold ${filter === f ? "text-[#0EA5E9]" : "opacity-60"}`}>
                 {f.charAt(0).toUpperCase() + f.slice(1)}
               </ThemedText>

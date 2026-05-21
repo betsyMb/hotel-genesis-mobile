@@ -1,17 +1,18 @@
 import { Stack } from "expo-router";
 import { View } from "react-native";
 import { StatusBar } from 'expo-status-bar';
-import { ThemeProvider } from "@/hooks/use-theme";
+import { ThemeProvider, useTheme } from "@/hooks/use-theme";
 import { QueryProvider } from "@/hooks/providers/query-provider";
 import { AuthProvider } from "@/hooks/auth/use-auth";
 import "../global.css"
 
 function RootLayoutNav() {
+  const { resolvedTheme } = useTheme();
   const backgroundColor = '#FFFFFF';
 
   return (
     <View style={{ flex: 1, backgroundColor }}>
-      <StatusBar style="dark" backgroundColor={backgroundColor} />
+      <StatusBar style={resolvedTheme === "dark" ? "light" : "dark"} backgroundColor={backgroundColor} />
       <Stack
         screenOptions={{
           contentStyle: { flex: 1, backgroundColor },

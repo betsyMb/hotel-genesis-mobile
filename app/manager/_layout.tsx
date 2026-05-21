@@ -9,10 +9,12 @@ import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { DrawerActions } from "@react-navigation/native";
 import { useAuth } from "@/hooks";
 import { RoleGuard } from "@/components/RoleGuard";
+import {ThemedView} from "@/components/ThemedView";
 
 const managerLinks = [
   { name: "rooms", title: "Rooms", icon: "hotel" },
   { name: "reports", title: "Reports", icon: "assessment" },
+  { name: "accounting", title: "Accounting", icon: "account-balance" },
   { name: "profile", title: "Profile", icon: "person" },
 ];
 
@@ -40,19 +42,21 @@ function DrawerContent(props: DrawerContentComponentProps) {
       </View>
 
       {managerLinks.map((link) => (
-        <TouchableOpacity
-          key={link.name}
-          className={`flex-row items-center py-3 px-2 rounded-lg mb-1 ${
-            pathname === `/manager/${link.name}` || pathname === `${link.name}` ? "bg-gray-200 dark:bg-gray-700" : ""
-          }`}
-          onPress={() => {
-            props.navigation.closeDrawer();
-            router.push(`/manager/${link.name}` as any);
-          }}
-        >
-          <MaterialIcons name={link.icon as any} size={24} color={tintColor} />
-          <ThemedText className="ml-3">{link.title}</ThemedText>
-        </TouchableOpacity>
+          <TouchableOpacity
+            key={link.name}
+            className={`flex-row items-center py-3 px-2 rounded-lg mb-1 ${
+              pathname === `/manager/${link.name}` || pathname === `${link.name}`
+                ? "bg-gray-200 dark:bg-gray-700"
+                : "bg-transparent dark:bg-transparent"
+            }`}
+            onPress={() => {
+              props.navigation.closeDrawer();
+              router.push(`/manager/${link.name}` as any);
+            }}
+          >
+            <MaterialIcons name={link.icon as any} size={24} color={tintColor} />
+            <ThemedText className="ml-3">{link.title}</ThemedText>
+          </TouchableOpacity>
       ))}
 
       <View className="mt-auto">
@@ -116,6 +120,7 @@ function ManagerDrawer() {
     >
       <Drawer.Screen name="rooms" options={{ title: "Rooms" }} />
       <Drawer.Screen name="reports" options={{ title: "Reports" }} />
+      <Drawer.Screen name="accounting" options={{ title: "Accounting" }} />
       <Drawer.Screen name="profile" options={{ title: "Profile" }} />
     </Drawer>
   );

@@ -54,3 +54,16 @@ export function useDeleteRoom() {
     },
   });
 }
+
+export function useUpdateRoomTasks() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, tasks }: { id: number; tasks: { id: string; description: string; completed: boolean }[] }) =>
+      api.patch(ENDPOINTS.rooms.tasks(id), { tasks }) as Promise<Room>,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ROOMS_KEY });
+      queryClient.invalidateQueries({ queryKey: [...ROOMS_KEY, data.id_room] });
+    },
+  });
+}

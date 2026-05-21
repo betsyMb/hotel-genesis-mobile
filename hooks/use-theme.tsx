@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from "react";
-import { useColorScheme as useRNColorScheme } from "react-native";
+import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from "react";
+import { useColorScheme as useRNColorScheme, Appearance } from "react-native";
 
 type Theme = "light" | "dark" | "system";
 
@@ -35,6 +35,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const resolvedTheme: "light" | "dark" = theme === "system"
     ? (systemTheme ?? "light")
     : theme;
+
+  useEffect(() => {
+    Appearance.setColorScheme(resolvedTheme);
+  }, [resolvedTheme]);
 
   return (
     <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggleTheme }}>

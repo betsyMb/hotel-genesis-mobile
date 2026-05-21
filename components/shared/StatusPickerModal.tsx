@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, Modal } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Reservation } from "@/hooks/api/types";
@@ -14,10 +14,10 @@ interface StatusPickerModalProps {
 }
 
 export function StatusPickerModal({ visible, onClose, onConfirm, reservation }: StatusPickerModalProps) {
-  if (!reservation) return null;
+  if (!visible || !reservation) return null;
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <View className="absolute inset-0 z-50">
       <View className="flex-1 justify-end bg-black/50">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6">
           <View className="flex-row justify-between items-center mb-5">
@@ -54,6 +54,6 @@ export function StatusPickerModal({ visible, onClose, onConfirm, reservation }: 
           </TouchableOpacity>
         </View>
       </View>
-    </Modal>
+    </View>
   );
 }

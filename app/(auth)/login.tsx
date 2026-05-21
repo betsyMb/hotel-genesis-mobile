@@ -15,7 +15,7 @@ function getRouteByRole(role: string): Href {
     case "Manager":
       return "/manager" as Href;
     case "Receptionist":
-      return "/(receptionist)/checkin" as Href;
+      return "/receptionist/checkin" as Href;
     case "Maintenance":
       return "/maintinence" as Href;
     case "Client":

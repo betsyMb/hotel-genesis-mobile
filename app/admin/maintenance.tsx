@@ -262,6 +262,7 @@ export default function AdminMaintenanceScreen() {
             <MaintenanceRoomCard item={item} onToggle={handleToggleMaintenance} />
           )}
           contentContainerClassName="px-4 py-4"
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             !roomsLoading ? (
               <View className="justify-center items-center py-12">
@@ -282,6 +283,7 @@ export default function AdminMaintenanceScreen() {
               <ServiceCard item={item} onDelete={handleDeleteService} />
             )}
             contentContainerClassName="px-4 py-4"
+            showsVerticalScrollIndicator={false}
             ListEmptyComponent={
               !servicesLoading ? (
                 <View className="justify-center items-center py-12">

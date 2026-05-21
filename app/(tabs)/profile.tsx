@@ -1,14 +1,29 @@
-import { TouchableOpacity, View, ScrollView, Alert } from "react-native";
+import { TouchableOpacity, View, ScrollView, Alert, TextInput } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useAuth } from "@/hooks";
+import { useAuth, useUpdateUser } from "@/hooks";
 import { useRouter } from "expo-router";
 import { ProfileRow } from "@/components/shared";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useState } from "react";
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const updateUser = useUpdateUser();
+  const [editingPhone, setEditingPhone] = useState(false);
+  const [phoneValue, setPhoneValue] = useState(user?.phone || "");
+
+  async function handleSavePhone() {
+    if (phoneValue !== user?.phone) {
+      try {
+        await updateUser.mutateAsync({ id: Number(user!.id_user), data: { phone: phoneValue } });
+      } catch (err: any) {
+        Alert.alert("Error", err.message);
+      }
+    }
+    setEditingPhone(false);
+  }
 
   async function handleLogout() {
     await logout();
@@ -58,13 +73,44 @@ export default function ProfileScreen() {
         </View>
       </ThemedView>
 
-      <View className="px-5 pb-8">
+      <ThemedView className="px-5 pb-8">
         <ThemedText type="subtitle" className="mb-3">Account Information</ThemedText>
 
         <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-5">
           <ProfileRow icon="mail-outline" label="Email" value={user?.email || ""} isLast={false} />
           <ProfileRow icon="fingerprint" label="User ID" value={`#${user?.id_user}`} isLast={false} />
-          <ProfileRow icon="badge" label="Full Name" value={user?.full_name || ""} isLast />
+          <ProfileRow icon="badge" label="Full Name" value={user?.full_name || ""} isLast={false} />
+          <TouchableOpacity
+            className="flex-row items-center p-4 border-b border-gray-100 dark:border-gray-700"
+            onPress={() => setEditingPhone(!editingPhone)}
+          >
+            <View className="w-10 h-10 rounded-xl bg-green-500/10 items-center justify-center mr-3">
+              <MaterialIcons name="phone" size={22} color="#10B981" />
+            </View>
+            <View className="flex-1">
+              {editingPhone ? (
+                <TextInput
+                  value={phoneValue}
+                  onChangeText={setPhoneValue}
+                  placeholder="Enter phone number"
+                  placeholderTextColor="#94A3B8"
+                  keyboardType="phone-pad"
+                  className="text-sm dark:text-white py-1"
+                  autoFocus
+                  onSubmitEditing={handleSavePhone}
+                  onBlur={handleSavePhone}
+                />
+              ) : (
+                <>
+                  <ThemedText className="font-semibold">Phone</ThemedText>
+                  <ThemedText className="text-xs opacity-60">
+                    {user?.phone || "Tap to add"}
+                  </ThemedText>
+                </>
+              )}
+            </View>
+            <MaterialIcons name={editingPhone ? "check" : "chevron-right"} size={24} color="#CBD5E1" />
+          </TouchableOpacity>
         </View>
 
         <ThemedText type="subtitle" className="mb-3">Settings</ThemedText>
@@ -132,7 +178,7 @@ export default function ProfileScreen() {
         <ThemedText className="text-center text-xs opacity-40 mt-8 mb-4">
           Hotel App v1.0.0
         </ThemedText>
-      </View>
+      </ThemedView>
     </ScrollView>
   );
 }
