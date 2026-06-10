@@ -69,6 +69,7 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
   const [roomType, setRoomType] = useState(editingRoom?.room_type || "simple");
   const [floor, setFloor] = useState(editingRoom?.floor?.toString() || "1");
   const [price, setPrice] = useState(editingRoom?.price_per_night?.toString() || "");
+  const [price3h, setPrice3h] = useState(editingRoom?.price_per_3hours?.toString() || "");
   const [capacity, setCapacity] = useState(editingRoom?.capacity?.toString() || "2");
   const [squareMeters, setSquareMeters] = useState(editingRoom?.square_meters?.toString() || "");
   const [description, setDescription] = useState(editingRoom?.description || "");
@@ -87,6 +88,7 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
         room_type: roomType as any,
         floor: Number(floor),
         price_per_night: Number(price),
+        price_per_3hours: Number(price3h) || 0,
         capacity: Number(capacity) || 2,
         square_meters: squareMeters ? Number(squareMeters) : undefined,
         description: description || undefined,
@@ -137,20 +139,28 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
                 <FormInput value={floor} onChangeText={setFloor} placeholder="1" keyboardType="number-pad" />
               </View>
               <View className="flex-1">
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">PRECIO *</ThemedText>
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">PRECIO/NOCHE *</ThemedText>
                 <FormInput value={price} onChangeText={setPrice} placeholder="100" keyboardType="number-pad" />
               </View>
             </View>
 
             <View className="flex-row gap-3 mb-4">
               <View className="flex-1">
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">PRECIO/3H</ThemedText>
+                <FormInput value={price3h} onChangeText={setPrice3h} placeholder="50" keyboardType="number-pad" />
+              </View>
+              <View className="flex-1">
                 <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">CAPACIDAD</ThemedText>
                 <FormInput value={capacity} onChangeText={setCapacity} placeholder="2" keyboardType="number-pad" />
               </View>
+            </View>
+
+            <View className="flex-row gap-3 mb-4">
               <View className="flex-1">
                 <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">M²</ThemedText>
                 <FormInput value={squareMeters} onChangeText={setSquareMeters} placeholder="25" keyboardType="number-pad" />
               </View>
+              <View className="flex-1" />
             </View>
 
             <View className="mb-4">

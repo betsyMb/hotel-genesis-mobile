@@ -89,6 +89,7 @@ export function ReservationFormModal({
   const [submitting, setSubmitting] = useState(false);
   const [picker, setPicker] = useState<PickerMode>(null);
   const [search, setSearch] = useState("");
+  const [serviceType, setServiceType] = useState<'nightly' | '3hours'>('nightly');
 
   const [clientMode, setClientMode] = useState<"existing" | "new">("existing");
   const [newName, setNewName] = useState("");
@@ -107,6 +108,7 @@ export function ReservationFormModal({
         setGuests(editingReservation.number_of_guests?.toString() || "1");
         setNotes(editingReservation.notes || "");
         setStatus(editingReservation.reservation_status || "pending");
+        setServiceType(editingReservation.service_type || 'nightly');
         setClientMode("existing");
       } else {
         setSelectedRoom(null);
@@ -118,6 +120,7 @@ export function ReservationFormModal({
         setGuests("1");
         setNotes("");
         setStatus("pending");
+        setServiceType('nightly');
         setClientMode("existing");
         setNewName("");
         setNewEmail("");
@@ -130,7 +133,11 @@ export function ReservationFormModal({
   }, [visible, editingReservation]);
 
   const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
-  const estimatedTotal = selectedRoom && nights > 0 ? selectedRoom.price_per_night * nights : editingReservation?.total_amount || null;
+  const estimatedTotal = selectedRoom
+    ? serviceType === 'nightly'
+      ? nights > 0 ? selectedRoom.price_per_night * nights : editingReservation?.total_amount || null
+      : selectedRoom.price_per_3hours
+    : editingReservation?.total_amount || null;
 
   const clientList = users?.filter((u) => u.role === "Client") || [];
 
@@ -184,6 +191,7 @@ export function ReservationFormModal({
         number_of_guests: Number(guests) || 1,
         reservation_status: status,
         total_amount: usdAmount,
+        service_type: serviceType,
         notes: notes.trim() || undefined,
       });
       onClose();
@@ -397,7 +405,7 @@ export function ReservationFormModal({
                     {selectedRoom ? (
                       <View>
                         <ThemedText className="font-semibold">Hab. {selectedRoom.room_number}</ThemedText>
-                        <ThemedText className="text-xs opacity-60">{selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_night}`}/noche</ThemedText>
+                        <ThemedText className="text-xs opacity-60">{selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom.price_per_night}`}/noche | {exchangeRate ? `Bs. ${(selectedRoom.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom.price_per_3hours}`}/3h</ThemedText>
                       </View>
                     ) : (
                       <ThemedText className="opacity-50">Toca para seleccionar una habitación</ThemedText>
@@ -455,6 +463,32 @@ export function ReservationFormModal({
                     onClose={() => setShowCheckOutPicker(false)}
                   />
                 )}
+
+                <View className="mb-4">
+                  <ThemedText className="font-semibold text-sm opacity-60 mb-1.5 uppercase">Tipo de Servicio</ThemedText>
+                  <View className="flex-row gap-2">
+                    <TouchableOpacity
+                      className={`flex-1 py-3 px-4 rounded-xl border ${
+                        serviceType === 'nightly'
+                          ? 'bg-[#0EA5E9]/10 border-[#0EA5E9]'
+                          : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                      }`}
+                      onPress={() => setServiceType('nightly')}
+                    >
+                      <ThemedText className={`text-center text-sm font-semibold ${serviceType === 'nightly' ? 'text-[#0EA5E9]' : 'opacity-60'}`}>Por Noche</ThemedText>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      className={`flex-1 py-3 px-4 rounded-xl border ${
+                        serviceType === '3hours'
+                          ? 'bg-[#0EA5E9]/10 border-[#0EA5E9]'
+                          : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                      }`}
+                      onPress={() => setServiceType('3hours')}
+                    >
+                      <ThemedText className={`text-center text-sm font-semibold ${serviceType === '3hours' ? 'text-[#0EA5E9]' : 'opacity-60'}`}>3 Horas</ThemedText>
+                    </TouchableOpacity>
+                  </View>
+                </View>
 
                 <View className="flex-row gap-3 mb-4">
                   <View className="flex-1">

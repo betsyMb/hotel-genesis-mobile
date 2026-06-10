@@ -74,6 +74,7 @@ export interface Room {
   room_type: 'simple' | 'double' | 'suite' | 'family';
   floor: number;
   price_per_night: number;
+  price_per_3hours: number;
   description?: string;
   capacity?: number;
   square_meters?: number;
@@ -94,6 +95,7 @@ export interface Reservation {
   reservation_status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'no_show';
   total_amount: number;
   total_amount_bs?: number;
+  service_type?: 'nightly' | '3hours';
   notes?: string;
   client?: User;
   room?: Room;

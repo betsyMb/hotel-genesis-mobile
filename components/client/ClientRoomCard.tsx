@@ -60,17 +60,26 @@ export function ClientRoomCard({ item, onPress, exchangeRate }: ClientRoomCardPr
           </View>
         </View>
 
-        <View className="flex-row items-center mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
-          <View className="flex-1 flex-row items-center gap-1">
+        <View className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+          <View className="flex-row items-center mb-1">
             <MaterialIcons name="people" size={16} color="#9CA3AF" />
-            <ThemedText className="text-sm opacity-60">{item.capacity || "—"} huéspedes</ThemedText>
+            <ThemedText className="ml-1 text-sm opacity-60">{item.capacity || "—"} huéspedes</ThemedText>
           </View>
-          <View className="flex-row items-center gap-1">
-            <MaterialIcons name="attach-money" size={16} color="#0EA5E9" />
-            <ThemedText className="text-base font-bold text-[#0EA5E9]">
-              {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}
-              <ThemedText className="text-sm font-normal opacity-60"> Por noche</ThemedText>
-            </ThemedText>
+          <View className="flex-row justify-between">
+            <View className="flex-row items-center">
+              <MaterialIcons name="attach-money" size={16} color="#0EA5E9" />
+              <ThemedText className="ml-1 text-base font-bold text-[#0EA5E9]">
+                {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${item.price_per_night}`}
+                <ThemedText className="text-sm font-normal opacity-60"> noche</ThemedText>
+              </ThemedText>
+            </View>
+            <View className="flex-row items-center">
+              <MaterialIcons name="timer" size={16} color="#8B5CF6" />
+              <ThemedText className="ml-1 text-base font-bold text-[#8B5CF6]">
+                {exchangeRate ? `Bs. ${(item.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${item.price_per_3hours}`}
+                <ThemedText className="text-sm font-normal opacity-60"> 3h</ThemedText>
+              </ThemedText>
+            </View>
           </View>
         </View>
       </View>

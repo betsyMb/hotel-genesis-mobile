@@ -87,7 +87,7 @@ export function ReservationCard({ item, onEdit, onDelete, onStatusChange, onChec
           <View className="flex-row items-center gap-4">
             <View className="flex-row items-center">
               <MaterialIcons name="event-note" size={16} color="#94A3B8" />
-              <ThemedText className="ml-1 text-sm opacity-70">{nights} noches</ThemedText>
+              <ThemedText className="ml-1 text-sm opacity-70">{item.service_type === '3hours' ? '3h' : `${nights} noches`}</ThemedText>
             </View>
             <View className="flex-row items-center">
               <MaterialIcons name="people" size={16} color="#94A3B8" />

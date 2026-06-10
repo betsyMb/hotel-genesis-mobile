@@ -66,7 +66,8 @@ export default function ManagerRoomsScreen() {
                 </View>
                 <View>
                   <ThemedText className="text-xs opacity-60">Precio</ThemedText>
-                  <ThemedText className="text-sm font-semibold">{exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}/noche</ThemedText>
+                  <ThemedText className="text-sm font-semibold">{exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${item.price_per_night}`}/noche</ThemedText>
+                  <ThemedText className="text-xs font-semibold text-[#8B5CF6]">{exchangeRate ? `Bs. ${(item.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${item.price_per_3hours}`}/3h</ThemedText>
                 </View>
               </View>
             </View>

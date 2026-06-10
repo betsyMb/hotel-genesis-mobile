@@ -110,7 +110,7 @@ export function WalkInDashboard() {
               refetch();
               Alert.alert(
                 "Salida registrada exitosamente",
-                `Habitación ${result.room_number}\n${guestName}\n${result.total_nights} noche${result.total_nights !== 1 ? "s" : ""}\nRegistrado: ${formatDate(result.checked_in)}\nSalió: ${formatDate(result.checked_out)}`,
+                `Habitación ${result.room_number}\n${guestName}\n${result.service_type === '3hours' ? '3 horas' : `${result.total_nights} noche${result.total_nights !== 1 ? "s" : ""}`}\nRegistrado: ${formatDate(result.checked_in)}\nSalió: ${formatDate(result.checked_out)}`,
               );
             } catch (err: any) {
               Alert.alert("Error", err.message);

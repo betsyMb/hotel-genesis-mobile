@@ -66,6 +66,7 @@ export default function BookingScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [additionalGuests, setAdditionalGuests] = useState<WalkInGuest[]>([]);
   const [filter, setFilter] = useState<string>("all");
+  const [serviceType, setServiceType] = useState<'nightly' | '3hours'>('nightly');
 
   const myReservations = reservations
     ?.filter((r: Reservation) => Number(r.id_client) === Number(user?.id_user))
@@ -109,7 +110,7 @@ export default function BookingScreen() {
     try {
       const totalGuests = Number(guests) + additionalGuests.length;
 
-      const usdAmount = selectedRoom.price_per_night * nights;
+      const usdAmount = serviceType === 'nightly' ? selectedRoom.price_per_night * nights : selectedRoom.price_per_3hours;
 
       if (editingReservation) {
         await updateReservation.mutateAsync({
@@ -121,6 +122,7 @@ export default function BookingScreen() {
             number_of_guests: totalGuests || 1,
             total_amount: usdAmount,
             notes: notes || undefined,
+            service_type: serviceType,
           },
         });
       } else {
@@ -145,6 +147,7 @@ export default function BookingScreen() {
           reservation_status: "pending",
           total_amount: usdAmount,
           notes: notes || undefined,
+          service_type: serviceType,
         });
       }
 
@@ -249,7 +252,7 @@ export default function BookingScreen() {
     const nights = checkIn && checkOut
       ? Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
       : 0;
-    const estimatedTotal = selectedRoom && nights > 0 ? selectedRoom.price_per_night * nights : null;
+    const estimatedTotal = selectedRoom && (serviceType === 'nightly' ? (nights > 0 ? selectedRoom.price_per_night * nights : null) : selectedRoom.price_per_3hours);
 
     const availableRooms = (rooms?.filter((r) => r.room_status === "available") || []) as Room[];
 
@@ -273,7 +276,7 @@ export default function BookingScreen() {
                 <MaterialIcons name="hotel" size={20} color="#94A3B8" style={{ marginRight: 10 }} />
                 <View>
                   <ThemedText className="font-semibold">Room {selectedRoom.room_number}</ThemedText>
-                  <ThemedText className="text-xs opacity-60">{selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_night}`} Por noche</ThemedText>
+                  <ThemedText className="text-xs opacity-60">{selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom.price_per_night}`} noche | {exchangeRate ? `Bs. ${(selectedRoom.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom.price_per_3hours}`} 3h</ThemedText>
                 </View>
               </View>
               <MaterialIcons name="close" size={22} color="#EF4444" />
@@ -321,6 +324,32 @@ export default function BookingScreen() {
                   <MaterialIcons name="access-time" size={14} color="#94A3B8" style={{ marginRight: 6 }} />
                   <ThemedText className="text-xs opacity-70">{formatTime(checkOut)}</ThemedText>
                 </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View className="mb-4">
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5 uppercase">Tipo de Servicio</ThemedText>
+            <View className="flex-row gap-2">
+              <TouchableOpacity
+                className={`flex-1 py-3 px-4 rounded-xl border ${
+                  serviceType === 'nightly'
+                    ? 'bg-[#0EA5E9]/10 border-[#0EA5E9]'
+                    : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                }`}
+                onPress={() => setServiceType('nightly')}
+              >
+                <ThemedText className={`text-center text-sm font-semibold ${serviceType === 'nightly' ? 'text-[#0EA5E9]' : 'opacity-60'}`}>Por Noche</ThemedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className={`flex-1 py-3 px-4 rounded-xl border ${
+                  serviceType === '3hours'
+                    ? 'bg-[#0EA5E9]/10 border-[#0EA5E9]'
+                    : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                }`}
+                onPress={() => setServiceType('3hours')}
+              >
+                <ThemedText className={`text-center text-sm font-semibold ${serviceType === '3hours' ? 'text-[#0EA5E9]' : 'opacity-60'}`}>3 Horas</ThemedText>
               </TouchableOpacity>
             </View>
           </View>
@@ -414,11 +443,14 @@ export default function BookingScreen() {
                 <View>
                   <ThemedText className="text-sm opacity-60">Estimado</ThemedText>
                   <ThemedText className="text-sm opacity-60">
-                    {nights} {nights === 1 ? "noche" : "noches"} × {exchangeRate ? `Bs. ${(selectedRoom!.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom!.price_per_night}`}
+                    {serviceType === 'nightly'
+                      ? `${nights} ${nights === 1 ? "noche" : "noches"} × ${exchangeRate ? `Bs. ${(selectedRoom!.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom!.price_per_night}`}`
+                      : `Servicio 3h × ${exchangeRate ? `Bs. ${(selectedRoom!.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom!.price_per_3hours}`}`
+                    }
                   </ThemedText>
                 </View>
                 <ThemedText className="text-2xl font-bold text-[#0EA5E9]">
-                  {exchangeRate ? `Bs. ${(estimatedTotal * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${estimatedTotal}`}
+                  {exchangeRate ? `Bs. ${(estimatedTotal * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${estimatedTotal}`}
                 </ThemedText>
               </View>
             </View>

@@ -100,13 +100,13 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
                   <ThemedText className="text-sm font-medium">{formatDate(item.checked_out)}</ThemedText>
                 </View>
                 <View className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
-                <View className="flex-row items-center justify-between pt-1">
+                  <View className="flex-row items-center justify-between pt-1">
                   <View className="flex-row items-center">
                     <MaterialIcons name="nights-stay" size={18} color="#94A3B8" style={{ marginRight: 8 }} />
-                    <ThemedText className="text-sm opacity-70">Total noches</ThemedText>
+                    <ThemedText className="text-sm opacity-70">{item.service_type === '3hours' ? 'Servicio' : 'Total noches'}</ThemedText>
                   </View>
                   <ThemedText className="text-base font-bold text-[#6366F1]">
-{item.total_nights} noche{item.total_nights !== 1 ? "s" : ""}
+                    {item.service_type === '3hours' ? '3 horas' : `${item.total_nights} noche${item.total_nights !== 1 ? "s" : ""}`}
                   </ThemedText>
                 </View>
               </View>
@@ -147,7 +147,7 @@ function HistoryCard({
         </View>
         <View className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
           <ThemedText className="text-xs font-semibold opacity-60">
-            {item.total_nights} noche{item.total_nights !== 1 ? "s" : ""}
+            {item.service_type === '3hours' ? '3h' : `${item.total_nights} noche${item.total_nights !== 1 ? 's' : ''}`}
           </ThemedText>
         </View>
       </View>

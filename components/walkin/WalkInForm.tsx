@@ -27,6 +27,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
   const [showUserPicker, setShowUserPicker] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [showNewUserModal, setShowNewUserModal] = useState(false);
+  const [serviceType, setServiceType] = useState<'nightly' | '3hours'>('nightly');
 
   const [mainFirstName, setMainFirstName] = useState("");
   const [mainLastName, setMainLastName] = useState("");
@@ -67,6 +68,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
     try {
       await walkinCheckin.mutateAsync({
         room_id: selectedRoom.id_room,
+        service_type: serviceType,
         guest: {
           first_name: mainFirstName.trim(),
           last_name: mainLastName.trim(),
@@ -117,7 +119,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
                 <View>
                   <ThemedText className="font-semibold">Habitación {selectedRoom.room_number}</ThemedText>
                   <ThemedText className="text-xs opacity-60">
-                    {selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_night}`}/noche
+                    {selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_night}`}/noche | {exchangeRate ? `Bs. ${(selectedRoom.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_3hours}`}/3h
                   </ThemedText>
                 </View>
               ) : (
@@ -126,6 +128,32 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             </View>
             <MaterialIcons name="expand-more" size={22} color="#94A3B8" />
           </TouchableOpacity>
+        </View>
+
+        <View className="mb-6">
+          <ThemedText className="font-semibold text-sm opacity-60 mb-2 uppercase">Tipo de Servicio</ThemedText>
+          <View className="flex-row gap-2">
+            <TouchableOpacity
+              className={`flex-1 py-3 px-4 rounded-xl border ${
+                serviceType === 'nightly'
+                  ? 'bg-[#0EA5E9]/10 border-[#0EA5E9]'
+                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+              }`}
+              onPress={() => setServiceType('nightly')}
+            >
+              <ThemedText className={`text-center text-sm font-semibold ${serviceType === 'nightly' ? 'text-[#0EA5E9]' : 'opacity-60'}`}>Por Noche</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={`flex-1 py-3 px-4 rounded-xl border ${
+                serviceType === '3hours'
+                  ? 'bg-[#0EA5E9]/10 border-[#0EA5E9]'
+                  : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+              }`}
+              onPress={() => setServiceType('3hours')}
+            >
+              <ThemedText className={`text-center text-sm font-semibold ${serviceType === '3hours' ? 'text-[#0EA5E9]' : 'opacity-60'}`}>3 Horas</ThemedText>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View className="mb-6">
@@ -280,7 +308,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
                     <View className="flex-1">
                       <ThemedText className="font-semibold">Habitación {item.room_number}</ThemedText>
                       <ThemedText className="text-xs opacity-60">
-                        {item.room_type} - {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}/noche - Piso {item.floor}
+                        {item.room_type} - {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}/noche | {exchangeRate ? `Bs. ${(item.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_3hours}`}/3h - Piso {item.floor}
                       </ThemedText>
                     </View>
                     {selectedRoom?.id_room === item.id_room && (

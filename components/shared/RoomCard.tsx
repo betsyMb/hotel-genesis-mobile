@@ -54,9 +54,23 @@ export function RoomCard({ item, onEdit, onDelete, showActions = true, exchangeR
             <MaterialIcons name="layers" size={16} color="#94A3B8" />
             <ThemedText className="ml-1.5 text-sm opacity-70">Piso {item.floor}</ThemedText>
           </View>
+        </View>
+        <View className="flex-row justify-between mt-2">
           <View className="flex-row items-center">
-            <MaterialIcons name="attach-money" size={16} color="#94A3B8" />
-            <ThemedText className="ml-1.5 text-sm font-bold text-[#0EA5E9]">{exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}</ThemedText>
+            <MaterialIcons name="attach-money" size={16} color="#0EA5E9" />
+            <ThemedText className="ml-1.5 text-sm font-bold text-[#0EA5E9]">
+              {exchangeRate
+                ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}/noche`
+                : `$${item.price_per_night}/noche`}
+            </ThemedText>
+          </View>
+          <View className="flex-row items-center">
+            <MaterialIcons name="timer" size={16} color="#8B5CF6" />
+            <ThemedText className="ml-1.5 text-sm font-bold text-[#8B5CF6]">
+              {exchangeRate
+                ? `Bs. ${(item.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}/3h`
+                : `$${item.price_per_3hours}/3h`}
+            </ThemedText>
           </View>
         </View>
 

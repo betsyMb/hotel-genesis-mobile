@@ -4,61 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="feature: logic">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="feature: fix themes and fixing bugs">
+      <change afterPath="$PROJECT_DIR$/assets/images/hotel-logo.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(auth)/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(auth)/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/register.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/booking.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/booking.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/home.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/maintenance.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reports.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reservations.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/settings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/settings.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/users.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/users.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/maintinence/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/reports.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/manager/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/checkin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/checkin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/checkout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/checkout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/reservations.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/client/ClientReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/client/ClientReservationCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/android-icon-background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/android-icon-foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/android-icon-monochrome.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/favicon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/partial-react-logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/react-logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/react-logo@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/react-logo@3x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/splash-icon.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/shared/ReservationFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationFormModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/shared/RoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/RoomCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/shared/RoomFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/RoomFormModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/UserCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/UserCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/UserFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/UserFormModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/walkin/GuestFormRow.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/GuestFormRow.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/walkin/NewUserModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/NewUserModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/walkin/WalkInForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/api/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/client.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hooks/api/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/auth/use-auth.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/auth/use-auth.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/use-users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/use-users.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/api/walkin-types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/walkin-types.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +39,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="18138" />
+    <option name="cachedIndexableFilesCount" value="18141" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -78,61 +51,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="2.477749594045262E-236" />
-      <entry key="S2" value="1.2546262025138758E-59" />
-      <entry key="S5" value="2.7504625838572012E-24" />
-      <entry key="S10" value="1.6584518635936353E-12" />
-      <entry key="S30" value="1.1836799471037841E-4" />
-      <entry key="S60" value="0.010879706287409717" />
-      <entry key="M2" value="0.10434342058227598" />
-      <entry key="M5" value="0.43988363811241993" />
-      <entry key="M10" value="1.0544547641004136" />
-      <entry key="M15" value="1.7340865777900631" />
-      <entry key="M30" value="3.296973618779601" />
-      <entry key="H1" value="5.480167443335828" />
-      <entry key="H2" value="10.523799525808355" />
-      <entry key="H4" value="18.617487495854643" />
-      <entry key="D1" value="34.13251077609176" />
-      <entry key="W1" value="38.25594643659618" />
+      <entry key="MS100" value="1.0485022785887916" />
+      <entry key="MS500" value="1.7613711473949207" />
+      <entry key="S2" value="2.8191074381596177" />
+      <entry key="S5" value="4.6334020312290285" />
+      <entry key="S10" value="6.447222412839013" />
+      <entry key="S30" value="8.535836950459707" />
+      <entry key="S60" value="9.234770278467819" />
+      <entry key="M2" value="9.698306323173679" />
+      <entry key="M5" value="10.26481389583185" />
+      <entry key="M10" value="10.95736617558148" />
+      <entry key="M15" value="11.662554187271077" />
+      <entry key="M30" value="13.253439122252312" />
+      <entry key="H1" value="15.452996259165937" />
+      <entry key="H2" value="20.503987431715736" />
+      <entry key="H4" value="28.60258715024727" />
+      <entry key="D1" value="44.12843165399019" />
+      <entry key="W1" value="48.25530311487428" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0000000000015712" />
-      <entry key="S30" value="1.000116253894417" />
-      <entry key="S60" value="1.0107821105400556" />
-      <entry key="M2" value="1.1038720937684712" />
-      <entry key="M5" value="1.4305923325195637" />
-      <entry key="M10" value="1.896997570177008" />
-      <entry key="M15" value="2.3157736134686324" />
-      <entry key="M30" value="3.1630474997118263" />
-      <entry key="H1" value="4.041350101301714" />
-      <entry key="H2" value="5.392530649656466" />
-      <entry key="H4" value="7.457800086304864" />
-      <entry key="D1" value="11.63484923100637" />
-      <entry key="W1" value="12.789837781371078" />
+      <entry key="MS100" value="2.6302422868003658E-39" />
+      <entry key="MS500" value="1.923087970095541E-8" />
+      <entry key="S2" value="0.011776053980924848" />
+      <entry key="S5" value="0.16919982717899879" />
+      <entry key="S10" value="0.41133906595353964" />
+      <entry key="S30" value="0.7437902332958056" />
+      <entry key="S60" value="0.8716809197890889" />
+      <entry key="M2" value="1.0251059418639654" />
+      <entry key="M5" value="1.3888517540056013" />
+      <entry key="M10" value="1.8691182326148799" />
+      <entry key="M15" value="2.2930284018975318" />
+      <entry key="M30" value="3.1474756593631863" />
+      <entry key="H1" value="4.031389943692908" />
+      <entry key="H2" value="5.385881437405293" />
+      <entry key="H4" value="7.453200780847101" />
+      <entry key="D1" value="11.633653034165807" />
+      <entry key="W1" value="12.789649924093624" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.4924808077295765E-4" />
-      <entry key="MS500" value="0.1717045291787028" />
-      <entry key="S2" value="0.6437176805432612" />
-      <entry key="S5" value="0.8384519422638606" />
-      <entry key="S10" value="0.9156702147986967" />
-      <entry key="S30" value="0.9712914174332581" />
-      <entry key="S60" value="1.0069058947341099" />
-      <entry key="M2" value="1.2000320368029105" />
-      <entry key="M5" value="1.8660184915233868" />
-      <entry key="M10" value="2.947956327316064" />
-      <entry key="M15" value="4.046563700082172" />
-      <entry key="M30" value="6.457262372983843" />
-      <entry key="H1" value="9.519291389846153" />
-      <entry key="H2" value="15.91409904804378" />
-      <entry key="H4" value="26.073237964140887" />
-      <entry key="D1" value="45.76671534144129" />
-      <entry key="W1" value="51.04568055140439" />
+      <entry key="MS100" value="1.0265930879491585" />
+      <entry key="MS500" value="1.7527125324633797" />
+      <entry key="S2" value="2.822887247887084" />
+      <entry key="S5" value="4.772542649257659" />
+      <entry key="S10" value="6.821851189548042" />
+      <entry key="S30" value="9.257161971721157" />
+      <entry key="S60" value="10.093210933942485" />
+      <entry key="M2" value="10.715542848305187" />
+      <entry key="M5" value="11.649227160335144" />
+      <entry key="M10" value="12.822983713699992" />
+      <entry key="M15" value="13.952280978266131" />
+      <entry key="M30" value="16.398150808820773" />
+      <entry key="H1" value="19.48215611514597" />
+      <entry key="H2" value="25.88763577929364" />
+      <entry key="H4" value="36.05373721941497" />
+      <entry key="D1" value="55.76143969570013" />
+      <entry key="W1" value="61.044849317770456" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -208,7 +181,7 @@
       <workItem from="1779381669916" duration="18106000" />
       <workItem from="1780402354821" duration="1862000" />
       <workItem from="1780850470435" duration="21639000" />
-      <workItem from="1781046298450" duration="3411000" />
+      <workItem from="1781046298450" duration="6021000" />
     </task>
     <task id="LOCAL-00001" summary="feature: reservations">
       <option name="closed" value="true" />
@@ -234,7 +207,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779394746783</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="feature: fix themes and fixing bugs">
+      <option name="closed" value="true" />
+      <created>1781051201913</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1781051201913</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,7 +225,8 @@
     <MESSAGE value="feature: reservations" />
     <MESSAGE value="feature" />
     <MESSAGE value="feature: logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature: logic" />
+    <MESSAGE value="feature: fix themes and fixing bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: fix themes and fixing bugs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

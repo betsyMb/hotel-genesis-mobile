@@ -7,6 +7,7 @@ export interface WalkInGuest {
 
 export interface WalkInCheckinPayload {
   room_id: number;
+  service_type?: 'nightly' | '3hours';
   guest: {
     first_name: string;
     last_name: string;
@@ -40,6 +41,7 @@ export interface WalkInCheckoutResponse {
   room_number: string;
   occupancy_id: number;
   total_nights: number;
+  service_type?: 'nightly' | '3hours';
   checked_in: string;
   checked_out: string;
 }
@@ -58,6 +60,7 @@ export interface WalkInHistoryItem {
   guest_signature: string;
   guests: WalkInHistoryGuest[];
   total_nights: number;
+  service_type?: 'nightly' | '3hours';
   checked_in: string;
   checked_out: string;
 }

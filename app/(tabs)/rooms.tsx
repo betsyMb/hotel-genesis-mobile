@@ -105,8 +105,13 @@ export default function RoomsScreen() {
                 <View className="flex-row gap-3 mb-5">
                   <View className="flex-1 bg-gray-50 dark:bg-gray-800 rounded-xl p-3 items-center">
                     <MaterialIcons name="attach-money" size={22} color="#0EA5E9" />
-                    <ThemedText className="text-lg font-bold text-[#0EA5E9] mt-1">{exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_night}`}</ThemedText>
+                    <ThemedText className="text-lg font-bold text-[#0EA5E9] mt-1">{exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom.price_per_night}`}</ThemedText>
                     <ThemedText className="text-xs opacity-60">Por Noche</ThemedText>
+                  </View>
+                  <View className="flex-1 bg-gray-50 dark:bg-gray-800 rounded-xl p-3 items-center">
+                    <MaterialIcons name="timer" size={22} color="#8B5CF6" />
+                    <ThemedText className="text-lg font-bold text-[#8B5CF6] mt-1">{exchangeRate ? `Bs. ${(selectedRoom.price_per_3hours * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 0 })}` : `$${selectedRoom.price_per_3hours}`}</ThemedText>
+                    <ThemedText className="text-xs opacity-60">3 Horas</ThemedText>
                   </View>
                   <View className="flex-1 bg-gray-50 dark:bg-gray-800 rounded-xl p-3 items-center">
                     <MaterialIcons name="people" size={22} color="#8B5CF6" />
