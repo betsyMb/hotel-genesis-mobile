@@ -46,7 +46,7 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
       <View className="flex-1 justify-end bg-black/50">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6">
           <View className="flex-row justify-between items-center mb-5">
-            <ThemedText type="title">New Guest</ThemedText>
+            <ThemedText type="title">Nuevo Huésped</ThemedText>
             <TouchableOpacity onPress={handleClose}>
               <MaterialIcons name="close" size={24} color="#64748B" />
             </TouchableOpacity>
@@ -54,11 +54,11 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
 
           <View className="mb-4">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">
-              FIRST NAME *
+              NOMBRE *
             </ThemedText>
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
-              placeholder="John"
+              placeholder="Juan"
               placeholderTextColor="#94A3B8"
               value={firstName}
               onChangeText={setFirstName}
@@ -68,11 +68,11 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
 
           <View className="mb-4">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">
-              LAST NAME *
+              APELLIDO *
             </ThemedText>
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
-              placeholder="Doe"
+              placeholder="Pérez"
               placeholderTextColor="#94A3B8"
               value={lastName}
               onChangeText={setLastName}
@@ -96,7 +96,7 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
 
           <View className="mb-4">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">
-              PHONE
+              TELÉFONO
             </ThemedText>
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
@@ -110,11 +110,11 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
 
           <View className="mb-6">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">
-              EMAIL
+              CORREO ELECTRÓNICO
             </ThemedText>
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
-              placeholder="guest@email.com"
+              placeholder="huesped@email.com"
               placeholderTextColor="#94A3B8"
               value={email}
               onChangeText={setEmail}
@@ -128,7 +128,7 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
             onPress={handleSave}
             disabled={!firstName.trim() || !lastName.trim() || !dni.trim()}
           >
-            <ThemedText className="text-white font-semibold">Add Guest</ThemedText>
+            <ThemedText className="text-white font-semibold">Añadir Huésped</ThemedText>
           </TouchableOpacity>
         </View>
       </View>

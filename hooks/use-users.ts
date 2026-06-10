@@ -45,8 +45,8 @@ export function useUpdateUser() {
       api.patch(ENDPOINTS.users.byId(id), data) as Promise<User>,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: USERS_KEY });
-      queryClient.invalidateQueries({ queryKey: [...USERS_KEY, data.id_user] });
-    },
+      queryClient.invalidateQueries({ queryKey: [...USERS_KEY, data.id_user] })},
+    onError: (err) => console.log("ERRORORR", {err})
   });
 }
 

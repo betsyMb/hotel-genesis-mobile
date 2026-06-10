@@ -1,10 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User, Role } from '../api/types';
+import { User, Role, BASE_URL } from '../api/types';
 import { api } from '../api/client';
-// const BASE_URL = 'http://192.168.0.102:3000';
-const BASE_URL = 'http://localhost:3000';
 
 const USER_KEY = 'hotel_app_user';
 
@@ -49,6 +47,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   hasRole: (...roles: Role[]) => boolean;
+  refreshUser: (updates: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -99,13 +98,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function login(email: string, password: string): Promise<User> {
     setIsLoading(true);
     try {
+      console.log({BASE_URL})
       const data = await api.postPublic(`${BASE_URL}/auth/login`, { email, password });
+      console.log({data})
       await api.setToken(data.access_token);
       setTokenState(data.access_token);
       setUser(data.user);
       setUserData(data.user);
       return data.user;
     } catch (error) {
+      console.log({error})
       throw error;
     } finally {
       setIsLoading(false);
@@ -123,6 +125,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return user ? roles.includes(user.role) : false;
   }
 
+  async function refreshUser(updates: Partial<User>) {
+    if (!user) return;
+    const updated = { ...user, ...updates };
+    setUser(updated);
+    await setUserData(updated);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -133,6 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         hasRole,
+        refreshUser,
       }}
     >
       {children}

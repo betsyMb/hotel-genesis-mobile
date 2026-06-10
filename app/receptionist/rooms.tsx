@@ -1,11 +1,12 @@
 import { FlatList, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useRooms } from "@/hooks";
+import { useRooms, useExchangeRate } from "@/hooks";
 import { EmptyState, StatBadge, RoomCard } from "@/components/shared";
 
 export default function ReceptionistRoomsScreen() {
   const { data: rooms, isLoading } = useRooms();
+  const { data: exchangeRate } = useExchangeRate();
 
   const stats = {
     total: rooms?.length || 0,
@@ -26,7 +27,8 @@ export default function ReceptionistRoomsScreen() {
       <FlatList
         data={rooms || []}
         keyExtractor={(item) => item.id_room.toString()}
-        renderItem={({ item }) => <RoomCard item={item} />}
+        className="flex-1"
+        renderItem={({ item }) => <RoomCard item={item} exchangeRate={exchangeRate} />}
         contentContainerClassName="px-4 py-4"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No rooms found" /> : null}

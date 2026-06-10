@@ -9,15 +9,16 @@ import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { DrawerActions } from "@react-navigation/native";
 import { useAuth } from "@/hooks";
 import { RoleGuard } from "@/components/RoleGuard";
+import { NotificationBell } from "@/components/shared";
 
 const receptionistLinks = [
-  { name: "checkin", title: "Check-in", icon: "login" },
-  { name: "checkout", title: "Check-out", icon: "logout" },
+  { name: "checkin", title: "Check In", icon: "login" },
+  { name: "checkout", title: "Check Out", icon: "logout" },
   { name: "walkin", title: "Walk-in", icon: "person-add" },
-  { name: "walkin-history", title: "Walk-in History", icon: "history" },
-  { name: "reservations", title: "Reservations", icon: "event-note" },
-  { name: "rooms", title: "Rooms", icon: "hotel" },
-  { name: "profile", title: "Profile", icon: "person" },
+  { name: "walkin-history", title: "Historial de Walk-in", icon: "history" },
+  { name: "reservations", title: "Reservas", icon: "event-note" },
+  { name: "rooms", title: "Habitaciones", icon: "hotel" },
+  { name: "profile", title: "Perfil", icon: "person" },
 ];
 
 function DrawerContent(props: DrawerContentComponentProps) {
@@ -37,7 +38,7 @@ function DrawerContent(props: DrawerContentComponentProps) {
   return (
     <View className="flex-1 p-4" style={{ backgroundColor }}>
       <View className="mt-12 mb-6">
-        <ThemedText type="title">Receptionist</ThemedText>
+        <ThemedText type="title">Recepcionista</ThemedText>
         {user && (
           <ThemedText className="text-sm opacity-70">{user.full_name}</ThemedText>
         )}
@@ -62,7 +63,7 @@ function DrawerContent(props: DrawerContentComponentProps) {
       <View className="mt-auto">
         <TouchableOpacity className="flex-row items-center py-3 px-2 rounded-lg mb-2" onPress={toggleTheme}>
           <MaterialIcons name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"} size={24} color={tintColor} />
-          <ThemedText className="ml-3">{resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}</ThemedText>
+          <ThemedText className="ml-3">{resolvedTheme === "dark" ? "Modo Claro" : "Modo Oscuro"}</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity className="flex-row items-center py-3 px-2 rounded-lg" onPress={handleLogout}>
@@ -86,7 +87,7 @@ function ReceptionistHeader({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: useThemeColor({}, "background") }}>
+    <View style={{ backgroundColor: useThemeColor({}, "background") }}>
       <View className="flex-row justify-between items-center px-4 py-3">
         <View className="flex-row items-center">
           <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} className="p-2">
@@ -97,11 +98,14 @@ function ReceptionistHeader({ navigation }: { navigation: any }) {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={toggleTheme} className="p-2">
-          <MaterialIcons name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"} size={24} color={tintColor} />
-        </TouchableOpacity>
+        <View className="flex-row items-center">
+          <NotificationBell />
+          <TouchableOpacity onPress={toggleTheme} className="p-2">
+            <MaterialIcons name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"} size={24} color={tintColor} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -115,16 +119,16 @@ function ReceptionistDrawer() {
         headerShown: true,
         header: () => <ReceptionistHeader navigation={navigation} />,
         drawerStyle: { width: 280 },
-        sceneContainerStyle: { backgroundColor },
+        sceneContainerStyle: { flex: 1, backgroundColor },
       })}
     >
-      <Drawer.Screen name="checkin" options={{ title: "Check-in" }} />
-      <Drawer.Screen name="checkout" options={{ title: "Check-out" }} />
+      <Drawer.Screen name="checkin" options={{ title: "Check In" }} />
+      <Drawer.Screen name="checkout" options={{ title: "Check Out" }} />
       <Drawer.Screen name="walkin" options={{ title: "Walk-in" }} />
-      <Drawer.Screen name="walkin-history" options={{ title: "Walk-in History" }} />
-      <Drawer.Screen name="reservations" options={{ title: "Reservations" }} />
-      <Drawer.Screen name="rooms" options={{ title: "Rooms" }} />
-      <Drawer.Screen name="profile" options={{ title: "Profile" }} />
+      <Drawer.Screen name="walkin-history" options={{ title: "Historial de Walk-in" }} />
+      <Drawer.Screen name="reservations" options={{ title: "Reservas" }} />
+      <Drawer.Screen name="rooms" options={{ title: "Habitaciones" }} />
+      <Drawer.Screen name="profile" options={{ title: "Perfil" }} />
     </Drawer>
   );
 }

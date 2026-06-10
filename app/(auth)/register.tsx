@@ -37,7 +37,7 @@ export default function RegisterScreen() {
 
   async function handleRegister() {
     if (!fullName || !email || !password) {
-      setError("Please fill in all fields");
+      setError("Completa todos los campos");
       return;
     }
 
@@ -67,7 +67,7 @@ export default function RegisterScreen() {
 
   return (
     <ThemedView className="flex-1 justify-center px-6">
-      <ThemedText type="title" className="text-center mb-8">Register</ThemedText>
+      <ThemedText type="title" className="text-center mb-8">Registrarse</ThemedText>
 
       {error && (
         <ThemedText className="text-red-500 text-center mb-4">{error}</ThemedText>
@@ -75,7 +75,7 @@ export default function RegisterScreen() {
 
       <ThemedTextInput
         icon="person-outline"
-        placeholder="Full Name"
+        placeholder="Nombre completo"
         value={fullName}
         onChangeText={setFullName}
         autoCapitalize="words"
@@ -84,7 +84,7 @@ export default function RegisterScreen() {
 
       <ThemedTextInput
         icon="mail-outline"
-        placeholder="Email"
+        placeholder="Correo electrónico"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -94,7 +94,7 @@ export default function RegisterScreen() {
 
       <ThemedTextInput
         icon="lock-closed-outline"
-        placeholder="Password"
+        placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -109,7 +109,7 @@ export default function RegisterScreen() {
         {isLoading ? (
           <ActivityIndicator color="white" />
         ) : (
-          <ThemedText className="text-white font-semibold">Sign Up</ThemedText>
+          <ThemedText className="text-white font-semibold">Registrarse</ThemedText>
         )}
       </TouchableOpacity>
 
@@ -118,8 +118,8 @@ export default function RegisterScreen() {
         onPress={() => router.push("/(auth)/login")}
       >
         <ThemedText>
-          Already have an account?{" "}
-          <ThemedText className="text-[#0EA5E9] font-semibold">Login</ThemedText>
+          ¿Ya tienes cuenta?{" "}
+          <ThemedText className="text-[#0EA5E9] font-semibold">Iniciar Sesión</ThemedText>
         </ThemedText>
       </TouchableOpacity>
     </ThemedView>

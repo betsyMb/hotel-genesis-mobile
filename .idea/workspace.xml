@@ -4,44 +4,59 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="feature">
+    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="feature: logic">
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(auth)/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/login.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(auth)/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/booking.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/booking.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/home.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/admin/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/maintenance.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/admin/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reports.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/admin/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reservations.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/rooms.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/settings.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/settings.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/admin/users.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/users.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/maintinence/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/maintinence/users.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/manager/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/manager/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/manager/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/reports.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/manager/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/rooms.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/receptionist/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/receptionist/checkin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/checkin.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/receptionist/checkout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/checkout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/receptionist/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/receptionist/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/reservations.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/receptionist/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/rooms.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/client/ClientReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/client/ClientReservationCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/ReservationFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationFormModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/shared/RoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/RoomCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/StatBadge.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/StatBadge.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/StatusPickerModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/StatusPickerModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/RoomFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/RoomFormModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/shared/UserCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/UserCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/UserFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/UserFormModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/shared/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/walkin/GuestFormRow.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/GuestFormRow.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/walkin/NewUserModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/NewUserModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/walkin/WalkInForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/schema.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/api/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/client.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hooks/api/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/auth/use-auth.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/auth/use-auth.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hooks/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/rooms/use-rooms.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/rooms/use-rooms.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/use-theme.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/use-theme.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/use-users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/use-users.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
@@ -51,7 +66,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="18132" />
+    <option name="cachedIndexableFilesCount" value="18138" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -60,6 +75,65 @@
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="2.477749594045262E-236" />
+      <entry key="S2" value="1.2546262025138758E-59" />
+      <entry key="S5" value="2.7504625838572012E-24" />
+      <entry key="S10" value="1.6584518635936353E-12" />
+      <entry key="S30" value="1.1836799471037841E-4" />
+      <entry key="S60" value="0.010879706287409717" />
+      <entry key="M2" value="0.10434342058227598" />
+      <entry key="M5" value="0.43988363811241993" />
+      <entry key="M10" value="1.0544547641004136" />
+      <entry key="M15" value="1.7340865777900631" />
+      <entry key="M30" value="3.296973618779601" />
+      <entry key="H1" value="5.480167443335828" />
+      <entry key="H2" value="10.523799525808355" />
+      <entry key="H4" value="18.617487495854643" />
+      <entry key="D1" value="34.13251077609176" />
+      <entry key="W1" value="38.25594643659618" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0000000000015712" />
+      <entry key="S30" value="1.000116253894417" />
+      <entry key="S60" value="1.0107821105400556" />
+      <entry key="M2" value="1.1038720937684712" />
+      <entry key="M5" value="1.4305923325195637" />
+      <entry key="M10" value="1.896997570177008" />
+      <entry key="M15" value="2.3157736134686324" />
+      <entry key="M30" value="3.1630474997118263" />
+      <entry key="H1" value="4.041350101301714" />
+      <entry key="H2" value="5.392530649656466" />
+      <entry key="H4" value="7.457800086304864" />
+      <entry key="D1" value="11.63484923100637" />
+      <entry key="W1" value="12.789837781371078" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.4924808077295765E-4" />
+      <entry key="MS500" value="0.1717045291787028" />
+      <entry key="S2" value="0.6437176805432612" />
+      <entry key="S5" value="0.8384519422638606" />
+      <entry key="S10" value="0.9156702147986967" />
+      <entry key="S30" value="0.9712914174332581" />
+      <entry key="S60" value="1.0069058947341099" />
+      <entry key="M2" value="1.2000320368029105" />
+      <entry key="M5" value="1.8660184915233868" />
+      <entry key="M10" value="2.947956327316064" />
+      <entry key="M15" value="4.046563700082172" />
+      <entry key="M30" value="6.457262372983843" />
+      <entry key="H1" value="9.519291389846153" />
+      <entry key="H2" value="15.91409904804378" />
+      <entry key="H4" value="26.073237964140887" />
+      <entry key="D1" value="45.76671534144129" />
+      <entry key="W1" value="51.04568055140439" />
+    </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -79,6 +153,7 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
@@ -111,7 +186,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.33514.14" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.25134.101" />
       </set>
     </attachedChunks>
   </component>
@@ -130,7 +205,10 @@
       <workItem from="1777987093564" duration="753000" />
       <workItem from="1778459164418" duration="6698000" />
       <workItem from="1779121610152" duration="17740000" />
-      <workItem from="1779381669916" duration="11026000" />
+      <workItem from="1779381669916" duration="18106000" />
+      <workItem from="1780402354821" duration="1862000" />
+      <workItem from="1780850470435" duration="21639000" />
+      <workItem from="1781046298450" duration="3411000" />
     </task>
     <task id="LOCAL-00001" summary="feature: reservations">
       <option name="closed" value="true" />
@@ -148,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779155690573</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="feature: logic">
+      <option name="closed" value="true" />
+      <created>1779394746783</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779394746783</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -157,22 +243,26 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feature: reservations" />
     <MESSAGE value="feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature" />
+    <MESSAGE value="feature: logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: logic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/app/receptionist/checkin.tsx</url>
-          <line>24</line>
-          <properties lambdaOrdinal="-1" />
+          <line>39</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/app/admin/maintenance.tsx</url>
-          <line>12</line>
-          <properties lambdaOrdinal="-1" />
+          <line>9</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/app/manager/reports.tsx</url>
+          <line>172</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -90,7 +90,9 @@ async function fetchWithAuth(url: string, options: RequestInit = {}) {
     throw new Error(errorData.message || `HTTP ${response.status}`);
   }
 
-  return response.json();
+  const text = await response.text();
+  if (!text) return null;
+  return JSON.parse(text);
 }
 
 async function fetchPublic(url: string, options: RequestInit = {}) {
@@ -106,7 +108,9 @@ async function fetchPublic(url: string, options: RequestInit = {}) {
     throw new Error(errorData.message || `HTTP ${response.status}`);
   }
 
-  return response.json();
+  const text = await response.text();
+  if (!text) return null;
+  return JSON.parse(text);
 }
 
 export const api = {

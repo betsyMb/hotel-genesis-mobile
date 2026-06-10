@@ -6,9 +6,10 @@ import { Room } from "@/hooks/api/types";
 interface ClientRoomCardProps {
   item: Room;
   onPress?: () => void;
+  exchangeRate?: number;
 }
 
-export function ClientRoomCard({ item, onPress }: ClientRoomCardProps) {
+export function ClientRoomCard({ item, onPress, exchangeRate }: ClientRoomCardProps) {
   const isAvailable = item.room_status === "available";
 
   const statusColors: Record<string, string> = {
@@ -40,13 +41,13 @@ export function ClientRoomCard({ item, onPress }: ClientRoomCardProps) {
               <MaterialIcons name="meeting-room" size={28} color="#0EA5E9" />
             </View>
             <View>
-              <ThemedText type="defaultSemiBold" className="text-lg">Room {item.room_number}</ThemedText>
+              <ThemedText type="defaultSemiBold" className="text-lg">Habitación {item.room_number}</ThemedText>
               <View className="flex-row items-center gap-1.5 mt-0.5">
                 <MaterialIcons name="king-bed" size={14} color="#9CA3AF" />
                 <ThemedText className="text-sm opacity-60 capitalize">{item.room_type}</ThemedText>
                 <View className="w-1 h-1 rounded-full bg-gray-300" />
                 <MaterialIcons name="floor" size={14} color="#9CA3AF" />
-                <ThemedText className="text-sm opacity-60">Floor {item.floor}</ThemedText>
+                <ThemedText className="text-sm opacity-60">Piso {item.floor}</ThemedText>
               </View>
             </View>
           </View>
@@ -54,7 +55,7 @@ export function ClientRoomCard({ item, onPress }: ClientRoomCardProps) {
           <View className={`px-2.5 py-1 rounded-full flex-row items-center gap-1 ${statusClass.split(" ")[0]}`}>
             <MaterialIcons name={statusIcon[item.room_status] as any} size={12} color={item.room_status === "available" ? "#10B981" : "#EF4444"} />
             <ThemedText className={`text-xs font-semibold capitalize ${statusClass.split(" ")[1]}`}>
-              {item.room_status === "available" ? "Free" : item.room_status}
+              {item.room_status === "available" ? "Disponible" : item.room_status === "occupied" ? "Ocupado" : item.room_status === "maintenance" ? "Mant." : item.room_status === "reserved" ? "Reservada" : item.room_status}
             </ThemedText>
           </View>
         </View>
@@ -62,13 +63,13 @@ export function ClientRoomCard({ item, onPress }: ClientRoomCardProps) {
         <View className="flex-row items-center mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
           <View className="flex-1 flex-row items-center gap-1">
             <MaterialIcons name="people" size={16} color="#9CA3AF" />
-            <ThemedText className="text-sm opacity-60">{item.capacity || "—"} guests</ThemedText>
+            <ThemedText className="text-sm opacity-60">{item.capacity || "—"} huéspedes</ThemedText>
           </View>
           <View className="flex-row items-center gap-1">
             <MaterialIcons name="attach-money" size={16} color="#0EA5E9" />
             <ThemedText className="text-base font-bold text-[#0EA5E9]">
-              ${item.price_per_night}
-              <ThemedText className="text-sm font-normal opacity-60">/night</ThemedText>
+              {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}
+              <ThemedText className="text-sm font-normal opacity-60"> Por noche</ThemedText>
             </ThemedText>
           </View>
         </View>

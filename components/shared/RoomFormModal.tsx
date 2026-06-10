@@ -105,18 +105,18 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
       <View className="flex-1 justify-end bg-black/50">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 flex-1 max-h-[85%]">
           <View className="flex-row justify-between items-center mb-5">
-            <ThemedText type="title">{editingRoom ? "Edit Room" : "New Room"}</ThemedText>
+            <ThemedText type="title">{editingRoom ? "Editar Habitación" : "Nueva Habitación"}</ThemedText>
             <TouchableOpacity onPress={onClose}>
               <MaterialIcons name="close" size={24} color="#64748B" />
             </TouchableOpacity>
           </View>
 
           <ScrollView className="flex-1">
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">ROOM NUMBER *</ThemedText>
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">NÚMERO DE HABITACIÓN *</ThemedText>
             <FormInput value={roomNumber} onChangeText={setRoomNumber} placeholder="101" />
             <View className="mb-4" />
 
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">ROOM TYPE *</ThemedText>
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">TIPO DE HABITACIÓN *</ThemedText>
             <View className="flex-row flex-wrap mb-4 gap-2">
               {roomTypes.map((type) => (
                 <TouchableOpacity
@@ -133,28 +133,28 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
 
             <View className="flex-row gap-3 mb-4">
               <View className="flex-1">
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">FLOOR</ThemedText>
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">PISO</ThemedText>
                 <FormInput value={floor} onChangeText={setFloor} placeholder="1" keyboardType="number-pad" />
               </View>
               <View className="flex-1">
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">PRICE *</ThemedText>
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">PRECIO *</ThemedText>
                 <FormInput value={price} onChangeText={setPrice} placeholder="100" keyboardType="number-pad" />
               </View>
             </View>
 
             <View className="flex-row gap-3 mb-4">
               <View className="flex-1">
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">CAPACITY</ThemedText>
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">CAPACIDAD</ThemedText>
                 <FormInput value={capacity} onChangeText={setCapacity} placeholder="2" keyboardType="number-pad" />
               </View>
               <View className="flex-1">
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">SQUARE METERS</ThemedText>
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">M²</ThemedText>
                 <FormInput value={squareMeters} onChangeText={setSquareMeters} placeholder="25" keyboardType="number-pad" />
               </View>
             </View>
 
             <View className="mb-4">
-              <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">STATUS</ThemedText>
+              <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">ESTADO</ThemedText>
               <View className="flex-row flex-wrap gap-2">
                 {Object.entries(statusConfig).map(([key, val]) => (
                   <TouchableOpacity
@@ -171,16 +171,16 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
             </View>
 
             <View className="flex-row gap-3 mb-4">
-              <ToggleOption label="Has View" value={hasView} onPress={() => setHasView(!hasView)} />
-              <ToggleOption label="Has Balcony" value={hasBalcony} onPress={() => setHasBalcony(!hasBalcony)} />
+              <ToggleOption label="Tiene Vista" value={hasView} onPress={() => setHasView(!hasView)} />
+              <ToggleOption label="Tiene Balcón" value={hasBalcony} onPress={() => setHasBalcony(!hasBalcony)} />
             </View>
 
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">DESCRIPTION</ThemedText>
-            <FormInput value={description} onChangeText={setDescription} placeholder="Optional description..." multiline />
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">DESCRIPCIÓN</ThemedText>
+            <FormInput value={description} onChangeText={setDescription} placeholder="Descripción opcional..." multiline />
             <View className="mb-6" />
 
             <TouchableOpacity className="bg-[#0EA5E9] py-4 rounded-xl items-center mb-4" onPress={handleSubmit}>
-              <ThemedText className="text-white font-semibold">{editingRoom ? "Update" : "Create"} Room</ThemedText>
+              <ThemedText className="text-white font-semibold">{editingRoom ? "Actualizar" : "Crear"} Habitación</ThemedText>
             </TouchableOpacity>
           </ScrollView>
         </View>

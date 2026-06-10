@@ -77,7 +77,8 @@ export default function MaintenanceTasksScreen() {
 
       <FlatList
         data={filteredRooms}
-        keyExtractor={(item) => item.id_room.toString()}
+        keyExtractor={(item: Room) => item.id_room.toString()}
+        className="flex-1"
         renderItem={({ item }) => (
           <MaintenanceRoomCard
             item={item}

@@ -15,7 +15,7 @@ export function GuestFormRow({ guest, index, onChange, onRemove }: GuestFormRowP
     <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 mb-2 border border-gray-200 dark:border-gray-700">
       <View className="flex-row justify-between items-center mb-2">
         <ThemedText className="text-xs font-semibold opacity-60 uppercase">
-          Guest #{index + 1}
+          Huésped #{index + 1}
         </ThemedText>
         <TouchableOpacity onPress={() => onRemove(index)}>
           <MaterialIcons name="close" size={20} color="#EF4444" />
@@ -27,7 +27,7 @@ export function GuestFormRow({ guest, index, onChange, onRemove }: GuestFormRowP
           <MaterialIcons name="person" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
           <TextInput
             className="flex-1 text-sm dark:text-white py-2 px-3 bg-white dark:bg-gray-700 rounded-lg"
-            placeholder="First name"
+            placeholder="Nombre"
             placeholderTextColor="#94A3B8"
             value={guest.first_name}
             onChangeText={(v) => onChange(index, "first_name", v)}
@@ -37,7 +37,7 @@ export function GuestFormRow({ guest, index, onChange, onRemove }: GuestFormRowP
         <View className="flex-1 flex-row items-center">
           <TextInput
             className="flex-1 text-sm dark:text-white py-2 px-3 bg-white dark:bg-gray-700 rounded-lg"
-            placeholder="Last name"
+            placeholder="Apellido"
             placeholderTextColor="#94A3B8"
             value={guest.last_name}
             onChangeText={(v) => onChange(index, "last_name", v)}
@@ -61,7 +61,7 @@ export function GuestFormRow({ guest, index, onChange, onRemove }: GuestFormRowP
           <MaterialIcons name="phone" size={16} color="#94A3B8" style={{ marginRight: 8 }} />
           <TextInput
             className="flex-1 text-sm dark:text-white py-2 px-3 bg-white dark:bg-gray-700 rounded-lg"
-            placeholder="Phone"
+            placeholder="Teléfono"
             placeholderTextColor="#94A3B8"
             value={guest.phone_number}
             onChangeText={(v) => onChange(index, "phone_number", v)}

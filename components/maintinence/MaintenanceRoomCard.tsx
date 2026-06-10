@@ -70,7 +70,6 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
   }
 
   const incompleteCount = tasks.filter((t) => !t.completed).length;
-  console.log({tasks})
   return (
     <View className={`rounded-2xl shadow-sm overflow-hidden mb-3 border-2 ${
       isMaintenance ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" : "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700"
@@ -84,16 +83,16 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
               <MaterialIcons name="build" size={24} color={isMaintenance ? "#F59E0B" : "#94A3B8"} />
             </View>
             <View>
-              <ThemedText type="defaultSemiBold">Room {item.room_number}</ThemedText>
+              <ThemedText type="defaultSemiBold">Hab. {item.room_number}</ThemedText>
               <ThemedText className="text-sm opacity-60">
-                {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)} · Floor {item.floor}
+                {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)} · Piso {item.floor}
               </ThemedText>
             </View>
           </View>
 
           <View className={`px-2.5 py-1 rounded-full ${isMaintenance ? "bg-amber-500/20" : incompleteCount > 0 ? "bg-red-100 dark:bg-red-900/30" : "bg-gray-100 dark:bg-gray-700"}`}>
             <ThemedText className={`text-xs font-semibold ${isMaintenance ? "text-amber-600" : incompleteCount > 0 ? "text-red-500" : "opacity-60"}`}>
-              {isMaintenance ? `Maintenance` : incompleteCount > 0 ? `${incompleteCount} open` : item.room_status}
+              {isMaintenance ? "Mantenimiento" : incompleteCount > 0 ? `${incompleteCount} pendiente${incompleteCount !== 1 ? "s" : ""}` : item.room_status}
             </ThemedText>
           </View>
         </View>
@@ -127,7 +126,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
             <View className="flex-row items-center gap-2 mb-3">
               <TextInput
                 className="flex-1 text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                placeholder={inputMode === "maintenance" ? "Add a task (e.g. Clean, Paint wall)" : "Add a completion task (e.g. Replaced filter)"}
+                placeholder={inputMode === "maintenance" ? "Agregar tarea (ej. Limpiar, Pintar)" : "Agregar tarea final (ej. Filtro reemplazado)"}
                 placeholderTextColor="#94A3B8"
                 value={newTaskDesc}
                 onChangeText={setNewTaskDesc}
@@ -146,7 +145,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
                 onPress={() => setShowInput(false)}
                 disabled={submitting}
               >
-                <ThemedText className="font-semibold opacity-60">Cancel</ThemedText>
+                <ThemedText className="font-semibold opacity-60">Cancelar</ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
                 className={`flex-1 py-3 rounded-xl items-center ${inputMode === "maintenance" ? "bg-amber-500" : "bg-green-500"} ${submitting ? "opacity-50" : ""}`}
@@ -154,7 +153,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
                 disabled={submitting}
               >
                 <ThemedText className="text-white font-semibold">
-                  {submitting ? "Saving..." : (inputMode === "maintenance" ? "Start Maintenance" : "Complete & Available")}
+                  {submitting ? "Guardando..." : (inputMode === "maintenance" ? "Iniciar Mantenimiento" : "Completar y Disponible")}
                 </ThemedText>
               </TouchableOpacity>
             </View>
@@ -166,7 +165,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
           <View className="mt-3 bg-red-50 dark:bg-red-900/10 rounded-xl p-3">
             <View className="flex-row items-start">
               <MaterialIcons name="warning" size={18} color="#EF4444" style={{ marginRight: 8, marginTop: 1 }} />
-              <ThemedText className="text-sm flex-1">{incompleteCount} open task{incompleteCount !== 1 ? "s" : ""} — check them off or add new ones</ThemedText>
+              <ThemedText className="text-sm flex-1">{incompleteCount} tarea{incompleteCount !== 1 ? "s" : ""} pendiente{incompleteCount !== 1 ? "s" : ""} — márcalas o agrega nuevas</ThemedText>
             </View>
           </View>
         )}
@@ -179,7 +178,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
           >
             <View className="flex-row items-center">
               <MaterialIcons name="add" size={18} color="#94A3B8" />
-              <ThemedText className="ml-1 text-sm opacity-60">Add Task</ThemedText>
+              <ThemedText className="ml-1 text-sm opacity-60">Agregar Tarea</ThemedText>
             </View>
           </TouchableOpacity>
         )}
@@ -190,7 +189,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
             className="mt-3 py-3 rounded-xl items-center bg-amber-500"
             onPress={() => openInput("maintenance")}
           >
-            <ThemedText className="text-white font-semibold">Mark for Maintenance</ThemedText>
+            <ThemedText className="text-white font-semibold">Enviar a Mantenimiento</ThemedText>
           </TouchableOpacity>
         )}
 
@@ -199,7 +198,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
             className="mt-3 py-3 rounded-xl items-center bg-green-500"
             onPress={() => openInput("available")}
           >
-            <ThemedText className="text-white font-semibold">Mark as Available</ThemedText>
+            <ThemedText className="text-white font-semibold">Marcar como Disponible</ThemedText>
           </TouchableOpacity>
         )}
       </View>

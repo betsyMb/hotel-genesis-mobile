@@ -4,10 +4,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Room } from "@/hooks/api/types";
 
 const statusConfig: Record<string, { color: string; icon: string; bg: string; label: string }> = {
-  available: { color: "#10B981", icon: "check-circle", bg: "#ECFDF5", label: "Available" },
-  occupied: { color: "#EF4444", icon: "cancel", bg: "#FEF2F2", label: "Occupied" },
-  maintenance: { color: "#F59E0B", icon: "build", bg: "#FFF7ED", label: "Maintenance" },
-  reserved: { color: "#3B82F6", icon: "event", bg: "#EFF6FF", label: "Reserved" },
+  available: { color: "#10B981", icon: "check-circle", bg: "#ECFDF5", label: "Disponible" },
+  occupied: { color: "#EF4444", icon: "cancel", bg: "#FEF2F2", label: "Ocupado" },
+  maintenance: { color: "#F59E0B", icon: "build", bg: "#FFF7ED", label: "Mantenimiento" },
+  reserved: { color: "#3B82F6", icon: "event", bg: "#EFF6FF", label: "Reservada" },
 };
 
 interface RoomCardProps {
@@ -15,9 +15,10 @@ interface RoomCardProps {
   onEdit?: (room: Room) => void;
   onDelete?: (id: number) => void;
   showActions?: boolean;
+  exchangeRate?: number;
 }
 
-export function RoomCard({ item, onEdit, onDelete, showActions = true }: RoomCardProps) {
+export function RoomCard({ item, onEdit, onDelete, showActions = true, exchangeRate }: RoomCardProps) {
   const status = statusConfig[item.room_status] || statusConfig.available;
 
   return (
@@ -29,7 +30,7 @@ export function RoomCard({ item, onEdit, onDelete, showActions = true }: RoomCar
               <MaterialIcons name="hotel" size={24} color="#0EA5E9" />
             </View>
             <View className="flex-1">
-              <ThemedText type="defaultSemiBold">Room {item.room_number}</ThemedText>
+              <ThemedText type="defaultSemiBold">Hab. {item.room_number}</ThemedText>
               <ThemedText className="text-sm opacity-60">
                 {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)}
               </ThemedText>
@@ -51,11 +52,11 @@ export function RoomCard({ item, onEdit, onDelete, showActions = true }: RoomCar
           </View>
           <View className="flex-row items-center">
             <MaterialIcons name="layers" size={16} color="#94A3B8" />
-            <ThemedText className="ml-1.5 text-sm opacity-70">Floor {item.floor}</ThemedText>
+            <ThemedText className="ml-1.5 text-sm opacity-70">Piso {item.floor}</ThemedText>
           </View>
           <View className="flex-row items-center">
             <MaterialIcons name="attach-money" size={16} color="#94A3B8" />
-            <ThemedText className="ml-1.5 text-sm font-bold text-[#0EA5E9]">${item.price_per_night}</ThemedText>
+            <ThemedText className="ml-1.5 text-sm font-bold text-[#0EA5E9]">{exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}</ThemedText>
           </View>
         </View>
 
@@ -68,13 +69,13 @@ export function RoomCard({ item, onEdit, onDelete, showActions = true }: RoomCar
             {onEdit && (
               <TouchableOpacity className="flex-row items-center px-3 py-1.5 mr-2" onPress={() => onEdit(item)}>
                 <MaterialIcons name="edit" size={16} color="#3B82F6" />
-                <ThemedText className="ml-1 text-xs font-semibold text-blue-500">Edit</ThemedText>
+                <ThemedText className="ml-1 text-xs font-semibold text-blue-500">Editar</ThemedText>
               </TouchableOpacity>
             )}
             {onDelete && (
               <TouchableOpacity className="flex-row items-center px-3 py-1.5" onPress={() => onDelete(item.id_room)}>
                 <MaterialIcons name="delete-outline" size={16} color="#EF4444" />
-                <ThemedText className="ml-1 text-xs font-semibold text-red-500">Delete</ThemedText>
+                <ThemedText className="ml-1 text-xs font-semibold text-red-500">Eliminar</ThemedText>
               </TouchableOpacity>
             )}
           </View>

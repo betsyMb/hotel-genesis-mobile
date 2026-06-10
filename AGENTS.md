@@ -15,7 +15,7 @@
 ## Key Decisions
 - SecureStore > AsyncStorage for auth tokens
 - Walk-in `id_reservation` must be `null` (not `0`)
-- DTO field: `phone_number` (not `phone`)
+- Backend DTO field: `phone` (not `phone_number`)
 - Backend `synchronize: false` — schema changes via SQL migrations
 - `<Modal>` replaced with absolute-positioned View to avoid React context loss in Expo 54
 - Date fields use plain `TextInput` (YYYY-MM-DD) instead of `DateTimePicker` to avoid navigation context issues

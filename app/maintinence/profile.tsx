@@ -7,15 +7,7 @@ import { ProfileRow } from "@/components/shared";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 
-const roleLabels: Record<string, string> = {
-  Administrator: "Administrador",
-  Manager: "Gerente",
-  Receptionist: "Recepcionista",
-  Client: "Cliente",
-  Maintenance: "Mantenimiento",
-};
-
-export default function ManagerProfileScreen() {
+export default function MaintenanceProfileScreen() {
   const { user, logout, refreshUser } = useAuth();
   const router = useRouter();
   const updateUser = useUpdateUser();
@@ -42,28 +34,18 @@ export default function ManagerProfileScreen() {
     router.replace("/(auth)/login");
   }
 
-  const roleColors: Record<string, string> = {
-    Administrator: "#EF4444",
-    Manager: "#F59E0B",
-    Receptionist: "#3B82F6",
-    Client: "#10B981",
-    Maintenance: "#6B7280",
-  };
-
-  const userRole = user?.role || "Manager";
-  const roleColor = roleColors[userRole] || "#F59E0B";
-  const roleLabel = roleLabels[userRole] || userRole;
+  const roleColor = "#6B7280";
 
   return (
     <ScrollView className="flex-1">
       <ThemedView className="px-5 pt-8 pb-6 items-center">
         <View className="w-24 h-24 rounded-full items-center justify-center mb-4" style={{ backgroundColor: `${roleColor}20` }}>
-          <MaterialIcons name="work" size={44} color={roleColor} />
+          <MaterialIcons name="build" size={44} color={roleColor} />
         </View>
-        <ThemedText type="title" className="text-center">{user?.full_name || "Gerente"}</ThemedText>
+        <ThemedText type="title" className="text-center">{user?.full_name || "Mantenimiento"}</ThemedText>
         <View className="mt-2 px-4 py-1.5 rounded-full flex-row items-center" style={{ backgroundColor: `${roleColor}15` }}>
-          <MaterialIcons name="work" size={14} color={roleColor} />
-          <ThemedText className="ml-1.5 text-sm font-semibold" style={{ color: roleColor }}>{roleLabel}</ThemedText>
+          <MaterialIcons name="build" size={14} color={roleColor} />
+          <ThemedText className="ml-1.5 text-sm font-semibold" style={{ color: roleColor }}>Mantenimiento</ThemedText>
         </View>
       </ThemedView>
 

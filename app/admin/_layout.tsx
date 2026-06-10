@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, SafeAreaView } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
@@ -9,17 +9,18 @@ import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import {DrawerActions} from "@react-navigation/native";
 import { useAuth } from "@/hooks";
 import { RoleGuard } from "@/components/RoleGuard";
+import { NotificationBell } from "@/components/shared";
 
 const adminLinks = [
-  { name: "rooms", title: "Rooms", icon: "hotel" },
-  { name: "reservations", title: "Reservations", icon: "event-note" },
+  { name: "rooms", title: "Habitaciones", icon: "hotel" },
+  { name: "reservations", title: "Reservas", icon: "event-note" },
   { name: "walkin", title: "Walk-in", icon: "login" },
-  { name: "walkin-history", title: "Walk-in History", icon: "history" },
-  { name: "users", title: "Users", icon: "people" },
-  { name: "reports", title: "Reports", icon: "assessment" },
-  { name: "settings", title: "Settings", icon: "settings" },
-  { name: "maintenance", title: "Maintenance", icon: "build" },
-  { name: "profile", title: "Profile", icon: "person" },
+  { name: "walkin-history", title: "Historial Walk-in", icon: "history" },
+  { name: "users", title: "Usuarios", icon: "people" },
+  { name: "reports", title: "Reportes", icon: "assessment" },
+  { name: "settings", title: "Configuración", icon: "settings" },
+  { name: "maintenance", title: "Mantenimiento", icon: "build" },
+  { name: "profile", title: "Perfil", icon: "person" },
 ];
 
 function DrawerContent(props: DrawerContentComponentProps) {
@@ -39,7 +40,7 @@ function DrawerContent(props: DrawerContentComponentProps) {
   return (
     <View className="flex-1 p-4" style={{ backgroundColor }}>
       <View className="mt-12 mb-6">
-        <ThemedText type="title">Admin</ThemedText>
+        <ThemedText type="title">Administrador</ThemedText>
         {user && (
           <ThemedText className="text-sm opacity-70">{user.email}</ThemedText>
         )}
@@ -72,7 +73,7 @@ function DrawerContent(props: DrawerContentComponentProps) {
             color={tintColor}
           />
           <ThemedText className="ml-3">
-            {resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}
+            {resolvedTheme === "dark" ? "Modo Claro" : "Modo Oscuro"}
           </ThemedText>
         </TouchableOpacity>
 
@@ -100,7 +101,7 @@ function AdminHeader({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: useThemeColor({}, "background") }}>
+    <View style={{ backgroundColor: useThemeColor({}, "background") }}>
       <View className="flex-row justify-between items-center px-4 py-3">
         <View className="flex-row items-center">
           <TouchableOpacity
@@ -115,15 +116,18 @@ function AdminHeader({ navigation }: { navigation: any }) {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={toggleTheme} className="p-2">
-          <MaterialIcons
-            name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"}
-            size={24}
-            color={tintColor}
-          />
-        </TouchableOpacity>
+        <View className="flex-row items-center">
+          <NotificationBell />
+          <TouchableOpacity onPress={toggleTheme} className="p-2">
+            <MaterialIcons
+              name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"}
+              size={24}
+              color={tintColor}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -137,18 +141,18 @@ function AdminDrawer() {
         headerShown: true,
         header: () => <AdminHeader navigation={navigation} />,
         drawerStyle: { width: 280 },
-        sceneContainerStyle: { backgroundColor },
+        sceneContainerStyle: { flex: 1, backgroundColor },
       })}
     >
-      <Drawer.Screen name="rooms" options={{ title: "Rooms" }} />
-      <Drawer.Screen name="reservations" options={{ title: "Reservations" }} />
+      <Drawer.Screen name="rooms" options={{ title: "Habitaciones" }} />
+      <Drawer.Screen name="reservations" options={{ title: "Reservas" }} />
       <Drawer.Screen name="walkin" options={{ title: "Walk-in" }} />
-      <Drawer.Screen name="walkin-history" options={{ title: "Walk-in History" }} />
-      <Drawer.Screen name="users" options={{ title: "Users" }} />
-      <Drawer.Screen name="reports" options={{ title: "Reports" }} />
-      <Drawer.Screen name="settings" options={{ title: "Settings" }} />
-      <Drawer.Screen name="maintenance" options={{ title: "Maintenance" }} />
-      <Drawer.Screen name="profile" options={{ title: "Profile" }} />
+      <Drawer.Screen name="walkin-history" options={{ title: "Historial Walk-in" }} />
+      <Drawer.Screen name="users" options={{ title: "Usuarios" }} />
+      <Drawer.Screen name="reports" options={{ title: "Reportes" }} />
+      <Drawer.Screen name="settings" options={{ title: "Configuración" }} />
+      <Drawer.Screen name="maintenance" options={{ title: "Mantenimiento" }} />
+      <Drawer.Screen name="profile" options={{ title: "Perfil" }} />
     </Drawer>
   );
 }

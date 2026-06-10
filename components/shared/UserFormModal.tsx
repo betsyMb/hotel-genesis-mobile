@@ -55,7 +55,7 @@ export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }
 
   async function handleSubmit() {
     if (!fullName || !email || (!editingUser && !password)) {
-      Alert.alert("Error", "Please fill in required fields");
+      Alert.alert("Error", "Complete los campos obligatorios");
       return;
     }
 
@@ -76,32 +76,32 @@ export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }
       <View className="flex-1 justify-end bg-black/50">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 flex-1 max-h-[80%]">
           <View className="flex-row justify-between items-center mb-5">
-            <ThemedText type="title">{editingUser ? "Edit User" : "New User"}</ThemedText>
+            <ThemedText type="title">{editingUser ? "Editar Usuario" : "Nuevo Usuario"}</ThemedText>
             <TouchableOpacity onPress={onClose}>
               <MaterialIcons name="close" size={24} color="#64748B" />
             </TouchableOpacity>
           </View>
 
           <ScrollView className="flex-1">
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">FULL NAME *</ThemedText>
-            <FormInput value={fullName} onChangeText={setFullName} placeholder="John Doe" autoCapitalize="words" />
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">NOMBRE COMPLETO *</ThemedText>
+            <FormInput value={fullName} onChangeText={setFullName} placeholder="Juan Pérez" autoCapitalize="words" />
             <View className="mb-4" />
 
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">EMAIL *</ThemedText>
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">CORREO ELECTRÓNICO *</ThemedText>
             <FormInput value={email} onChangeText={setEmail} placeholder="email@example.com" keyboardType="email-address" autoCapitalize="none" />
             <View className="mb-4" />
 
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">PHONE</ThemedText>
-            <FormInput value={phone} onChangeText={setPhone} placeholder="+1 234 567 890" keyboardType="phone-pad" />
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">TELÉFONO</ThemedText>
+            <FormInput value={phone} onChangeText={setPhone} placeholder="+52 123 456 7890" keyboardType="phone-pad" />
             <View className="mb-4" />
 
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">
-              {editingUser ? "NEW PASSWORD (leave blank to keep)" : "PASSWORD *"}
+              {editingUser ? "NUEVA CONTRASEÑA (dejar vacía para mantener)" : "CONTRASEÑA *"}
             </ThemedText>
-            <FormInput value={password} onChangeText={setPassword} placeholder="Min 6 characters" secureTextEntry />
+            <FormInput value={password} onChangeText={setPassword} placeholder="Mín. 6 caracteres" secureTextEntry />
             <View className="mb-4" />
 
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">ROLE *</ThemedText>
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">ROL *</ThemedText>
             <View className="flex-row flex-wrap gap-2 mb-4">
               {roles.map((role) => (
                 <TouchableOpacity
@@ -118,14 +118,14 @@ export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }
               className={`flex-row items-center justify-between p-4 rounded-xl mb-6 ${isActive ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800" : "bg-gray-50 dark:bg-gray-800"}`}
               onPress={() => setIsActive(!isActive)}
             >
-              <ThemedText className={isActive ? "text-green-600 font-semibold" : "opacity-60"}>Active</ThemedText>
+              <ThemedText className={isActive ? "text-green-600 font-semibold" : "opacity-60"}>Activo</ThemedText>
               <View className={`w-11 h-6 rounded-full p-0.5 ${isActive ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}>
                 <View className={`w-5 h-5 rounded-full bg-white transform ${isActive ? "translate-x-5" : ""}`} />
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity className="bg-[#0EA5E9] py-4 rounded-xl items-center mb-4" onPress={handleSubmit}>
-              <ThemedText className="text-white font-semibold">{editingUser ? "Update" : "Create"} User</ThemedText>
+              <ThemedText className="text-white font-semibold">{editingUser ? "Actualizar" : "Crear"} Usuario</ThemedText>
             </TouchableOpacity>
           </ScrollView>
         </View>

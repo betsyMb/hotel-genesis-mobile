@@ -5,7 +5,7 @@ import {
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRooms, useUsers, useWalkinCheckin } from "@/hooks";
+import { useRooms, useUsers, useWalkinCheckin, useExchangeRate } from "@/hooks";
 import { Room, User } from "@/hooks/api/types";
 import { WalkInGuest } from "@/hooks/api/walkin-types";
 import { GuestFormRow } from "./GuestFormRow";
@@ -18,6 +18,7 @@ interface WalkInFormProps {
 export function WalkInForm({ onSuccess }: WalkInFormProps) {
   const { data: rooms } = useRooms();
   const { data: users } = useUsers();
+  const { data: exchangeRate } = useExchangeRate();
   const walkinCheckin = useWalkinCheckin();
 
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
@@ -53,11 +54,11 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
 
   async function handleSubmit() {
     if (!selectedRoom) {
-      Alert.alert("Error", "Please select a room");
+      Alert.alert("Error", "Selecciona una habitación");
       return;
     }
     if (!mainFirstName.trim() || !mainLastName.trim()) {
-      Alert.alert("Error", "Enter the main guest's first and last name");
+      Alert.alert("Error", "Ingresa el nombre y apellido del huésped principal");
       return;
     }
 
@@ -81,7 +82,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
           })),
       });
 
-      Alert.alert("Success", `Checked in to Room ${selectedRoom.room_number}`);
+      Alert.alert("Éxito", `Registrado en Habitación ${selectedRoom.room_number}`);
 
       setSelectedRoom(null);
       setSelectedUser(null);
@@ -103,7 +104,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
       <ScrollView contentContainerClassName="p-5">
         <View className="mb-6">
           <ThemedText className="font-semibold text-sm opacity-60 mb-2 uppercase">
-            Select Room *
+            Seleccionar Habitación *
           </ThemedText>
 
           <TouchableOpacity
@@ -114,13 +115,13 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
               <MaterialIcons name="hotel" size={20} color="#94A3B8" style={{ marginRight: 10 }} />
               {selectedRoom ? (
                 <View>
-                  <ThemedText className="font-semibold">Room {selectedRoom.room_number}</ThemedText>
+                  <ThemedText className="font-semibold">Habitación {selectedRoom.room_number}</ThemedText>
                   <ThemedText className="text-xs opacity-60">
-                    {selectedRoom.room_type} - ${selectedRoom.price_per_night}/night
+                    {selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_night}`}/noche
                   </ThemedText>
                 </View>
               ) : (
-                <ThemedText className="opacity-50">Tap to select a room</ThemedText>
+                <ThemedText className="opacity-50">Toca para seleccionar una habitación</ThemedText>
               )}
             </View>
             <MaterialIcons name="expand-more" size={22} color="#94A3B8" />
@@ -129,14 +130,14 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
 
         <View className="mb-6">
           <ThemedText className="font-semibold text-sm opacity-60 mb-2 uppercase">
-            Main Guest *
+            Huésped Principal *
           </ThemedText>
 
           <View className="flex-row gap-2 mb-2">
             <View className="flex-1">
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                placeholder="First name"
+                placeholder="Nombre"
                 placeholderTextColor="#94A3B8"
                 value={mainFirstName}
                 onChangeText={setMainFirstName}
@@ -146,7 +147,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             <View className="flex-1">
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                placeholder="Last name"
+                placeholder="Apellido"
                 placeholderTextColor="#94A3B8"
                 value={mainLastName}
                 onChangeText={setMainLastName}
@@ -169,7 +170,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             <View className="flex-1">
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                placeholder="Phone"
+                placeholder="Teléfono"
                 placeholderTextColor="#94A3B8"
                 value={mainPhone}
                 onChangeText={setMainPhone}
@@ -185,7 +186,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             <View className="w-8 h-8 rounded-lg bg-[#6366F1]/10 items-center justify-center mr-2">
               <MaterialIcons name="person-search" size={18} color="#6366F1" />
             </View>
-            <ThemedText className="text-[#6366F1] font-semibold">Search existing guest</ThemedText>
+            <ThemedText className="text-[#6366F1] font-semibold">Buscar huésped existente</ThemedText>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -195,18 +196,18 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             <View className="w-8 h-8 rounded-lg bg-[#0EA5E9]/10 items-center justify-center mr-2">
               <MaterialIcons name="person-add" size={18} color="#0EA5E9" />
             </View>
-            <ThemedText className="text-[#0EA5E9] font-semibold">New guest not registered</ThemedText>
+            <ThemedText className="text-[#0EA5E9] font-semibold">Huésped nuevo no registrado</ThemedText>
           </TouchableOpacity>
         </View>
 
         <View className="mb-6">
           <View className="flex-row justify-between items-center mb-2">
             <ThemedText className="font-semibold text-sm opacity-60 uppercase">
-              Room Guests
+              Huéspedes de Habitación
             </ThemedText>
             <TouchableOpacity className="flex-row items-center" onPress={addGuestRow}>
               <MaterialIcons name="add" size={18} color="#0EA5E9" />
-              <ThemedText className="ml-1 text-[#0EA5E9] text-sm font-semibold">Add</ThemedText>
+              <ThemedText className="ml-1 text-[#0EA5E9] text-sm font-semibold">Añadir</ThemedText>
             </TouchableOpacity>
           </View>
 
@@ -227,7 +228,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
               disabled={submitting || walkinCheckin.isPending}
             >
               <ThemedText className="text-white font-semibold text-base">
-                {submitting || walkinCheckin.isPending ? "Processing..." : "Check In"}
+                {submitting || walkinCheckin.isPending ? "Procesando..." : "Registrar Entrada"}
               </ThemedText>
             </TouchableOpacity>
       </ScrollView>
@@ -249,14 +250,14 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
         <View className="flex-1 justify-end bg-black/50">
           <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 max-h-[60%]">
             <View className="flex-row justify-between items-center mb-4">
-              <ThemedText type="title">Select Room</ThemedText>
+              <ThemedText type="title">Seleccionar Habitación</ThemedText>
               <TouchableOpacity onPress={() => setShowRoomPicker(false)}>
                 <MaterialIcons name="close" size={24} color="#64748B" />
               </TouchableOpacity>
             </View>
 
             {availableRooms.length === 0 ? (
-              <ThemedText className="opacity-60 italic text-center py-8">No available rooms</ThemedText>
+              <ThemedText className="opacity-60 italic text-center py-8">No hay habitaciones disponibles</ThemedText>
             ) : (
               <FlatList
                 data={availableRooms}
@@ -277,9 +278,9 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
                       <MaterialIcons name="hotel" size={22} color="#0EA5E9" />
                     </View>
                     <View className="flex-1">
-                      <ThemedText className="font-semibold">Room {item.room_number}</ThemedText>
+                      <ThemedText className="font-semibold">Habitación {item.room_number}</ThemedText>
                       <ThemedText className="text-xs opacity-60">
-                        {item.room_type} - ${item.price_per_night}/night - Floor {item.floor}
+                        {item.room_type} - {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}/noche - Piso {item.floor}
                       </ThemedText>
                     </View>
                     {selectedRoom?.id_room === item.id_room && (
@@ -297,7 +298,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
         <View className="flex-1 justify-end bg-black/50">
           <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 max-h-[70%]">
             <View className="flex-row justify-between items-center mb-4">
-              <ThemedText type="title">Select Guest</ThemedText>
+              <ThemedText type="title">Seleccionar Huésped</ThemedText>
               <TouchableOpacity onPress={() => { setShowUserPicker(false); setUserSearch(""); }}>
                 <MaterialIcons name="close" size={24} color="#64748B" />
               </TouchableOpacity>
@@ -305,7 +306,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
 
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-xl mb-4"
-              placeholder="Search by name or email..."
+              placeholder="Buscar por nombre o correo..."
               placeholderTextColor="#94A3B8"
               value={userSearch}
               onChangeText={setUserSearch}
@@ -322,7 +323,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
                 );
 
               return filtered.length === 0 ? (
-                <ThemedText className="opacity-60 italic text-center py-8">No users found</ThemedText>
+                <ThemedText className="opacity-60 italic text-center py-8">No se encontraron usuarios</ThemedText>
               ) : (
                 <FlatList
                   data={filtered}

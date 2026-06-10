@@ -3,12 +3,13 @@ import { FlatList, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { RoomCard, RoomFormModal, StatBadge, EmptyState } from "@/components/shared";
-import { useRooms, useCreateRoom, useUpdateRoom, useDeleteRoom } from "@/hooks";
+import { useRooms, useCreateRoom, useUpdateRoom, useDeleteRoom, useExchangeRate } from "@/hooks";
 import { Room } from "@/hooks/api/types";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function AdminRoomsScreen() {
   const { data: rooms, isLoading, refetch } = useRooms();
+  const { data: exchangeRate } = useExchangeRate();
   const createRoom = useCreateRoom();
   const updateRoom = useUpdateRoom();
   const deleteRoom = useDeleteRoom();
@@ -20,7 +21,7 @@ export default function AdminRoomsScreen() {
     try {
       await createRoom.mutateAsync(data as any);
       refetch();
-      Alert.alert("Success", "Room created!");
+      Alert.alert("Éxito", "Habitación creada exitosamente");
     } catch (err: any) {
       Alert.alert("Error", err.message);
     }
@@ -32,23 +33,23 @@ export default function AdminRoomsScreen() {
       await updateRoom.mutateAsync({ id: editingRoom.id_room, data });
       refetch();
       setEditingRoom(null);
-      Alert.alert("Success", "Room updated!");
+      Alert.alert("Éxito", "Habitación actualizada exitosamente");
     } catch (err: any) {
       Alert.alert("Error", err.message);
     }
   }
 
   function handleDelete(id: number) {
-    Alert.alert("Delete Room", "Are you sure? This cannot be undone.", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert("Eliminar Habitación", "¿Estás seguro? Esto no se puede deshacer.", [
+      { text: "Cancelar", style: "cancel" },
       {
-        text: "Delete",
+        text: "Eliminar",
         style: "destructive",
         onPress: async () => {
           try {
             await deleteRoom.mutateAsync(id);
             refetch();
-            Alert.alert("Deleted", "Room deleted successfully");
+            Alert.alert("Eliminado", "Habitación eliminada exitosamente");
           } catch (err: any) {
             Alert.alert("Error", err.message);
           }
@@ -69,20 +70,22 @@ export default function AdminRoomsScreen() {
       <View className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
         <View className="flex-row gap-2 mb-3">
           <StatBadge label="Total" value={stats.total} color="#0EA5E9" />
-          <StatBadge label="Free" value={stats.available} color="#10B981" />
-          <StatBadge label="Used" value={stats.occupied} color="#EF4444" />
-          <StatBadge label="Maint." value={stats.maintenance} color="#F59E0B" />
+          <StatBadge label="Disponible" value={stats.available} color="#10B981" />
+          <StatBadge label="Ocupado" value={stats.occupied} color="#EF4444" />
+          <StatBadge label="Mant." value={stats.maintenance} color="#F59E0B" />
         </View>
       </View>
 
       <FlatList
         data={rooms || []}
         keyExtractor={(item) => item.id_room.toString()}
+        className="flex-1"
         renderItem={({ item }) => (
-          <RoomCard item={item} onEdit={(r) => { setEditingRoom(r); setShowForm(true); }} onDelete={handleDelete} />
+          <RoomCard item={item} onEdit={(r) => { setEditingRoom(r); setShowForm(true); }} onDelete={handleDelete} exchangeRate={exchangeRate} />
         )}
+        showsHorizontalScrollIndicator={false}
         contentContainerClassName="px-4 py-4"
-        ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No rooms found" /> : null}
+        ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No hay habitaciones" /> : null}
       />
 
       <TouchableOpacity

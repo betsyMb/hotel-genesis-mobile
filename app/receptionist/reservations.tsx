@@ -2,22 +2,30 @@ import { useState } from "react";
 import { FlatList, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useReservations, useRooms, useUsers, useRoles, useCreateReservation, useUpdateReservation, useCreateUser } from "@/hooks";
+import { useReservations, useRooms, useUsers, useRoles, useCreateReservation, useUpdateReservation, useCreateUser, useExchangeRate } from "@/hooks";
 import { Reservation } from "@/hooks/api/types";
 import { EmptyState, StatBadge, ReservationFormModal, StatusPickerModal } from "@/components/shared";
 import { ReservationCard } from "@/components/receptionist";
 import { MaterialIcons } from "@expo/vector-icons";
+
+const filterLabels: Record<string, string> = {
+  all: "Todas",
+  pending: "Pendientes",
+  confirmed: "Confirmadas",
+};
 
 export default function ReceptionistReservationsScreen() {
   const { data: reservations, isLoading } = useReservations();
   const { data: rooms } = useRooms();
   const { data: users } = useUsers();
   const { data: roles } = useRoles();
+  const { data: exchangeRate } = useExchangeRate();
   const createReservation = useCreateReservation();
   const updateReservation = useUpdateReservation();
   const createUser = useCreateUser();
 
   const [showForm, setShowForm] = useState(false);
+  const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
   const [statusReservation, setStatusReservation] = useState<Reservation | null>(null);
   const [showStatusPicker, setShowStatusPicker] = useState(false);
   const [filter, setFilter] = useState<string>("all");
@@ -29,8 +37,15 @@ export default function ReceptionistReservationsScreen() {
 
   async function handleCreate(data: any) {
     try {
-      await createReservation.mutateAsync(data);
-      Alert.alert("Success", "Reservation created!");
+      if (editingReservation) {
+        await updateReservation.mutateAsync({ id: editingReservation.id_reservation, data });
+        Alert.alert("Éxito", "¡Reserva actualizada!");
+      } else {
+        await createReservation.mutateAsync(data);
+        Alert.alert("Éxito", "¡Reserva creada!");
+      }
+      setShowForm(false);
+      setEditingReservation(null);
     } catch (err: any) {
       Alert.alert("Error", err.message);
       throw err;
@@ -39,7 +54,7 @@ export default function ReceptionistReservationsScreen() {
 
   async function handleCreateClient(data: { full_name: string; email: string; phone?: string }): Promise<number> {
     const clientRole = roles?.find((r) => r.role_name === "Client");
-    if (!clientRole) throw new Error("Client role not found");
+    if (!clientRole) throw new Error("Rol de cliente no encontrado");
     const user = await createUser.mutateAsync({
       full_name: data.full_name,
       email: data.email,
@@ -80,9 +95,9 @@ export default function ReceptionistReservationsScreen() {
     <ThemedView className="flex-1">
       <View className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
         <View className="flex-row gap-2 mb-3">
-          <StatBadge label="All" value={stats.all} color="#0EA5E9" />
-          <StatBadge label="Pending" value={stats.pending} color="#F59E0B" />
-          <StatBadge label="Confirmed" value={stats.confirmed} color="#10B981" />
+          <StatBadge label="Todas" value={stats.all} color="#0EA5E9" />
+          <StatBadge label="Pendientes" value={stats.pending} color="#F59E0B" />
+          <StatBadge label="Confirmadas" value={stats.confirmed} color="#10B981" />
         </View>
 
         <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
@@ -93,7 +108,7 @@ export default function ReceptionistReservationsScreen() {
               onPress={() => setFilter(f)}
             >
               <ThemedText className={`text-sm font-semibold ${filter === f ? "text-[#0EA5E9]" : "opacity-60"}`}>
-                {f.charAt(0).toUpperCase() + f.slice(1)}
+                {filterLabels[f] || f}
               </ThemedText>
             </TouchableOpacity>
           ))}
@@ -103,17 +118,19 @@ export default function ReceptionistReservationsScreen() {
       <FlatList
         data={filteredReservations}
         keyExtractor={(item: Reservation) => item.id_reservation.toString()}
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <ReservationCard
             item={item as Reservation}
-            onEdit={() => {}}
+            onEdit={(r) => { setEditingReservation(r); setShowForm(true); }}
             onStatusChange={handleStatusChange}
           />
         )}
         contentContainerClassName="px-4 py-4"
         ListEmptyComponent={
           !isLoading ? (
-            <EmptyState icon="event-note" title="No reservations found" />
+            <EmptyState icon="event-note" title="No se encontraron reservas" />
           ) : null
         }
       />
@@ -127,12 +144,13 @@ export default function ReceptionistReservationsScreen() {
 
       <ReservationFormModal
         visible={showForm}
-        onClose={() => { setShowForm(false); }}
+        onClose={() => { setShowForm(false); setEditingReservation(null); }}
         onSubmit={handleCreate}
-        editingReservation={null}
+        editingReservation={editingReservation}
         rooms={rooms || []}
         users={users || []}
         onCreateClient={handleCreateClient}
+        exchangeRate={exchangeRate}
       />
 
       <StatusPickerModal

@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, SafeAreaView } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
@@ -12,10 +12,10 @@ import { RoleGuard } from "@/components/RoleGuard";
 import {ThemedView} from "@/components/ThemedView";
 
 const managerLinks = [
-  { name: "rooms", title: "Rooms", icon: "hotel" },
-  { name: "reports", title: "Reports", icon: "assessment" },
-  { name: "accounting", title: "Accounting", icon: "account-balance" },
-  { name: "profile", title: "Profile", icon: "person" },
+  { name: "rooms", title: "Habitaciones", icon: "hotel" },
+  { name: "reports", title: "Reportes", icon: "assessment" },
+  { name: "accounting", title: "Contabilidad", icon: "account-balance" },
+  { name: "profile", title: "Perfil", icon: "person" },
 ];
 
 function DrawerContent(props: DrawerContentComponentProps) {
@@ -35,7 +35,7 @@ function DrawerContent(props: DrawerContentComponentProps) {
   return (
     <View className="flex-1 p-4" style={{ backgroundColor }}>
       <View className="mt-12 mb-6">
-        <ThemedText type="title">Manager</ThemedText>
+        <ThemedText type="title">Gerente</ThemedText>
         {user && (
           <ThemedText className="text-sm opacity-70">{user.full_name}</ThemedText>
         )}
@@ -62,7 +62,7 @@ function DrawerContent(props: DrawerContentComponentProps) {
       <View className="mt-auto">
         <TouchableOpacity className="flex-row items-center py-3 px-2 rounded-lg mb-2" onPress={toggleTheme}>
           <MaterialIcons name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"} size={24} color={tintColor} />
-          <ThemedText className="ml-3">{resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}</ThemedText>
+          <ThemedText className="ml-3">{resolvedTheme === "dark" ? "Modo Claro" : "Modo Oscuro"}</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity className="flex-row items-center py-3 px-2 rounded-lg" onPress={handleLogout}>
@@ -86,7 +86,7 @@ function ManagerHeader({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: useThemeColor({}, "background") }}>
+    <View style={{ backgroundColor: useThemeColor({}, "background") }}>
       <View className="flex-row justify-between items-center px-4 py-3">
         <View className="flex-row items-center">
           <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} className="p-2">
@@ -101,7 +101,7 @@ function ManagerHeader({ navigation }: { navigation: any }) {
           <MaterialIcons name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"} size={24} color={tintColor} />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -115,13 +115,13 @@ function ManagerDrawer() {
         headerShown: true,
         header: () => <ManagerHeader navigation={navigation} />,
         drawerStyle: { width: 280 },
-        sceneContainerStyle: { backgroundColor },
+        sceneContainerStyle: { flex: 1, backgroundColor },
       })}
     >
-      <Drawer.Screen name="rooms" options={{ title: "Rooms" }} />
-      <Drawer.Screen name="reports" options={{ title: "Reports" }} />
-      <Drawer.Screen name="accounting" options={{ title: "Accounting" }} />
-      <Drawer.Screen name="profile" options={{ title: "Profile" }} />
+      <Drawer.Screen name="rooms" options={{ title: "Habitaciones" }} />
+      <Drawer.Screen name="reports" options={{ title: "Reportes" }} />
+      <Drawer.Screen name="accounting" options={{ title: "Contabilidad" }} />
+      <Drawer.Screen name="profile" options={{ title: "Perfil" }} />
     </Drawer>
   );
 }

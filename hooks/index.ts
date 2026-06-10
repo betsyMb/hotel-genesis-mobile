@@ -8,6 +8,9 @@ export { useServices, useService, useCreateService, useUpdateService, useDeleteS
 export { usePromotions, usePromotion, useCreatePromotion, useUpdatePromotion, useDeletePromotion } from './promotions/use-promotions';
 export { useOccupancies, useOccupancy, useCreateOccupancy, useUpdateOccupancy, useDeleteOccupancy } from './occupancies/use-occupancies';
 export { useWalkinCheckin, useWalkinCheckout, useWalkinHistory } from './api/use-walkin';
+export { useNotifications, useUnreadCount, useMarkAsRead, useMarkAllAsRead } from './api/use-notifications';
+export { useBiometric } from './use-biometric';
+export { useExchangeRate } from './use-exchange-rate';
 
 export { api } from './api/client';
 export { QueryProvider } from './providers/query-provider';

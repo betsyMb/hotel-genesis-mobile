@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ScrollView, View, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useRooms, useReservations, useUsers, useOccupancies, useServices, usePromotions } from "@/hooks";
+import { useRooms, useReservations, useUsers, useOccupancies, useServices, usePromotions, useExchangeRate } from "@/hooks";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Reservation, Room, User, Occupancy } from "@/hooks/api/types";
 import * as Print from "expo-print";
@@ -15,6 +15,27 @@ export default function ManagerReportsScreen() {
   const { data: occupancies } = useOccupancies();
   const { data: services } = useServices();
   const { data: promotions } = usePromotions();
+  const { data: exchangeRate } = useExchangeRate();
+
+  const toBs = (amount: number) => {
+    const num = Number(amount);
+    const safe = isFinite(num) ? num : 0;
+    return exchangeRate
+      ? `Bs. ${(safe * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}`
+      : `$${safe.toLocaleString()}`;
+  };
+
+  const formatReservation = (r: Reservation) => {
+    if ((r.reservation_status === "completed" || r.reservation_status === "cancelled") && r.total_amount_bs) {
+      return `Bs. ${Number(r.total_amount_bs).toLocaleString("es-ES", { maximumFractionDigits: 2 })}`;
+    }
+    return exchangeRate
+      ? `Bs. ${(Number(r.total_amount) * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}`
+      : `$${Number(r.total_amount).toLocaleString()}`;
+  };
+
+  const bsFormat = (amount: number) =>
+    `Bs. ${amount.toLocaleString("es-ES", { maximumFractionDigits: 2 })}`;
 
   const totalRooms = rooms?.length || 0;
   const availableRooms = rooms?.filter((r) => r.room_status === "available").length || 0;
@@ -31,7 +52,7 @@ export default function ManagerReportsScreen() {
 
   const totalRevenue = reservations
     ?.filter((r: Reservation) => r.reservation_status === "completed")
-    .reduce((sum: number, r: Reservation) => sum + r.total_amount, 0) || 0;
+    .reduce((sum: number, r: Reservation) => sum + (r.total_amount_bs ? Number(r.total_amount_bs) : Number(r.total_amount) * (exchangeRate || 1)), 0) || 0;
 
   const totalUsers = users?.length || 0;
   const activeUsers = users?.filter((u) => u.is_active !== false).length || 0;
@@ -54,7 +75,8 @@ export default function ManagerReportsScreen() {
     .forEach((r: Reservation) => {
       const room = rooms?.find((rm) => rm.id_room === r.id_room);
       if (room && roomTypeCounts[room.room_type]) {
-        roomTypeCounts[room.room_type].totalRevenue += r.total_amount;
+        const revBs = r.total_amount_bs ? Number(r.total_amount_bs) : Number(r.total_amount) * (exchangeRate || 1);
+        roomTypeCounts[room.room_type].totalRevenue += revBs;
       }
     });
 
@@ -87,9 +109,9 @@ export default function ManagerReportsScreen() {
           </head>
           <body>
             <h1>${title}</h1>
-            <div class="date">Generated: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
+            <div class="date">Generado: ${new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>
             ${htmlBody}
-            <div class="footer">Hotel Management System — Manager Report</div>
+            <div class="footer">Sistema de Gestión Hotelera — Reporte de Gerente</div>
           </body>
         </html>`;
       const { uri } = await Print.printToFileAsync({ html });
@@ -102,6 +124,33 @@ export default function ManagerReportsScreen() {
     } catch (err) {
       console.warn("PDF generation failed:", err);
     }
+  };
+
+  const statusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      available: "Disponible",
+      occupied: "Ocupado",
+      maintenance: "Mantenimiento",
+      reserved: "Reservada",
+      pending: "Pendiente",
+      confirmed: "Confirmada",
+      completed: "Completada",
+      cancelled: "Cancelada",
+      active: "Activo",
+      no_show: "No Show",
+    };
+    return labels[status] || status;
+  };
+
+  const roleLabel = (role: string) => {
+    const labels: Record<string, string> = {
+      Administrator: "Administrador",
+      Manager: "Gerente",
+      Receptionist: "Recepcionista",
+      Client: "Cliente",
+      Maintenance: "Mantenimiento",
+    };
+    return labels[role] || role;
   };
 
   const statusBadge = (status: string) => {
@@ -118,69 +167,69 @@ export default function ManagerReportsScreen() {
       no_show: "badge-red",
     };
     const cls = map[status] || "badge-gray";
-    return `<span class="badge ${cls}">${status}</span>`;
+    return `<span class="badge ${cls}">${statusLabel(status)}</span>`;
   };
 
   return (
     <ScrollView className="flex-1">
       <ThemedView className="px-5 pt-4 pb-8">
-        <ThemedText type="title" className="mb-1">Reports</ThemedText>
-        <ThemedText className="opacity-60 mb-6">Dashboard overview & exportable reports</ThemedText>
+        <ThemedText type="title" className="mb-1">Reportes</ThemedText>
+        <ThemedText className="opacity-60 mb-6">Dashboard y reportes</ThemedText>
 
         {/* Occupancy Report */}
         <ReportSection
-          title="Occupancy Report"
+          title="Reporte de Ocupación"
           icon="hotel"
           iconBg="#0EA5E9"
           onDownload={() =>
             generatePDF(
-              "Occupancy Report",
-              `<div class="section-title">Summary</div>
-               <div class="stat-row"><span class="stat-label">Total Rooms</span><span class="stat-value">${totalRooms}</span></div>
-               <div class="stat-row"><span class="stat-label">Available</span><span class="stat-value">${availableRooms}</span></div>
-               <div class="stat-row"><span class="stat-label">Occupied</span><span class="stat-value">${occupiedRooms}</span></div>
-               <div class="stat-row"><span class="stat-label">Under Maintenance</span><span class="stat-value">${maintenanceRooms}</span></div>
-               <div class="stat-row"><span class="stat-label">Reserved</span><span class="stat-value">${reservedRooms}</span></div>
-               <div class="stat-row"><span class="stat-label">Occupancy Rate</span><span class="stat-value">${occupancyRate}%</span></div>
-               <div class="stat-row"><span class="stat-label">Active Stays</span><span class="stat-value">${activeOccupancies}</span></div>
-               <div class="section-title">Room Details</div>
-               <table>
-                 <tr><th>Room</th><th>Floor</th><th>Type</th><th>Price/Night</th><th>Status</th></tr>
-                 ${(rooms || [])
-                   .sort((a: Room, b: Room) => a.room_number.localeCompare(b.room_number))
-                   .map(
-                     (r: Room) =>
-                       `<tr>
-                         <td>${r.room_number}</td>
-                         <td>${r.floor}</td>
-                         <td style="text-transform:capitalize">${r.room_type}</td>
-                         <td>$${r.price_per_night}</td>
-                         <td>${statusBadge(r.room_status)}</td>
-                       </tr>`
-                   )
-                   .join("")}
-               </table>
-               <div class="section-title">Active Occupancies</div>
-               <table>
-                 <tr><th>Room</th><th>Check-In</th><th>Status</th></tr>
-                 ${(occupancies || [])
-                   .filter((o: Occupancy) => o.occupancy_status === "active")
-                   .map(
-                     (o: Occupancy) =>
-                       `<tr>
-                         <td>${o.room?.room_number || "—"}</td>
-                         <td>${new Date(o.actual_check_in).toLocaleDateString()}</td>
-                         <td>${statusBadge(o.occupancy_status)}</td>
-                       </tr>`
-                   )
-                   .join("")}
-               </table>`
+              "Reporte de Ocupación",
+              `<div class="section-title">Resumen</div>
+                <div class="stat-row"><span class="stat-label">Total Habitaciones</span><span class="stat-value">${totalRooms}</span></div>
+                <div class="stat-row"><span class="stat-label">Disponibles</span><span class="stat-value">${availableRooms}</span></div>
+                <div class="stat-row"><span class="stat-label">Ocupadas</span><span class="stat-value">${occupiedRooms}</span></div>
+                <div class="stat-row"><span class="stat-label">En Mantenimiento</span><span class="stat-value">${maintenanceRooms}</span></div>
+                <div class="stat-row"><span class="stat-label">Reservadas</span><span class="stat-value">${reservedRooms}</span></div>
+                <div class="stat-row"><span class="stat-label">Tasa de Ocupación</span><span class="stat-value">${occupancyRate}%</span></div>
+                <div class="stat-row"><span class="stat-label">Estancias Activas</span><span class="stat-value">${activeOccupancies}</span></div>
+                <div class="section-title">Detalle de Habitaciones</div>
+                <table>
+                  <tr><th>Habitación</th><th>Piso</th><th>Tipo</th><th>Precio/Noche</th><th>Estado</th></tr>
+                  ${(rooms || [])
+                    .sort((a: Room, b: Room) => a.room_number.localeCompare(b.room_number))
+                    .map(
+                      (r: Room) =>
+                        `<tr>
+                          <td>${r.room_number}</td>
+                          <td>${r.floor}</td>
+                          <td style="text-transform:capitalize">${r.room_type}</td>
+                          <td>${toBs(r.price_per_night)}</td>
+                          <td>${statusBadge(r.room_status)}</td>
+                        </tr>`
+                    )
+                    .join("")}
+                </table>
+                <div class="section-title">Ocupaciones Activas</div>
+                <table>
+                  <tr><th>Habitación</th><th>Entrada</th><th>Estado</th></tr>
+                  ${(occupancies || [])
+                    .filter((o: Occupancy) => o.occupancy_status === "active")
+                    .map(
+                      (o: Occupancy) =>
+                        `<tr>
+                          <td>${o.room?.room_number || "—"}</td>
+                          <td>${new Date(o.actual_check_in).toLocaleDateString()}</td>
+                          <td>${statusBadge(o.occupancy_status)}</td>
+                        </tr>`
+                    )
+                    .join("")}
+                </table>`
             )
           }
         >
           <View className="mb-3">
             <View className="flex-row justify-between items-center mb-2">
-              <ThemedText className="text-sm opacity-70">Occupancy Rate</ThemedText>
+              <ThemedText className="text-sm opacity-70">Tasa de Ocupación</ThemedText>
               <ThemedText className="text-lg font-bold text-[#0EA5E9]">{occupancyRate}%</ThemedText>
             </View>
             <View className="w-full h-3 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
@@ -188,13 +237,13 @@ export default function ManagerReportsScreen() {
             </View>
           </View>
           <View className="flex-row flex-wrap gap-2 mt-3">
-            <StatusPill label="Available" value={availableRooms} color="#10B981" />
-            <StatusPill label="Occupied" value={occupiedRooms} color="#EF4444" />
-            <StatusPill label="Maintenance" value={maintenanceRooms} color="#F59E0B" />
-            <StatusPill label="Reserved" value={reservedRooms} color="#8B5CF6" />
-            <StatusPill label="Active Stays" value={activeOccupancies} color="#3B82F6" />
+            <StatusPill label="Disponibles" value={availableRooms} color="#10B981" />
+            <StatusPill label="Ocupadas" value={occupiedRooms} color="#EF4444" />
+            <StatusPill label="Mantenimiento" value={maintenanceRooms} color="#F59E0B" />
+            <StatusPill label="Reservadas" value={reservedRooms} color="#8B5CF6" />
+            <StatusPill label="Estancias Activas" value={activeOccupancies} color="#3B82F6" />
           </View>
-          <CollapsibleList label="Room Details">
+          <CollapsibleList label="Detalle de Habitaciones">
             {(rooms || [])
               .sort((a: Room, b: Room) => a.room_number.localeCompare(b.room_number))
               .map((r: Room) => (
@@ -206,9 +255,9 @@ export default function ManagerReportsScreen() {
                     <View className="flex-row items-center gap-2">
                       <ThemedText className="text-sm font-medium capitalize">{r.room_type}</ThemedText>
                       <View className="w-1 h-1 rounded-full bg-gray-300" />
-                      <ThemedText className="text-xs opacity-60">Floor {r.floor}</ThemedText>
+                      <ThemedText className="text-xs opacity-60">Piso {r.floor}</ThemedText>
                     </View>
-                    <ThemedText className="text-xs opacity-60">${r.price_per_night}/night</ThemedText>
+                    <ThemedText className="text-xs opacity-60">{toBs(r.price_per_night)}/noche</ThemedText>
                   </View>
                   <RoomStatusBadge status={r.room_status} />
                 </View>
@@ -218,57 +267,57 @@ export default function ManagerReportsScreen() {
 
         {/* Revenue Report */}
         <ReportSection
-          title="Revenue Report"
+          title="Reporte de Ingresos"
           icon="attach-money"
           iconBg="#8B5CF6"
           onDownload={() =>
             generatePDF(
-              "Revenue Report",
-              `<div class="section-title">Summary</div>
-               <div class="stat-row"><span class="stat-label">Total Revenue (Completed)</span><span class="stat-value">$${totalRevenue.toLocaleString()}</span></div>
-               <div class="stat-row"><span class="stat-label">Completed Reservations</span><span class="stat-value">${completedReservations}</span></div>
-               <div class="stat-row"><span class="stat-label">Avg. Revenue per Booking</span><span class="stat-value">$${completedReservations > 0 ? Math.round(totalRevenue / completedReservations).toLocaleString() : 0}</span></div>
-               <div class="stat-row"><span class="stat-label">Pending Revenue</span><span class="stat-value">$${(reservations || []).filter((r: Reservation) => r.reservation_status === "pending" || r.reservation_status === "confirmed").reduce((s: number, r: Reservation) => s + r.total_amount, 0).toLocaleString()}</span></div>
-               <div class="section-title">Revenue by Room Type</div>
-               ${Object.entries(roomTypeCounts)
-                 .map(
-                   ([type, data]) =>
-                     `<div class="stat-row"><span class="stat-label" style="text-transform:capitalize">${type}</span><span class="stat-value">$${data.totalRevenue.toLocaleString()} (${data.count} rooms)</span></div>`
-                 )
-                 .join("")}
-               <div class="section-title">Completed Transactions</div>
-               <table>
-                 <tr><th>Client</th><th>Room</th><th>Check-In</th><th>Check-Out</th><th>Amount</th></tr>
-                 ${(reservations || [])
-                   .filter((r: Reservation) => r.reservation_status === "completed")
-                   .sort((a: Reservation, b: Reservation) => new Date(b.check_out_date).getTime() - new Date(a.check_out_date).getTime())
-                   .map(
-                     (r: Reservation) =>
-                       `<tr>
-                         <td>${r.client?.full_name || "—"}</td>
-                         <td>${r.room?.room_number || "—"}</td>
-                         <td>${new Date(r.check_in_date).toLocaleDateString()}</td>
-                         <td>${new Date(r.check_out_date).toLocaleDateString()}</td>
-                         <td><strong>$${r.total_amount.toLocaleString()}</strong></td>
-                       </tr>`
-                   )
-                   .join("")}
-               </table>`
+              "Reporte de Ingresos",
+              `<div class="section-title">Resumen</div>
+                <div class="stat-row"><span class="stat-label">Ingresos Totales (Completados)</span><span class="stat-value">${bsFormat(totalRevenue)}</span></div>
+                <div class="stat-row"><span class="stat-label">Reservas Completadas</span><span class="stat-value">${completedReservations}</span></div>
+                <div class="stat-row"><span class="stat-label">Promedio por Reserva</span><span class="stat-value">${completedReservations > 0 ? bsFormat(Math.round(totalRevenue / completedReservations)) : "Bs. 0"}</span></div>
+                <div class="stat-row"><span class="stat-label">Ingresos Pendientes</span><span class="stat-value">${toBs((reservations || []).filter((r: Reservation) => r.reservation_status === "pending" || r.reservation_status === "confirmed").reduce((s: number, r: Reservation) => s + Number(r.total_amount), 0))}</span></div>
+                <div class="section-title">Ingresos por Tipo de Habitación</div>
+                ${Object.entries(roomTypeCounts)
+                  .map(
+                    ([type, data]) =>
+                      `<div class="stat-row"><span class="stat-label" style="text-transform:capitalize">${type}</span><span class="stat-value">${bsFormat(data.totalRevenue)} (${data.count} ${data.count === 1 ? 'habitación' : 'habitaciones'})</span></div>`
+                  )
+                  .join("")}
+                <div class="section-title">Transacciones Completadas</div>
+                <table>
+                  <tr><th>Cliente</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Monto</th></tr>
+                  ${(reservations || [])
+                    .filter((r: Reservation) => r.reservation_status === "completed")
+                    .sort((a: Reservation, b: Reservation) => new Date(b.check_out_date).getTime() - new Date(a.check_out_date).getTime())
+                    .map(
+                      (r: Reservation) =>
+                        `<tr>
+                          <td>${r.client?.full_name || "—"}</td>
+                          <td>${r.room?.room_number || "—"}</td>
+                          <td>${new Date(r.check_in_date).toLocaleDateString()}</td>
+                          <td>${new Date(r.check_out_date).toLocaleDateString()}</td>
+                          <td><strong>${formatReservation(r)}</strong></td>
+                        </tr>`
+                    )
+                    .join("")}
+                </table>`
             )
           }
         >
           <View className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 mb-4">
-            <ThemedText className="text-sm opacity-70">Total Revenue (Completed)</ThemedText>
+            <ThemedText className="text-sm opacity-70">Ingresos Totales (Completados)</ThemedText>
             <ThemedText className="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">
-              ${totalRevenue.toLocaleString()}
+              {bsFormat(totalRevenue)}
             </ThemedText>
           </View>
           <View className="flex-row gap-3 mb-3">
-            <ReportCard icon="check-circle" label="Completed" value={completedReservations} color="#10B981" />
-            <ReportCard icon="trending-up" label="Avg / Booking" value={completedReservations > 0 ? `$${Math.round(totalRevenue / completedReservations)}` : "$0"} color="#8B5CF6" />
-            <ReportCard icon="pending" label="Pending" value={`$${(reservations || []).filter((r: Reservation) => r.reservation_status === "pending" || r.reservation_status === "confirmed").reduce((s: number, r: Reservation) => s + r.total_amount, 0).toLocaleString()}`} color="#F59E0B" />
+            <ReportCard icon="check-circle" label="Completadas" value={completedReservations} color="#10B981" />
+            <ReportCard icon="trending-up" label="Promedio/Reserva" value={completedReservations > 0 ? bsFormat(Math.round(totalRevenue / completedReservations)) : "Bs. 0"} color="#8B5CF6" />
+            <ReportCard icon="pending" label="Pendiente" value={toBs((reservations || []).filter((r: Reservation) => r.reservation_status === "pending" || r.reservation_status === "confirmed").reduce((s: number, r: Reservation) => s + Number(r.total_amount), 0))} color="#F59E0B" />
           </View>
-          <CollapsibleList label="Completed Transactions">
+          <CollapsibleList label="Transacciones Completadas">
             {(reservations || [])
               .filter((r: Reservation) => r.reservation_status === "completed")
               .sort((a: Reservation, b: Reservation) => new Date(b.check_out_date).getTime() - new Date(a.check_out_date).getTime())
@@ -276,9 +325,9 @@ export default function ManagerReportsScreen() {
                 <View key={r.id_reservation} className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700">
                   <View className="flex-1">
                     <ThemedText className="text-sm font-medium">{r.client?.full_name || "—"}</ThemedText>
-                    <ThemedText className="text-xs opacity-60">Rm {r.room?.room_number || "—"} · {new Date(r.check_in_date).toLocaleDateString()} → {new Date(r.check_out_date).toLocaleDateString()}</ThemedText>
+                    <ThemedText className="text-xs opacity-60">Hab. {r.room?.room_number || "—"} · {new Date(r.check_in_date).toLocaleDateString()} → {new Date(r.check_out_date).toLocaleDateString()}</ThemedText>
                   </View>
-                  <ThemedText className="text-sm font-bold text-green-600 dark:text-green-400">${r.total_amount.toLocaleString()}</ThemedText>
+                  <ThemedText className="text-sm font-bold text-green-600 dark:text-green-400">{formatReservation(r)}</ThemedText>
                 </View>
               ))}
           </CollapsibleList>
@@ -286,59 +335,59 @@ export default function ManagerReportsScreen() {
 
         {/* Reservations Report */}
         <ReportSection
-          title="Reservations Report"
+          title="Reporte de Reservas"
           icon="event-note"
           iconBg="#F59E0B"
           onDownload={() =>
             generatePDF(
-              "Reservations Report",
-              `<div class="section-title">Summary</div>
-               <div class="stat-row"><span class="stat-label">Total Reservations</span><span class="stat-value">${totalReservations}</span></div>
-               <div class="stat-row"><span class="stat-label">Pending</span><span class="stat-value">${pendingReservations}</span></div>
-               <div class="stat-row"><span class="stat-label">Confirmed</span><span class="stat-value">${confirmedReservations}</span></div>
-               <div class="stat-row"><span class="stat-label">Completed</span><span class="stat-value">${completedReservations}</span></div>
-               <div class="stat-row"><span class="stat-label">Cancelled</span><span class="stat-value">${cancelledReservations}</span></div>
-               <table>
-                 <tr><th>Status</th><th>Count</th><th>Percentage</th></tr>
-                 <tr><td>Pending</td><td>${pendingReservations}</td><td>${totalReservations > 0 ? Math.round((pendingReservations / totalReservations) * 100) : 0}%</td></tr>
-                 <tr><td>Confirmed</td><td>${confirmedReservations}</td><td>${totalReservations > 0 ? Math.round((confirmedReservations / totalReservations) * 100) : 0}%</td></tr>
-                 <tr><td>Completed</td><td>${completedReservations}</td><td>${totalReservations > 0 ? Math.round((completedReservations / totalReservations) * 100) : 0}%</td></tr>
-                 <tr><td>Cancelled</td><td>${cancelledReservations}</td><td>${totalReservations > 0 ? Math.round((cancelledReservations / totalReservations) * 100) : 0}%</td></tr>
-               </table>
-               <div class="section-title">All Reservations</div>
-               <table>
-                 <tr><th>Client</th><th>Email</th><th>Room</th><th>Check-In</th><th>Check-Out</th><th>Amount</th><th>Status</th></tr>
-                 ${(reservations || [])
-                   .sort((a: Reservation, b: Reservation) => new Date(b.check_in_date).getTime() - new Date(a.check_in_date).getTime())
-                   .map(
-                     (r: Reservation) =>
-                       `<tr>
-                         <td>${r.client?.full_name || "—"}</td>
-                         <td style="font-size:11px">${r.client?.email || "—"}</td>
-                         <td>${r.room?.room_number || "—"}</td>
-                         <td>${new Date(r.check_in_date).toLocaleDateString()}</td>
-                         <td>${new Date(r.check_out_date).toLocaleDateString()}</td>
-                         <td>$${r.total_amount.toLocaleString()}</td>
-                         <td>${statusBadge(r.reservation_status)}</td>
-                       </tr>`
-                   )
-                   .join("")}
-               </table>`
+              "Reporte de Reservas",
+              `<div class="section-title">Resumen</div>
+                <div class="stat-row"><span class="stat-label">Total Reservas</span><span class="stat-value">${totalReservations}</span></div>
+                <div class="stat-row"><span class="stat-label">Pendientes</span><span class="stat-value">${pendingReservations}</span></div>
+                <div class="stat-row"><span class="stat-label">Confirmadas</span><span class="stat-value">${confirmedReservations}</span></div>
+                <div class="stat-row"><span class="stat-label">Completadas</span><span class="stat-value">${completedReservations}</span></div>
+                <div class="stat-row"><span class="stat-label">Canceladas</span><span class="stat-value">${cancelledReservations}</span></div>
+                <table>
+                  <tr><th>Estado</th><th>Cantidad</th><th>Porcentaje</th></tr>
+                  <tr><td>${statusLabel("pending")}</td><td>${pendingReservations}</td><td>${totalReservations > 0 ? Math.round((pendingReservations / totalReservations) * 100) : 0}%</td></tr>
+                  <tr><td>${statusLabel("confirmed")}</td><td>${confirmedReservations}</td><td>${totalReservations > 0 ? Math.round((confirmedReservations / totalReservations) * 100) : 0}%</td></tr>
+                  <tr><td>${statusLabel("completed")}</td><td>${completedReservations}</td><td>${totalReservations > 0 ? Math.round((completedReservations / totalReservations) * 100) : 0}%</td></tr>
+                  <tr><td>${statusLabel("cancelled")}</td><td>${cancelledReservations}</td><td>${totalReservations > 0 ? Math.round((cancelledReservations / totalReservations) * 100) : 0}%</td></tr>
+                </table>
+                <div class="section-title">Todas las Reservas</div>
+                <table>
+                  <tr><th>Cliente</th><th>Email</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Monto</th><th>Estado</th></tr>
+                  ${(reservations || [])
+                    .sort((a: Reservation, b: Reservation) => new Date(b.check_in_date).getTime() - new Date(a.check_in_date).getTime())
+                    .map(
+                      (r: Reservation) =>
+                        `<tr>
+                          <td>${r.client?.full_name || "—"}</td>
+                          <td style="font-size:11px">${r.client?.email || "—"}</td>
+                          <td>${r.room?.room_number || "—"}</td>
+                          <td>${new Date(r.check_in_date).toLocaleDateString()}</td>
+                          <td>${new Date(r.check_out_date).toLocaleDateString()}</td>
+                          <td>${formatReservation(r)}</td>
+                          <td>${statusBadge(r.reservation_status)}</td>
+                        </tr>`
+                    )
+                    .join("")}
+                </table>`
             )
           }
         >
           <View className="flex-row gap-3 mb-4">
             <ReportCard icon="event" label="Total" value={totalReservations} color="#F59E0B" />
-            <ReportCard icon="check-circle" label="Completed" value={completedReservations} color="#10B981" />
-            <ReportCard icon="cancel" label="Cancelled" value={cancelledReservations} color="#6B7280" />
+            <ReportCard icon="check-circle" label="Completadas" value={completedReservations} color="#10B981" />
+            <ReportCard icon="cancel" label="Canceladas" value={cancelledReservations} color="#6B7280" />
           </View>
           <View className="flex-row flex-wrap gap-2">
-            <StatusPill label="Pending" value={pendingReservations} color="#F59E0B" />
-            <StatusPill label="Confirmed" value={confirmedReservations} color="#10B981" />
-            <StatusPill label="Completed" value={completedReservations} color="#3B82F6" />
-            <StatusPill label="Cancelled" value={cancelledReservations} color="#6B7280" />
+            <StatusPill label="Pendientes" value={pendingReservations} color="#F59E0B" />
+            <StatusPill label="Confirmadas" value={confirmedReservations} color="#10B981" />
+            <StatusPill label="Completadas" value={completedReservations} color="#3B82F6" />
+            <StatusPill label="Canceladas" value={cancelledReservations} color="#6B7280" />
           </View>
-          <CollapsibleList label="All Reservations">
+          <CollapsibleList label="Todas las Reservas">
             {(reservations || [])
               .sort((a: Reservation, b: Reservation) => new Date(b.check_in_date).getTime() - new Date(a.check_in_date).getTime())
               .map((r: Reservation) => (
@@ -352,13 +401,12 @@ export default function ManagerReportsScreen() {
                   </View>
                   <View className="flex-row items-center gap-2 mt-1">
                     <MaterialIcons name="meeting-room" size={14} color="#9CA3AF" />
-                    <ThemedText className="text-xs opacity-60">Rm {r.room?.room_number || "—"}</ThemedText>
+                    <ThemedText className="text-xs opacity-60">Hab. {r.room?.room_number || "—"}</ThemedText>
                     <View className="w-1 h-1 rounded-full bg-gray-300" />
                     <MaterialIcons name="date-range" size={14} color="#9CA3AF" />
                     <ThemedText className="text-xs opacity-60">{new Date(r.check_in_date).toLocaleDateString()} → {new Date(r.check_out_date).toLocaleDateString()}</ThemedText>
-                    <View className="flex-1" />
-                    <ThemedText className="text-xs font-bold">${r.total_amount.toLocaleString()}</ThemedText>
                   </View>
+                  <ThemedText className="text-xs font-bold mt-1">{formatReservation(r)}</ThemedText>
                 </View>
               ))}
           </CollapsibleList>
@@ -366,68 +414,68 @@ export default function ManagerReportsScreen() {
 
         {/* Room Types Report */}
         <ReportSection
-          title="Room Types Report"
+          title="Tipos de Habitación"
           icon="layers"
           iconBg="#EC4899"
           onDownload={() =>
             generatePDF(
-              "Room Types Report",
-              `<div class="section-title">Summary by Type</div>
-               <table>
-                <tr><th>Room Type</th><th>Count</th><th>Revenue Generated</th><th>Avg Revenue / Room</th><th>Price Range</th></tr>
-                ${Object.entries(roomTypeCounts)
-                  .map(([type, data]) => {
-                    const typeRooms = (rooms || []).filter((r: Room) => r.room_type === type);
-                    const prices = typeRooms.map((r: Room) => r.price_per_night);
-                    const minPrice = Math.min(...prices);
-                    const maxPrice = Math.max(...prices);
-                    return `<tr>
-                      <td style="text-transform:capitalize">${type}</td>
-                      <td>${data.count}</td>
-                      <td>$${data.totalRevenue.toLocaleString()}</td>
-                      <td>$${data.count > 0 ? Math.round(data.totalRevenue / data.count).toLocaleString() : 0}</td>
-                      <td>$${minPrice} — $${maxPrice}</td>
-                    </tr>`;
-                  })
-                  .join("")}
-              </table>
-              <div class="section-title">Rooms by Type</div>
-              ${Object.entries(
-                (rooms || []).reduce((acc: Record<string, Room[]>, r: Room) => {
-                  if (!acc[r.room_type]) acc[r.room_type] = [];
-                  acc[r.room_type].push(r);
-                  return acc;
-                }, {})
-              )
-                .map(
-                  ([type, typeRooms]) =>
-                    `<div style="margin-top:12px;font-weight:600;text-transform:capitalize">${type} (${typeRooms.length})</div>
-                     <table>
-                       <tr><th>Room</th><th>Floor</th><th>Capacity</th><th>Price/Night</th><th>Status</th></tr>
-                       ${typeRooms
-                         .map(
-                           (r: Room) =>
-                             `<tr>
-                               <td>${r.room_number}</td>
-                               <td>${r.floor}</td>
-                               <td>${r.capacity || "—"}</td>
-                               <td>$${r.price_per_night}</td>
-                               <td>${statusBadge(r.room_status)}</td>
-                             </tr>`
-                         )
-                         .join("")}
-                     </table>`
-                )
-                .join("")}
-              <div class="section-title">Totals</div>
-              <div class="stat-row"><span class="stat-label">Total Completed Check-Outs</span><span class="stat-value">${completedOccupancies}</span></div>
-              <div class="stat-row"><span class="stat-label">Total Rooms</span><span class="stat-value">${totalRooms}</span></div>`
+              "Tipos de Habitación",
+              `<div class="section-title">Resumen por Tipo</div>
+                <table>
+                 <tr><th>Tipo</th><th>Cantidad</th><th>Ingresos</th><th>Promedio / Hab.</th><th>Rango de Precios</th></tr>
+                 ${Object.entries(roomTypeCounts)
+                   .map(([type, data]) => {
+                     const typeRooms = (rooms || []).filter((r: Room) => r.room_type === type);
+                     const prices = typeRooms.map((r: Room) => r.price_per_night);
+                     const minPrice = Math.min(...prices);
+                     const maxPrice = Math.max(...prices);
+                     return `<tr>
+                       <td style="text-transform:capitalize">${type}</td>
+                       <td>${data.count}</td>
+                        <td>${bsFormat(data.totalRevenue)}</td>
+                        <td>${data.count > 0 ? bsFormat(Math.round(data.totalRevenue / data.count)) : "Bs. 0"}</td>
+                       <td>${toBs(minPrice)} — ${toBs(maxPrice)}</td>
+                     </tr>`;
+                   })
+                   .join("")}
+               </table>
+               <div class="section-title">Habitaciones por Tipo</div>
+               ${Object.entries(
+                 (rooms || []).reduce((acc: Record<string, Room[]>, r: Room) => {
+                   if (!acc[r.room_type]) acc[r.room_type] = [];
+                   acc[r.room_type].push(r);
+                   return acc;
+                 }, {})
+               )
+                 .map(
+                   ([type, typeRooms]) =>
+                     `<div style="margin-top:12px;font-weight:600;text-transform:capitalize">${type} (${typeRooms.length})</div>
+                      <table>
+                        <tr><th>Habitación</th><th>Piso</th><th>Capacidad</th><th>Precio/Noche</th><th>Estado</th></tr>
+                        ${typeRooms
+                          .map(
+                            (r: Room) =>
+                              `<tr>
+                                <td>${r.room_number}</td>
+                                <td>${r.floor}</td>
+                                <td>${r.capacity || "—"}</td>
+                                <td>${toBs(r.price_per_night)}</td>
+                                <td>${statusBadge(r.room_status)}</td>
+                              </tr>`
+                          )
+                          .join("")}
+                      </table>`
+                 )
+                 .join("")}
+               <div class="section-title">Totales</div>
+               <div class="stat-row"><span class="stat-label">Total Check-Outs Completados</span><span class="stat-value">${completedOccupancies}</span></div>
+               <div class="stat-row"><span class="stat-label">Total Habitaciones</span><span class="stat-value">${totalRooms}</span></div>`
             )
           }
         >
           <View className="flex-row gap-3 mb-4">
-            <ReportCard icon="hotel" label="Room Types" value={Object.keys(roomTypeCounts).length} color="#EC4899" />
-            <ReportCard icon="attach-money" label="Total Revenue" value={`$${Object.values(roomTypeCounts).reduce((s, d) => s + d.totalRevenue, 0).toLocaleString()}`} color="#10B981" />
+            <ReportCard icon="hotel" label="Tipos" value={Object.keys(roomTypeCounts).length} color="#EC4899" />
+            <ReportCard icon="attach-money" label="Ingresos Totales" value={bsFormat(Object.values(roomTypeCounts).reduce((s, d) => s + d.totalRevenue, 0))} color="#10B981" />
             <ReportCard icon="repeat" label="Check-outs" value={completedOccupancies} color="#3B82F6" />
           </View>
           {(["simple", "double", "suite", "family"] as const).map((type) => {
@@ -439,8 +487,8 @@ export default function ManagerReportsScreen() {
                 <View className="flex-row justify-between items-center py-2">
                   <ThemedText className="text-sm capitalize font-medium">{type}</ThemedText>
                   <View className="items-end">
-                    <ThemedText className="text-xs opacity-60">{data.count} room{data.count !== 1 ? "s" : ""}</ThemedText>
-                    <ThemedText className="text-xs font-semibold text-green-600 dark:text-green-400">${data.totalRevenue.toLocaleString()}</ThemedText>
+                    <ThemedText className="text-xs opacity-60">{data.count} {data.count === 1 ? 'habitación' : 'habitaciones'}</ThemedText>
+                    <ThemedText className="text-xs font-semibold text-green-600 dark:text-green-400">{bsFormat(data.totalRevenue)}</ThemedText>
                   </View>
                 </View>
                 <View className="flex-row flex-wrap gap-1.5">
@@ -452,7 +500,7 @@ export default function ManagerReportsScreen() {
                     >
                       <ThemedText className="text-xs font-semibold">{r.room_number}</ThemedText>
                       <View className="w-1 h-1 rounded-full" style={{ backgroundColor: roomStatusColor[r.room_status] }} />
-                      <ThemedText className="text-[10px] opacity-60">${r.price_per_night}</ThemedText>
+                      <ThemedText className="text-[10px] opacity-60">{toBs(r.price_per_night)}</ThemedText>
                     </View>
                   ))}
                 </View>
@@ -463,30 +511,30 @@ export default function ManagerReportsScreen() {
 
         {/* Team Overview */}
         <ReportSection
-          title="Team Overview"
+          title="Resumen del Equipo"
           icon="group"
           iconBg="#10B981"
           onDownload={() =>
             generatePDF(
-              "Team Overview",
-              `<div class="section-title">Summary</div>
-               <div class="stat-row"><span class="stat-label">Total Users</span><span class="stat-value">${totalUsers}</span></div>
-               <div class="stat-row"><span class="stat-label">Active Users</span><span class="stat-value">${activeUsers}</span></div>
-               <table>
-                 <tr><th>Role</th><th>Count</th></tr>
-                 ${["Administrator", "Manager", "Receptionist", "Client", "Maintenance"]
-                   .map((role) => `<tr><td>${role}</td><td>${roleCounts[role] || 0}</td></tr>`)
-                   .join("")}
-               </table>
-               <div class="stat-row"><span class="stat-label">Available Services</span><span class="stat-value">${services?.length || 0}</span></div>
-               <div class="stat-row"><span class="stat-label">Active Promotions</span><span class="stat-value">${(promotions || []).filter((p: any) => p.is_active !== false).length || 0}</span></div>`
+              "Resumen del Equipo",
+              `<div class="section-title">Resumen</div>
+                 <div class="stat-row"><span class="stat-label">Total Usuarios</span><span class="stat-value">${totalUsers}</span></div>
+                 <div class="stat-row"><span class="stat-label">Usuarios Activos</span><span class="stat-value">${activeUsers}</span></div>
+                 <table>
+                   <tr><th>Rol</th><th>Cantidad</th></tr>
+                   ${["Administrator", "Manager", "Receptionist", "Client", "Maintenance"]
+                     .map((role) => `<tr><td>${roleLabel(role)}</td><td>${roleCounts[role] || 0}</td></tr>`)
+                     .join("")}
+                </table>
+                 <div class="stat-row"><span class="stat-label">Servicios Disponibles</span><span class="stat-value">${services?.length || 0}</span></div>
+                 <div class="stat-row"><span class="stat-label">Promociones Activas</span><span class="stat-value">${(promotions || []).filter((p: any) => p.is_active !== false).length || 0}</span></div>`
             )
           }
         >
           <View className="flex-row gap-3 mb-4">
-            <ReportCard icon="people" label="Users" value={totalUsers} color="#10B981" />
-            <ReportCard icon="room-service" label="Services" value={services?.length || 0} color="#F59E0B" />
-            <ReportCard icon="local-offer" label="Promotions" value={(promotions || []).length} color="#EC4899" />
+            <ReportCard icon="people" label="Usuarios" value={totalUsers} color="#10B981" />
+            <ReportCard icon="room-service" label="Servicios" value={services?.length || 0} color="#F59E0B" />
+            <ReportCard icon="local-offer" label="Promociones" value={(promotions || []).length} color="#EC4899" />
           </View>
           <View className="border-t border-gray-100 dark:border-gray-700 pt-3">
             {["Administrator", "Manager", "Receptionist", "Client", "Maintenance"].map((role) => {
@@ -508,7 +556,7 @@ export default function ManagerReportsScreen() {
                 <View key={role} className="flex-row justify-between items-center py-2">
                   <View className="flex-row items-center">
                     <MaterialIcons name={icons[role] as any} size={18} color={colors[role]} />
-                    <ThemedText className="ml-2 text-sm">{role}</ThemedText>
+                    <ThemedText className="ml-2 text-sm">{roleLabel(role)}</ThemedText>
                   </View>
                   <ThemedText className="text-sm font-semibold">{roleCounts[role] || 0}</ThemedText>
                 </View>

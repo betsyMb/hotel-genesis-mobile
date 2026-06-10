@@ -12,7 +12,7 @@ import { WalkInForm } from "./WalkInForm";
 
 function formatDate(iso: string) {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("es-ES", {
     month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit",
   });
 }
@@ -37,7 +37,7 @@ function OccupancyCard({
           </View>
           <View>
             <ThemedText className="font-semibold text-base">
-              Room {item.room?.room_number || `#${item.id_room}`}
+              Habitación {item.room?.room_number || `#${item.id_room}`}
             </ThemedText>
             {item.room?.room_type && (
               <ThemedText className="text-xs opacity-60 capitalize">
@@ -48,7 +48,7 @@ function OccupancyCard({
         </View>
         <View className="bg-green-100 dark:bg-green-900/30 px-3 py-1 rounded-full">
           <ThemedText className="text-xs font-semibold text-green-700 dark:text-green-400">
-            Active
+            Activa
           </ThemedText>
         </View>
       </View>
@@ -63,14 +63,14 @@ function OccupancyCard({
       <View className="flex-row items-center">
         <MaterialIcons name="calendar-today" size={16} color="#94A3B8" style={{ marginRight: 6 }} />
         <ThemedText className="text-xs opacity-60">
-          Checked in: {formatDate(item.actual_check_in)}
+          Registrado: {formatDate(item.actual_check_in)}
         </ThemedText>
       </View>
 
       <View className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex-row items-center">
         <MaterialIcons name="logout" size={16} color="#EF4444" style={{ marginRight: 6 }} />
         <ThemedText className="text-xs text-red-500 font-medium">
-          Tap to checkout
+          Toca para registrar salida
         </ThemedText>
       </View>
     </TouchableOpacity>
@@ -92,15 +92,15 @@ export function WalkInDashboard() {
 
   function handleCheckout(occupancy: Occupancy) {
     const roomNumber = occupancy.room?.room_number || `#${occupancy.id_room}`;
-    const guestName = occupancy.guest_signature || "Unknown";
+    const guestName = occupancy.guest_signature || "Desconocido";
 
     Alert.alert(
-      "Check-out",
-      `Check out ${guestName} from Room ${roomNumber}?`,
+      "Registrar Salida",
+      `¿Registrar salida de ${guestName} de Habitación ${roomNumber}?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "Cancelar", style: "cancel" },
         {
-          text: "Check Out",
+          text: "Registrar Salida",
           style: "destructive",
           onPress: async () => {
             try {
@@ -109,8 +109,8 @@ export function WalkInDashboard() {
               });
               refetch();
               Alert.alert(
-                "Check-out successful",
-                `Room ${result.room_number}\n${guestName}\n${result.total_nights} night${result.total_nights !== 1 ? "s" : ""}\nChecked in: ${formatDate(result.checked_in)}\nChecked out: ${formatDate(result.checked_out)}`,
+                "Salida registrada exitosamente",
+                `Habitación ${result.room_number}\n${guestName}\n${result.total_nights} noche${result.total_nights !== 1 ? "s" : ""}\nRegistrado: ${formatDate(result.checked_in)}\nSalió: ${formatDate(result.checked_out)}`,
               );
             } catch (err: any) {
               Alert.alert("Error", err.message);
@@ -128,7 +128,7 @@ export function WalkInDashboard() {
           <View>
             <ThemedText type="title">Walk-Ins</ThemedText>
             <ThemedText className="opacity-60 text-sm">
-              {activeOccupancies.length} active check-in{activeOccupancies.length !== 1 ? "s" : ""}
+              {activeOccupancies.length} registro{activeOccupancies.length !== 1 ? "s" : ""} activo{activeOccupancies.length !== 1 ? "s" : ""}
             </ThemedText>
           </View>
           <View className="flex-row gap-2">
@@ -143,7 +143,7 @@ export function WalkInDashboard() {
               onPress={() => setShowForm(true)}
             >
               <MaterialIcons name="add" size={20} color="white" />
-              <ThemedText className="text-white font-semibold ml-1">Check In</ThemedText>
+              <ThemedText className="text-white font-semibold ml-1">Entrada</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -157,16 +157,16 @@ export function WalkInDashboard() {
         <View className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4">
           <MaterialIcons name="hotel" size={32} color="#94A3B8" />
         </View>
-        <ThemedText className="text-lg font-semibold mb-1">No active check-ins</ThemedText>
+        <ThemedText className="text-lg font-semibold mb-1">No hay registros activos</ThemedText>
         <ThemedText className="text-sm opacity-60 text-center mb-6">
-          All rooms are available. Tap "Check In" to register a walk-in guest.
+          Todas las habitaciones están disponibles. Toca "Registrar Entrada" para registrar un huésped sin reserva.
         </ThemedText>
         <TouchableOpacity
           className="bg-[#0EA5E9] flex-row items-center px-6 py-3 rounded-xl"
           onPress={() => setShowForm(true)}
         >
           <MaterialIcons name="person-add" size={20} color="white" />
-          <ThemedText className="text-white font-semibold ml-2">Check In</ThemedText>
+          <ThemedText className="text-white font-semibold ml-2">Registrar Entrada</ThemedText>
         </TouchableOpacity>
       </View>
     );
@@ -176,7 +176,7 @@ export function WalkInDashboard() {
     <ThemedView className="flex-1">
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
-          <ThemedText className="opacity-60">Loading...</ThemedText>
+          <ThemedText className="opacity-60">Cargando...</ThemedText>
         </View>
       ) : (
         <FlatList
@@ -198,7 +198,7 @@ export function WalkInDashboard() {
       <Modal visible={showForm} animationType="slide" presentationStyle="pageSheet">
         <View className="flex-1 pt-12 bg-white dark:bg-gray-900">
           <View className="flex-row items-center justify-between px-5 pb-2 border-b border-gray-200 dark:border-gray-700">
-            <ThemedText type="title">New Walk-In</ThemedText>
+            <ThemedText type="title">Nuevo Walk-In</ThemedText>
             <TouchableOpacity
               className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center"
               onPress={() => setShowForm(false)}

@@ -1,13 +1,20 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert, Modal, TextInput } from "react-native";
+import { FlatList, TouchableOpacity, View, Alert, Modal, TextInput, ScrollView } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { StatBadge, EmptyState, ReservationCard, ReservationFormModal, StatusPickerModal, getReservationStatusConfig } from "@/components/shared";
-import { useReservations, useRooms, useUsers, useRoles, useCreateReservation, useUpdateReservation, useDeleteReservation, useCreateUser, useOccupancies, useCreateOccupancy, useUpdateRoom, useWalkinCheckout } from "@/hooks";
+import { useReservations, useRooms, useUsers, useRoles, useCreateReservation, useUpdateReservation, useDeleteReservation, useCreateUser, useOccupancies, useCreateOccupancy, useUpdateRoom, useWalkinCheckout, useExchangeRate } from "@/hooks";
 import { Reservation } from "@/hooks/api/types";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const statusConfig = getReservationStatusConfig();
+
+const statusFilters = [
+  { key: "all", label: "Todas", color: "#0EA5E9" },
+  { key: "pending", label: "Pendiente", color: "#F59E0B" },
+  { key: "cancelled", label: "Cancelada", color: "#EF4444" },
+  { key: "completed", label: "Completada", color: "#3B82F6" },
+];
 
 export default function AdminReservationsScreen() {
   const { data: reservations, isLoading, refetch: refetchReservations } = useReservations();
@@ -15,6 +22,7 @@ export default function AdminReservationsScreen() {
   const { data: users } = useUsers();
   const { data: roles } = useRoles();
   const { data: occupancies } = useOccupancies();
+  const { data: exchangeRate } = useExchangeRate();
   const createReservation = useCreateReservation();
   const updateReservation = useUpdateReservation();
   const deleteReservation = useDeleteReservation();
@@ -30,6 +38,7 @@ export default function AdminReservationsScreen() {
   const [checkInReservation, setCheckInReservation] = useState<Reservation | null>(null);
   const [showCheckInModal, setShowCheckInModal] = useState(false);
   const [signature, setSignature] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const activeOccupancyRoomIds = new Set(
     (occupancies || [])
@@ -37,14 +46,16 @@ export default function AdminReservationsScreen() {
       .map((o) => o.id_room),
   );
 
-  const activeReservations = (reservations || []).filter(
-    (r: Reservation) => r.reservation_status !== "completed" && r.reservation_status !== "cancelled" && r.reservation_status !== "no_show"
-  );
+  const filteredReservations = statusFilter === "all"
+    ? (reservations || [])
+    : (reservations || []).filter(
+        (r: Reservation) => r.reservation_status === statusFilter
+      );
 
   async function handleCreate(data: any) {
     try {
       await createReservation.mutateAsync(data);
-      Alert.alert("Success", "Reservation created!");
+      Alert.alert("Éxito", "Reserva creada exitosamente");
     } catch (err: any) {
       Alert.alert("Error", err.message);
       throw err;
@@ -56,7 +67,7 @@ export default function AdminReservationsScreen() {
     try {
       await updateReservation.mutateAsync({ id: editingReservation.id_reservation, data });
       setEditingReservation(null);
-      Alert.alert("Success", "Reservation updated!");
+      Alert.alert("Éxito", "Reserva actualizada exitosamente");
     } catch (err: any) {
       Alert.alert("Error", err.message);
       throw err;
@@ -64,15 +75,15 @@ export default function AdminReservationsScreen() {
   }
 
   function handleDelete(id: number) {
-    Alert.alert("Delete Reservation", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert("Eliminar Reserva", "¿Estás seguro?", [
+      { text: "Cancelar", style: "cancel" },
       {
-        text: "Delete",
+        text: "Eliminar",
         style: "destructive",
         onPress: async () => {
           try {
             await deleteReservation.mutateAsync(id);
-            Alert.alert("Deleted", "Reservation deleted");
+            Alert.alert("Eliminado", "Reserva eliminada");
           } catch (err: any) {
             Alert.alert("Error", err.message);
           }
@@ -83,7 +94,7 @@ export default function AdminReservationsScreen() {
 
   async function handleCreateClient(data: { full_name: string; email: string; phone?: string }): Promise<number> {
     const clientRole = roles?.find((r) => r.role_name === "Client");
-    if (!clientRole) throw new Error("Client role not found");
+    if (!clientRole) throw new Error("Rol de cliente no encontrado");
     const user = await createUser.mutateAsync({
       full_name: data.full_name,
       email: data.email,
@@ -102,17 +113,20 @@ export default function AdminReservationsScreen() {
       await updateReservation.mutateAsync({ id: statusReservation.id_reservation, data: { reservation_status: newStatus as any } });
       setShowStatusPicker(false);
       setStatusReservation(null);
-      Alert.alert("Success", "Status updated!");
+      Alert.alert("Éxito", "Estado actualizado");
     } catch (err: any) {
       Alert.alert("Error", err.message);
     }
   }
 
   const stats = {
-    total: activeReservations.length,
-    pending: activeReservations.filter((r: Reservation) => r.reservation_status === "pending").length || 0,
-    confirmed: activeReservations.filter((r: Reservation) => r.reservation_status === "confirmed").length || 0,
-    revenue: (reservations || []).filter((r: Reservation) => r.reservation_status === "completed").reduce((sum: number, r: Reservation) => sum + r.total_amount, 0) || 0,
+    total: (reservations || []).length,
+    pending: (reservations || []).filter((r: Reservation) => r.reservation_status === "pending").length || 0,
+    confirmed: (reservations || []).filter((r: Reservation) => r.reservation_status === "confirmed").length || 0,
+    revenue: (reservations || []).filter((r: Reservation) => r.reservation_status === "completed" || r.reservation_status === "cancelled").reduce((sum: number, r: Reservation) => {
+      const amount = r.total_amount_bs ? Number(r.total_amount_bs) : (r.total_amount * (exchangeRate || 1));
+      return sum + (isFinite(amount) ? amount : 0);
+    }, 0) || 0,
   };
 
   function handleCheckIn(reservation: Reservation) {
@@ -139,7 +153,7 @@ export default function AdminReservationsScreen() {
       setShowCheckInModal(false);
       setCheckInReservation(null);
       refetchReservations();
-      Alert.alert("Success", `Checked into Room ${checkInReservation.room?.room_number || checkInReservation.id_room}`);
+      Alert.alert("Éxito", `Registrado en Habitación ${checkInReservation.room?.room_number || checkInReservation.id_room}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     }
@@ -148,12 +162,12 @@ export default function AdminReservationsScreen() {
   function handleCheckOut(reservation: Reservation) {
     const roomNumber = reservation.room?.room_number || `#${reservation.id_room}`;
     Alert.alert(
-      "Check-out",
-      `Check out ${reservation.client?.full_name || `Client #${reservation.id_client}`} from Room ${roomNumber}?`,
+      "Registrar Salida",
+      `¿Registrar salida de ${reservation.client?.full_name || `Cliente #${reservation.id_client}`} de la Habitación ${roomNumber}?`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "Cancelar", style: "cancel" },
         {
-          text: "Check Out",
+          text: "Registrar Salida",
           style: "destructive",
           onPress: async () => {
             try {
@@ -177,15 +191,35 @@ export default function AdminReservationsScreen() {
       <View className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
         <View className="flex-row gap-2 mb-3">
           <StatBadge label="Total" value={stats.total} color="#0EA5E9" />
-          <StatBadge label="Pending" value={stats.pending} color="#F59E0B" />
-          <StatBadge label="Confirmed" value={stats.confirmed} color="#10B981" />
-          <StatBadge label="Revenue" value={stats.revenue.toString().slice(0,4)} color="#8B5CF6" prefix="$" />
+          <StatBadge label="Pendiente" value={stats.pending} color="#F59E0B" />
+          <StatBadge label="Ingresos" value={stats.revenue.toLocaleString("es-ES", { maximumFractionDigits: 0 })} color="#8B5CF6" prefix="Bs. " />
         </View>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View className="flex-row gap-2">
+            {statusFilters.map((f) => (
+              <TouchableOpacity
+                key={f.key}
+                className={`px-3 py-1.5 rounded-full border ${statusFilter === f.key ? "border-0" : "border-gray-200 dark:border-gray-700"}`}
+                style={statusFilter === f.key ? { backgroundColor: f.color } : undefined}
+                onPress={() => setStatusFilter(f.key)}
+              >
+                <ThemedText
+                  className={`text-xs font-semibold ${statusFilter === f.key ? "text-white" : "opacity-60"}`}
+                >
+                  {f.label}
+                </ThemedText>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
       </View>
 
       <FlatList
-        data={activeReservations}
+        data={filteredReservations}
         keyExtractor={(item: Reservation) => item.id_reservation.toString()}
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           const isCheckedIn = activeOccupancyRoomIds.has(item.id_room);
           return (
@@ -196,11 +230,12 @@ export default function AdminReservationsScreen() {
               onStatusChange={(r) => { setStatusReservation(r); setShowStatusPicker(true); }}
               onCheckIn={!isCheckedIn ? handleCheckIn : undefined}
               onCheckOut={isCheckedIn ? handleCheckOut : undefined}
+              exchangeRate={exchangeRate}
             />
           );
         }}
         contentContainerClassName="px-4 py-4"
-        ListEmptyComponent={!isLoading ? <EmptyState icon="event-note" title="No reservations found" /> : null}
+        ListEmptyComponent={!isLoading ? <EmptyState icon="event-note" title="No hay reservas" /> : null}
       />
 
       <TouchableOpacity
@@ -218,21 +253,22 @@ export default function AdminReservationsScreen() {
         rooms={rooms || []}
         users={users || []}
         onCreateClient={editingReservation ? undefined : handleCreateClient}
+        exchangeRate={exchangeRate}
       />
 
       <Modal visible={showCheckInModal} animationType="slide" transparent>
         <View className="flex-1 justify-end bg-black/50">
           <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6">
-            <ThemedText type="title" className="mb-2">Confirm Check-In</ThemedText>
+            <ThemedText type="title" className="mb-2">Confirmar Registro de Entrada</ThemedText>
             <ThemedText className="text-sm opacity-60 mb-4">
-              Room {checkInReservation?.room?.room_number || checkInReservation?.id_room} — {checkInReservation?.client?.full_name || `Client #${checkInReservation?.id_client}`}
+              Habitación {checkInReservation?.room?.room_number || checkInReservation?.id_room} — {checkInReservation?.client?.full_name || `Cliente #${checkInReservation?.id_client}`}
             </ThemedText>
-            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">Guest Signature</ThemedText>
+            <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">Firma del Huésped</ThemedText>
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-4"
               value={signature}
               onChangeText={setSignature}
-              placeholder="Enter guest signature"
+              placeholder="Ingrese la firma del huésped"
               placeholderTextColor="#94A3B8"
               autoCapitalize="words"
             />
@@ -241,13 +277,13 @@ export default function AdminReservationsScreen() {
                 className="flex-1 py-3 rounded-xl items-center bg-gray-100 dark:bg-gray-800"
                 onPress={() => { setShowCheckInModal(false); setCheckInReservation(null); }}
               >
-                <ThemedText className="font-semibold opacity-60">Cancel</ThemedText>
+                <ThemedText className="font-semibold opacity-60">Cancelar</ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
                 className="flex-1 py-3 rounded-xl items-center bg-green-500"
                 onPress={confirmCheckIn}
               >
-                <ThemedText className="text-white font-semibold">Confirm</ThemedText>
+                <ThemedText className="text-white font-semibold">Confirmar</ThemedText>
               </TouchableOpacity>
             </View>
           </View>

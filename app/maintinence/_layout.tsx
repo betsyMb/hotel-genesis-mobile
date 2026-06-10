@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, SafeAreaView } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Drawer } from "expo-router/drawer";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
@@ -11,7 +11,8 @@ import { useAuth } from "@/hooks";
 import { RoleGuard } from "@/components/RoleGuard";
 
 const maintenanceLinks = [
-  { name: "maintenance", title: "Maintenance", icon: "build" },
+  { name: "maintenance", title: "Mantenimiento", icon: "build" },
+  { name: "profile", title: "Perfil", icon: "person" },
 ];
 
 function DrawerContent(props: DrawerContentComponentProps) {
@@ -80,7 +81,7 @@ function MaintenanceHeader({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: useThemeColor({}, "background") }}>
+    <View style={{ backgroundColor: useThemeColor({}, "background") }}>
       <View className="flex-row justify-between items-center px-4 py-3">
         <View className="flex-row items-center">
           <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} className="p-2">
@@ -95,7 +96,7 @@ function MaintenanceHeader({ navigation }: { navigation: any }) {
           <MaterialIcons name={resolvedTheme === "dark" ? "light-mode" : "dark-mode"} size={24} color={tintColor} />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -109,10 +110,11 @@ function MaintenanceDrawer() {
         headerShown: true,
         header: () => <MaintenanceHeader navigation={navigation} />,
         drawerStyle: { width: 280 },
-        sceneContainerStyle: { backgroundColor },
+        sceneContainerStyle: { flex: 1, backgroundColor },
       })}
     >
-      <Drawer.Screen name="maintenance" options={{ title: "Maintenance" }} />
+      <Drawer.Screen name="maintenance" options={{ title: "Mantenimiento" }} />
+      <Drawer.Screen name="profile" options={{ title: "Perfil" }} />
     </Drawer>
   );
 }

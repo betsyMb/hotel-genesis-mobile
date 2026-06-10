@@ -1,5 +1,6 @@
 import { useState, useEffect, Component, type ReactNode } from "react";
-import { ScrollView, TouchableOpacity, View, Alert, TextInput, FlatList, ActivityIndicator, Text } from "react-native";
+import { ScrollView, TouchableOpacity, View, Alert, TextInput, FlatList, ActivityIndicator, Text, Platform } from "react-native";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 
 class ErrorBoundary extends Component<{children: ReactNode}> {
   state = { error: null as Error | null };
@@ -30,11 +31,37 @@ interface ReservationFormModalProps {
   rooms: Room[];
   users: User[];
   onCreateClient?: (data: { full_name: string; email: string; phone?: string }) => Promise<number>;
+  exchangeRate?: number;
 }
 
 type PickerMode = null | "room" | "client";
 
 
+
+function toLocalDateISO(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function formatDate(d: Date): string {
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function formatTime(d: Date): string {
+  const hours = String(d.getHours()).padStart(2, "0");
+  const mins = String(d.getMinutes()).padStart(2, "0");
+  return `${hours}:${mins}`;
+}
+
+function parseDate(str: string): Date {
+  const [y, m, d] = str.split("T")[0].split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
 
 export function ReservationFormModal({
   visible,
@@ -44,11 +71,18 @@ export function ReservationFormModal({
   rooms,
   users,
   onCreateClient,
+  exchangeRate,
 }: ReservationFormModalProps) {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [selectedClient, setSelectedClient] = useState<User | null>(null);
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
+  const [checkInDate, setCheckInDate] = useState(new Date());
+  const [checkOutDate, setCheckOutDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d;
+  });
+  const [showCheckInPicker, setShowCheckInPicker] = useState(false);
+  const [showCheckOutPicker, setShowCheckOutPicker] = useState(false);
   const [guests, setGuests] = useState("1");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<Reservation["reservation_status"]>("pending");
@@ -68,8 +102,8 @@ export function ReservationFormModal({
       if (editingReservation) {
         setSelectedRoom(rooms.find((r) => r.id_room === editingReservation.id_room) || null);
         setSelectedClient(users.find((u) => u.id_user === editingReservation.id_client) || null);
-        setCheckInDate(editingReservation.check_in_date?.split("T")[0] || "");
-        setCheckOutDate(editingReservation.check_out_date?.split("T")[0] || "");
+        setCheckInDate(parseDate(editingReservation.check_in_date));
+        setCheckOutDate(parseDate(editingReservation.check_out_date));
         setGuests(editingReservation.number_of_guests?.toString() || "1");
         setNotes(editingReservation.notes || "");
         setStatus(editingReservation.reservation_status || "pending");
@@ -77,8 +111,10 @@ export function ReservationFormModal({
       } else {
         setSelectedRoom(null);
         setSelectedClient(null);
-        setCheckInDate("");
-        setCheckOutDate("");
+        setCheckInDate(new Date());
+        const nextDay = new Date();
+        nextDay.setDate(nextDay.getDate() + 1);
+        setCheckOutDate(nextDay);
         setGuests("1");
         setNotes("");
         setStatus("pending");
@@ -93,11 +129,7 @@ export function ReservationFormModal({
     }
   }, [visible, editingReservation]);
 
-  const parsedCheckIn = checkInDate ? new Date(checkInDate) : null;
-  const parsedCheckOut = checkOutDate ? new Date(checkOutDate) : null;
-  const nights = parsedCheckIn && parsedCheckOut && !isNaN(parsedCheckIn.getTime()) && !isNaN(parsedCheckOut.getTime())
-    ? Math.ceil((parsedCheckOut.getTime() - parsedCheckIn.getTime()) / (1000 * 60 * 60 * 24))
-    : 0;
+  const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
   const estimatedTotal = selectedRoom && nights > 0 ? selectedRoom.price_per_night * nights : editingReservation?.total_amount || null;
 
   const clientList = users?.filter((u) => u.role === "Client") || [];
@@ -117,19 +149,19 @@ export function ReservationFormModal({
 
 
   async function handleSubmit() {
-    if (!selectedRoom) { Alert.alert("Error", "Please select a room"); return; }
+    if (!selectedRoom) { Alert.alert("Error", "Seleccione una habitación"); return; }
 
     let clientId: number;
 
     if (clientMode === "existing") {
-      if (!selectedClient) { Alert.alert("Error", "Please select a client"); return; }
+      if (!selectedClient) { Alert.alert("Error", "Seleccione un cliente"); return; }
       clientId = selectedClient.id_user;
     } else {
       if (!newName.trim() || !newEmail.trim()) {
-        Alert.alert("Error", "Please enter the client's name and email");
+        Alert.alert("Error", "Ingrese el nombre y email del cliente");
         return;
       }
-      if (!onCreateClient) { Alert.alert("Error", "Client creation not available"); return; }
+      if (!onCreateClient) { Alert.alert("Error", "Creación de cliente no disponible"); return; }
       try {
         clientId = await onCreateClient({ full_name: newName.trim(), email: newEmail.trim(), phone: newPhone.trim() || undefined });
       } catch (err: any) {
@@ -138,28 +170,38 @@ export function ReservationFormModal({
       }
     }
 
-    if (!checkInDate || !checkOutDate) { Alert.alert("Error", "Please enter check-in and check-out dates"); return; }
-    if (nights <= 0) { Alert.alert("Error", "Check-out must be after check-in"); return; }
-    if (!parsedCheckIn || !parsedCheckOut || isNaN(parsedCheckIn.getTime()) || isNaN(parsedCheckOut.getTime())) {
-      Alert.alert("Error", "Invalid date format. Use YYYY-MM-DD");
-      return;
-    }
+    if (nights <= 0) { Alert.alert("Error", "La salida debe ser después de la entrada"); return; }
+
+    const usdAmount = estimatedTotal || 0;
 
     setSubmitting(true);
     try {
       await onSubmit({
         id_client: clientId,
         id_room: selectedRoom.id_room,
-        check_in_date: parsedCheckIn.toISOString(),
-        check_out_date: parsedCheckOut.toISOString(),
+        check_in_date: toLocalDateISO(checkInDate),
+        check_out_date: toLocalDateISO(checkOutDate),
         number_of_guests: Number(guests) || 1,
         reservation_status: status,
-        total_amount: estimatedTotal || 0,
+        total_amount: usdAmount,
         notes: notes.trim() || undefined,
       });
       onClose();
     } catch (err: any) {
-      Alert.alert("Error", err.message);
+      const msg = err.message || "";
+      if (msg.includes("PENDIENTE")) {
+        Alert.alert(
+          "Conflicto de fechas",
+          "Ya existe una reserva pendiente para esta habitación en esas fechas. Por favor comuníquese con el hotel para coordinar o elija otra fecha.",
+        );
+      } else if (msg.includes("CONFIRMADA")) {
+        Alert.alert(
+          "Habitación no disponible",
+          "La habitación ya está reservada para esas fechas. Seleccione otra habitación o fechas.",
+        );
+      } else {
+        Alert.alert("Error", msg);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -176,21 +218,21 @@ export function ReservationFormModal({
           {picker === "room" ? (
             <>
               <View className="flex-row justify-between items-center mb-4">
-                <ThemedText type="title">Select Room</ThemedText>
+                <ThemedText type="title">Seleccionar Habitación</ThemedText>
                 <TouchableOpacity onPress={() => { setPicker(null); setSearch(""); }}>
                   <MaterialIcons name="close" size={24} color="#64748B" />
                 </TouchableOpacity>
               </View>
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-xl mb-4"
-                placeholder="Search by room number or type..."
+                placeholder="Buscar por número o tipo..."
                 placeholderTextColor="#94A3B8"
                 value={search}
                 onChangeText={setSearch}
                 autoCapitalize="none"
               />
               {filteredRooms.length === 0 ? (
-                <ThemedText className="opacity-60 italic text-center py-8">No rooms found</ThemedText>
+                <ThemedText className="opacity-60 italic text-center py-8">No se encontraron habitaciones</ThemedText>
               ) : (
                 <FlatList
                   data={filteredRooms}
@@ -208,9 +250,9 @@ export function ReservationFormModal({
                         <MaterialIcons name="hotel" size={22} color="#0EA5E9" />
                       </View>
                       <View className="flex-1">
-                        <ThemedText className="font-semibold">Room {item.room_number}</ThemedText>
+                        <ThemedText className="font-semibold">Hab. {item.room_number}</ThemedText>
                         <ThemedText className="text-xs opacity-60">
-                          {item.room_type} - ${item.price_per_night}/night - {item.room_status}
+                          {item.room_type} - {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}/noche - {statusConfig[item.room_status]?.label || item.room_status}
                         </ThemedText>
                       </View>
                       {selectedRoom?.id_room === item.id_room && (
@@ -224,21 +266,21 @@ export function ReservationFormModal({
           ) : picker === "client" ? (
             <>
               <View className="flex-row justify-between items-center mb-4">
-                <ThemedText type="title">Select Client</ThemedText>
+                <ThemedText type="title">Seleccionar Cliente</ThemedText>
                 <TouchableOpacity onPress={() => { setPicker(null); setSearch(""); }}>
                   <MaterialIcons name="close" size={24} color="#64748B" />
                 </TouchableOpacity>
               </View>
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-xl mb-4"
-                placeholder="Search by name or email..."
+                placeholder="Buscar por nombre o email..."
                 placeholderTextColor="#94A3B8"
                 value={search}
                 onChangeText={setSearch}
                 autoCapitalize="none"
               />
               {filteredClients.length === 0 ? (
-                <ThemedText className="opacity-60 italic text-center py-8">No clients found</ThemedText>
+                <ThemedText className="opacity-60 italic text-center py-8">No se encontraron clientes</ThemedText>
               ) : (
                 <FlatList
                   data={filteredClients}
@@ -270,7 +312,7 @@ export function ReservationFormModal({
           ) : (
             <>
               <View className="flex-row justify-between items-center mb-5">
-                <ThemedText type="title">{editingReservation ? "Edit Reservation" : "New Reservation"}</ThemedText>
+                <ThemedText type="title">{editingReservation ? "Editar Reserva" : "Nueva Reserva"}</ThemedText>
                 <TouchableOpacity onPress={onClose}>
                   <MaterialIcons name="close" size={24} color="#64748B" />
                 </TouchableOpacity>
@@ -278,7 +320,7 @@ export function ReservationFormModal({
 
               <ErrorBoundary>
               <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5 uppercase">Client *</ThemedText>
+              <ThemedText className="font-semibold text-sm opacity-60 mb-1.5 uppercase">Cliente *</ThemedText>
 
                 {onCreateClient && !editingReservation && (
                   <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-1 mb-3">
@@ -286,13 +328,13 @@ export function ReservationFormModal({
                       className={`flex-1 py-2 rounded-lg items-center ${clientMode === "existing" ? "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600" : ""}`}
                       onPress={() => setClientMode("existing")}
                     >
-                      <ThemedText className={`text-sm font-semibold ${clientMode === "existing" ? "text-[#0EA5E9]" : "opacity-60"}`}>Existing</ThemedText>
+                      <ThemedText className={`text-sm font-semibold ${clientMode === "existing" ? "text-[#0EA5E9]" : "opacity-60"}`}>Existente</ThemedText>
                     </TouchableOpacity>
                     <TouchableOpacity
                       className={`flex-1 py-2 rounded-lg items-center ${clientMode === "new" ? "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600" : ""}`}
                       onPress={() => setClientMode("new")}
                     >
-                      <ThemedText className={`text-sm font-semibold ${clientMode === "new" ? "text-[#0EA5E9]" : "opacity-60"}`}>New</ThemedText>
+                      <ThemedText className={`text-sm font-semibold ${clientMode === "new" ? "text-[#0EA5E9]" : "opacity-60"}`}>Nuevo</ThemedText>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -310,7 +352,7 @@ export function ReservationFormModal({
                           <ThemedText className="text-xs opacity-60">{selectedClient.email}</ThemedText>
                         </View>
                       ) : (
-                        <ThemedText className="opacity-50">Tap to select a client</ThemedText>
+                        <ThemedText className="opacity-50">Toca para seleccionar un cliente</ThemedText>
                       )}
                     </View>
                     <MaterialIcons name="expand-more" size={22} color="#94A3B8" />
@@ -319,7 +361,7 @@ export function ReservationFormModal({
                   <View className="mb-4">
                     <TextInput
                       className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-2"
-                      placeholder="Full name *"
+                      placeholder="Nombre completo *"
                       placeholderTextColor="#94A3B8"
                       value={newName}
                       onChangeText={setNewName}
@@ -336,7 +378,7 @@ export function ReservationFormModal({
                     />
                     <TextInput
                       className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                      placeholder="Phone (optional)"
+                      placeholder="Teléfono (opcional)"
                       placeholderTextColor="#94A3B8"
                       value={newPhone}
                       onChangeText={setNewPhone}
@@ -345,7 +387,7 @@ export function ReservationFormModal({
                   </View>
                 )}
 
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5 uppercase">Room *</ThemedText>
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5 uppercase">Habitación *</ThemedText>
                 <TouchableOpacity
                   className="flex-row items-center justify-between bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 mb-4"
                   onPress={() => { setPicker("room"); setSearch(""); }}
@@ -354,11 +396,11 @@ export function ReservationFormModal({
                     <MaterialIcons name="hotel" size={20} color="#94A3B8" style={{ marginRight: 10 }} />
                     {selectedRoom ? (
                       <View>
-                        <ThemedText className="font-semibold">Room {selectedRoom.room_number}</ThemedText>
-                        <ThemedText className="text-xs opacity-60">{selectedRoom.room_type} - ${selectedRoom.price_per_night}/night</ThemedText>
+                        <ThemedText className="font-semibold">Hab. {selectedRoom.room_number}</ThemedText>
+                        <ThemedText className="text-xs opacity-60">{selectedRoom.room_type} - {exchangeRate ? `Bs. ${(selectedRoom.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${selectedRoom.price_per_night}`}/noche</ThemedText>
                       </View>
                     ) : (
-                      <ThemedText className="opacity-50">Tap to select a room</ThemedText>
+                      <ThemedText className="opacity-50">Toca para seleccionar una habitación</ThemedText>
                     )}
                   </View>
                   <MaterialIcons name="expand-more" size={22} color="#94A3B8" />
@@ -366,32 +408,57 @@ export function ReservationFormModal({
 
                 <View className="flex-row gap-3 mb-4">
                   <View className="flex-1">
-                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">CHECK-IN *</ThemedText>
-                    <TextInput
-                      value={checkInDate}
-                      onChangeText={setCheckInDate}
-                      placeholder="2026-05-01"
-                      placeholderTextColor="#94A3B8"
-                      className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                      autoCapitalize="none"
-                    />
+                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">ENTRADA *</ThemedText>
+                    <TouchableOpacity
+                      onPress={() => setShowCheckInPicker(true)}
+                      className="py-2 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
+                    >
+                      <View className="flex-row items-center mb-0.5">
+                        <MaterialIcons name="calendar-today" size={14} color="#94A3B8" style={{ marginRight: 6 }} />
+                        <ThemedText className="text-sm">{formatDate(checkInDate)}</ThemedText>
+                      </View>
+                      <View className="flex-row items-center">
+                        <MaterialIcons name="access-time" size={14} color="#94A3B8" style={{ marginRight: 6 }} />
+                        <ThemedText className="text-xs opacity-70">{formatTime(checkInDate)}</ThemedText>
+                      </View>
+                    </TouchableOpacity>
                   </View>
                   <View className="flex-1">
-                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">CHECK-OUT *</ThemedText>
-                    <TextInput
-                      value={checkOutDate}
-                      onChangeText={setCheckOutDate}
-                      placeholder="2026-05-05"
-                      placeholderTextColor="#94A3B8"
-                      className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                      autoCapitalize="none"
-                    />
+                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">SALIDA *</ThemedText>
+                    <TouchableOpacity
+                      onPress={() => setShowCheckOutPicker(true)}
+                      className="py-2 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
+                    >
+                      <View className="flex-row items-center mb-0.5">
+                        <MaterialIcons name="calendar-today" size={14} color="#94A3B8" style={{ marginRight: 6 }} />
+                        <ThemedText className="text-sm">{formatDate(checkOutDate)}</ThemedText>
+                      </View>
+                      <View className="flex-row items-center">
+                        <MaterialIcons name="access-time" size={14} color="#94A3B8" style={{ marginRight: 6 }} />
+                        <ThemedText className="text-xs opacity-70">{formatTime(checkOutDate)}</ThemedText>
+                      </View>
+                    </TouchableOpacity>
                   </View>
                 </View>
 
+                {showCheckInPicker && (
+                  <DatePickerOverlay
+                    date={checkInDate}
+                    onChange={setCheckInDate}
+                    onClose={() => setShowCheckInPicker(false)}
+                  />
+                )}
+                {showCheckOutPicker && (
+                  <DatePickerOverlay
+                    date={checkOutDate}
+                    onChange={setCheckOutDate}
+                    onClose={() => setShowCheckOutPicker(false)}
+                  />
+                )}
+
                 <View className="flex-row gap-3 mb-4">
                   <View className="flex-1">
-                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">GUESTS</ThemedText>
+                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">HUÉSPEDES</ThemedText>
                     <TextInput
                       value={guests}
                       onChangeText={setGuests}
@@ -405,7 +472,7 @@ export function ReservationFormModal({
                     <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">TOTAL</ThemedText>
                     <View className="py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
                       <ThemedText className="font-semibold text-[#0EA5E9]">
-                        ${estimatedTotal ?? 0}
+                        {exchangeRate ? `Bs. ${((estimatedTotal ?? 0) * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${estimatedTotal ?? 0}`}
                       </ThemedText>
                     </View>
                   </View>
@@ -413,12 +480,12 @@ export function ReservationFormModal({
 
                 {editingReservation && (
                   <>
-                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">STATUS</ThemedText>
+                    <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">ESTADO</ThemedText>
                     <View className="flex-row flex-wrap gap-2 mb-4">
                       {(Object.entries(statusConfig) as [string, { color: string; icon: string; bg: string; label: string }][]).map(([key, val]) => (
                         <TouchableOpacity
                           key={key}
-                          className={`px-3 py-1.5 rounded-full ${status === key ? "bg-[#0EA5E9]" : "bg-gray-100 dark:bg-gray-800}"}`}
+                          className={`px-3 py-1.5 rounded-full ${status === key ? "bg-[#0EA5E9]" : "bg-gray-100 dark:bg-gray-800"}`}
                           onPress={() => setStatus(key as Reservation["reservation_status"])}
                         >
                           <ThemedText className={`${status === key ? "text-white text-xs font-semibold" : "text-xs"}`}>{val.label}</ThemedText>
@@ -428,11 +495,11 @@ export function ReservationFormModal({
                   </>
                 )}
 
-                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">NOTES</ThemedText>
+                <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">NOTAS</ThemedText>
                 <TextInput
                   value={notes}
                   onChangeText={setNotes}
-                  placeholder="Optional notes..."
+                  placeholder="Notas opcionales..."
                   placeholderTextColor="#94A3B8"
                   className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-6"
                   multiline
@@ -447,7 +514,7 @@ export function ReservationFormModal({
                     <ActivityIndicator color="white" />
                   ) : (
                     <ThemedText className="text-white font-semibold text-base">
-                      {editingReservation ? "Update" : "Create"} Reservation
+                      {editingReservation ? "Actualizar" : "Crear"} Reserva
                     </ThemedText>
                   )}
                 </TouchableOpacity>
@@ -456,6 +523,83 @@ export function ReservationFormModal({
             </>
           )}
         </View>
+      </View>
+    </View>
+  );
+}
+
+function DatePickerOverlay({ date, onChange, onClose }: {
+  date: Date;
+  onChange: (d: Date) => void;
+  onClose: () => void;
+}) {
+  const [currentDate, setCurrentDate] = useState(date);
+  const [step, setStep] = useState<'date' | 'time'>('date');
+
+  useEffect(() => { setCurrentDate(date); }, [date]);
+
+  function handleChange(event: DateTimePickerEvent, selectedDate?: Date) {
+    if (Platform.OS === 'android') {
+      if (event.type === 'dismissed') {
+        onClose();
+        return;
+      }
+      if (step === 'date') {
+        setCurrentDate(selectedDate || currentDate);
+        setStep('time');
+      } else {
+        const updated = new Date(currentDate);
+        if (selectedDate) {
+          updated.setHours(selectedDate.getHours());
+          updated.setMinutes(selectedDate.getMinutes());
+        }
+        onChange(updated);
+        onClose();
+        setStep('date');
+      }
+    } else {
+      if (selectedDate) {
+        setCurrentDate(selectedDate);
+        onChange(selectedDate);
+      }
+    }
+  }
+
+  function handleDone() {
+    if (Platform.OS === 'android') return;
+    onChange(currentDate);
+    onClose();
+  }
+
+  if (Platform.OS === 'android') {
+    return (
+      <DateTimePicker
+        value={currentDate}
+        mode={step === 'time' ? 'time' : 'date'}
+        onChange={handleChange}
+      />
+    );
+  }
+
+  return (
+    <View className="absolute inset-0 z-50 justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+      <TouchableOpacity className="absolute inset-0" activeOpacity={1} onPress={onClose} />
+      <View className="mx-6 bg-white dark:bg-gray-800 rounded-2xl overflow-hidden">
+        <View className="flex-row justify-between items-center px-5 pt-4 pb-2">
+          <TouchableOpacity onPress={onClose}>
+            <ThemedText className="text-red-500 font-semibold">Cancelar</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleDone}>
+            <ThemedText className="text-[#0EA5E9] font-semibold">OK</ThemedText>
+          </TouchableOpacity>
+        </View>
+        <DateTimePicker
+          value={currentDate}
+          mode="datetime"
+          display="spinner"
+          onChange={handleChange}
+          locale="es-ES"
+        />
       </View>
     </View>
   );

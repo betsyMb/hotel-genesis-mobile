@@ -2,20 +2,35 @@ import { useState } from "react";
 import { FlatList, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useReservations, useOccupancies, useCreateOccupancy, useUpdateRoom } from "@/hooks";
+import { useReservations, useOccupancies, useCreateOccupancy, useUpdateRoom, useExchangeRate } from "@/hooks";
 import { Reservation } from "@/hooks/api/types";
 import { EmptyState, StatBadge } from "@/components/shared";
 import { CheckInOutModals } from "@/components/receptionist";
 import { MaterialIcons } from "@expo/vector-icons";
 
+const statusLabels: Record<string, string> = {
+  pending: "Pendiente",
+  confirmed: "Confirmada",
+  completed: "Completada",
+  cancelled: "Cancelada",
+  no_show: "No Show",
+};
+
 function CheckInCard({ item, onCheckIn }: { item: Reservation; onCheckIn: (r: Reservation) => void }) {
+  const { data: exchangeRate } = useExchangeRate();
+  const toBs = (amount: number) => {
+    const num = Number(amount);
+    const safe = isFinite(num) ? num : 0;
+    return exchangeRate
+      ? `Bs. ${(safe * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}`
+      : `$${safe.toLocaleString()}`;
+  };
   const checkIn = new Date(item.check_in_date);
   const checkOut = new Date(item.check_out_date);
-  console.log({item})
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const checkInStr = checkIn.toISOString().split("T")[0];
-  const canCheckIn = checkInStr <= todayStr && (item.reservation_status === "confirmed" || item.reservation_status === "pending");
+  const canCheckIn = checkInStr <= todayStr && item.reservation_status === "confirmed";
 
   return (
     <View className={`bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-3 border-2 ${
@@ -31,10 +46,10 @@ function CheckInCard({ item, onCheckIn }: { item: Reservation; onCheckIn: (r: Re
             </View>
             <View className="flex-1">
               <ThemedText type="defaultSemiBold">
-                Room {item.room?.room_number || item.id_room}
+                Hab. {item.room?.room_number || item.id_room}
               </ThemedText>
               <ThemedText className="text-sm opacity-60">
-                {item.client?.full_name || `Client #${item.id_client}`}
+                {item.client?.full_name || `Cliente #${item.id_client}`}
               </ThemedText>
             </View>
           </View>
@@ -45,7 +60,7 @@ function CheckInCard({ item, onCheckIn }: { item: Reservation; onCheckIn: (r: Re
             <ThemedText className={`text-xs font-semibold ${
               canCheckIn ? "text-green-600" : "opacity-60"
             }`}>
-              {canCheckIn ? "Ready" : item.reservation_status}
+              {canCheckIn ? "Listo" : (statusLabels[item.reservation_status] || item.reservation_status)}
             </ThemedText>
           </View>
         </View>
@@ -53,18 +68,18 @@ function CheckInCard({ item, onCheckIn }: { item: Reservation; onCheckIn: (r: Re
         <View className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 mt-3">
           <View className="flex-row items-center">
             <View className="flex-1 items-center">
-              <ThemedText className="text-xs opacity-60">Check-in</ThemedText>
+              <ThemedText className="text-xs opacity-60">Entrada</ThemedText>
               <ThemedText className="font-semibold text-sm mt-0.5">
-                {checkIn.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                {checkIn.toLocaleDateString("es-ES", { month: "short", day: "numeric", year: "numeric" })}
               </ThemedText>
             </View>
             <View className="w-8 h-8 rounded-full bg-[#0EA5E9]/10 items-center justify-center mx-2">
               <MaterialIcons name="arrow-forward" size={18} color="#0EA5E9" />
             </View>
             <View className="flex-1 items-center">
-              <ThemedText className="text-xs opacity-60">Check-out</ThemedText>
+              <ThemedText className="text-xs opacity-60">Salida</ThemedText>
               <ThemedText className="font-semibold text-sm mt-0.5">
-                {checkOut.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                {checkOut.toLocaleDateString("es-ES", { month: "short", day: "numeric", year: "numeric" })}
               </ThemedText>
             </View>
           </View>
@@ -74,7 +89,7 @@ function CheckInCard({ item, onCheckIn }: { item: Reservation; onCheckIn: (r: Re
           <View className="flex-row items-center">
             <MaterialIcons name="event-note" size={16} color="#94A3B8" />
             <ThemedText className="ml-1 text-sm opacity-70">
-              ${item.total_amount}
+              {toBs(Number(item.total_amount))}
             </ThemedText>
           </View>
           {canCheckIn && (
@@ -145,7 +160,7 @@ export default function ReceptionistCheckinScreen() {
       setShowConfirm(false);
       setSelectedReservation(null);
       refetchReservations();
-      Alert.alert("Success", `Checked in to Room ${selectedReservation.room?.room_number}`);
+      Alert.alert("Éxito", `Check-in realizado en Hab. ${selectedReservation.room?.room_number}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     }
@@ -155,21 +170,22 @@ export default function ReceptionistCheckinScreen() {
     <ThemedView className="flex-1">
       <View className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
         <View className="flex-row gap-2 mb-3">
-          <StatBadge label="Arrivals" value={todayCheckIns.length} color="#10B981" />
-          <StatBadge label="Active" value={occupancies?.filter((o) => o.occupancy_status === "active").length || 0} color="#3B82F6" />
+          <StatBadge label="Llegadas" value={todayCheckIns.length} color="#10B981" />
+          <StatBadge label="Activas" value={occupancies?.filter((o) => o.occupancy_status === "active").length || 0} color="#3B82F6" />
         </View>
       </View>
 
       <FlatList
         data={todayCheckIns}
         keyExtractor={(item) => item.id_reservation.toString()}
+        className="flex-1"
         renderItem={({ item }) => (
           <CheckInCard item={item as Reservation} onCheckIn={handleCheckIn} />
         )}
         contentContainerClassName="px-4 py-4"
         ListEmptyComponent={
           !isLoading ? (
-            <EmptyState icon="check-circle" title="All Caught Up!" subtitle="No pending check-ins for today" />
+            <EmptyState icon="check-circle" title="¡Todo al día!" subtitle="No hay check-ins pendientes para hoy" />
           ) : null
         }
       />

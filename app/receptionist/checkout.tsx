@@ -47,7 +47,7 @@ export default function ReceptionistCheckoutScreen() {
       setShowConfirm(false);
       setSelectedOccupancy(null);
       refetchOccupancies();
-      Alert.alert("Success", `Room ${selectedOccupancy.id_room} checked out`);
+      Alert.alert("Éxito", `Hab. ${selectedOccupancy.id_room} check-out realizado`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     }
@@ -57,7 +57,7 @@ export default function ReceptionistCheckoutScreen() {
     <ThemedView className="flex-1">
       <View className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
         <View className="flex-row gap-2">
-          <StatBadge label="Active" value={activeOccupancies.length} color="#3B82F6" />
+          <StatBadge label="Activas" value={activeOccupancies.length} color="#3B82F6" />
           <StatBadge label="Total" value={occupancies?.length || 0} color="#0EA5E9" />
         </View>
       </View>
@@ -65,13 +65,14 @@ export default function ReceptionistCheckoutScreen() {
       <FlatList
         data={activeOccupancies}
         keyExtractor={(item) => item.id_occupancy.toString()}
+        className="flex-1"
         renderItem={({ item }) => (
           <OccupancyCard item={item as Occupancy} onCheckOut={handleCheckOut} />
         )}
         contentContainerClassName="px-4 py-4"
         ListEmptyComponent={
           !isLoading ? (
-            <EmptyState icon="logout" title="No Active Stays" subtitle="No guests currently checked in" />
+            <EmptyState icon="logout" title="Sin Estancias Activas" subtitle="No hay huéspedes con check-in actualmente" />
           ) : null
         }
       />

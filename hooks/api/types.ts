@@ -1,5 +1,5 @@
-// const BASE_URL = 'http://localhost:3000';
-export const BASE_URL = 'http://192.168.0.102:3000';
+// export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'http://192.168.68.102:3000';
 
 console.log({BASE_URL})
 
@@ -41,6 +41,12 @@ export const ENDPOINTS = {
     checkin: `${BASE_URL}/walkin/checkin`,
     checkout: `${BASE_URL}/walkin/checkout`,
     history: `${BASE_URL}/walkin/history`,
+  },
+  notifications: {
+    base: `${BASE_URL}/notifications`,
+    unreadCount: `${BASE_URL}/notifications/unread-count`,
+    markRead: (id: number) => `${BASE_URL}/notifications/${id}/read`,
+    markAllRead: `${BASE_URL}/notifications/read-all`,
   },
 } as const;
 
@@ -87,6 +93,7 @@ export interface Reservation {
   number_of_guests?: number;
   reservation_status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'no_show';
   total_amount: number;
+  total_amount_bs?: number;
   notes?: string;
   client?: User;
   room?: Room;
@@ -100,6 +107,8 @@ export interface Occupancy {
   actual_check_out?: string;
   occupancy_status: 'active' | 'completed' | 'no_show';
   guest_signature?: string;
+  total_amount?: number;
+  total_amount_bs?: number;
   room?: Room;
   reservation?: Reservation | null;
 }

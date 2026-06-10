@@ -10,14 +10,14 @@ import { WalkInHistoryItem } from "@/hooks/api/walkin-types";
 
 function formatDate(iso: string) {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("es-ES", {
     month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit",
   });
 }
 
 function formatDateShort(iso: string) {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("es-ES", {
     month: "short", day: "numeric", year: "numeric",
   });
 }
@@ -30,7 +30,7 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
       <View className="flex-1 justify-end bg-black/50">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl">
           <View className="flex-row items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
-            <ThemedText type="title">Check-out Details</ThemedText>
+            <ThemedText type="title">Detalles de Salida</ThemedText>
             <TouchableOpacity
               className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center"
               onPress={onClose}
@@ -46,7 +46,7 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
               </View>
               <View>
                 <ThemedText className="text-lg font-bold">
-                  Room {item.room_number || `#${item.room_id}`}
+                  Habitación {item.room_number || `#${item.room_id}`}
                 </ThemedText>
                 {item.room_type && (
                   <ThemedText className="text-sm opacity-60 capitalize">{item.room_type}</ThemedText>
@@ -55,17 +55,17 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
             </View>
 
             <View className="mb-4">
-              <ThemedText className="text-xs font-semibold opacity-60 uppercase mb-2">Main Guest</ThemedText>
+              <ThemedText className="text-xs font-semibold opacity-60 uppercase mb-2">Huésped Principal</ThemedText>
               <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 flex-row items-center">
                 <MaterialIcons name="person" size={20} color="#94A3B8" style={{ marginRight: 10 }} />
-                <ThemedText className="text-base">{item.guest_signature || "Unknown"}</ThemedText>
+                <ThemedText className="text-base">{item.guest_signature || "Desconocido"}</ThemedText>
               </View>
             </View>
 
             {item.guests.length > 1 && (
               <View className="mb-4">
                 <ThemedText className="text-xs font-semibold opacity-60 uppercase mb-2">
-                  Additional Guests ({item.guests.length - 1})
+                  Huéspedes Adicionales ({item.guests.length - 1})
                 </ThemedText>
                 {item.guests.slice(1).map((g, i) => (
                   <View
@@ -83,19 +83,19 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
             )}
 
             <View className="mb-4">
-              <ThemedText className="text-xs font-semibold opacity-60 uppercase mb-2">Stay Details</ThemedText>
+              <ThemedText className="text-xs font-semibold opacity-60 uppercase mb-2">Detalles de Estancia</ThemedText>
               <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4">
                 <View className="flex-row items-center justify-between mb-3">
                   <View className="flex-row items-center">
                     <MaterialIcons name="login" size={18} color="#0EA5E9" style={{ marginRight: 8 }} />
-                    <ThemedText className="text-sm opacity-70">Check-in</ThemedText>
+                    <ThemedText className="text-sm opacity-70">Entrada</ThemedText>
                   </View>
                   <ThemedText className="text-sm font-medium">{formatDate(item.checked_in)}</ThemedText>
                 </View>
                 <View className="flex-row items-center justify-between mb-3">
                   <View className="flex-row items-center">
                     <MaterialIcons name="logout" size={18} color="#EF4444" style={{ marginRight: 8 }} />
-                    <ThemedText className="text-sm opacity-70">Check-out</ThemedText>
+                    <ThemedText className="text-sm opacity-70">Salida</ThemedText>
                   </View>
                   <ThemedText className="text-sm font-medium">{formatDate(item.checked_out)}</ThemedText>
                 </View>
@@ -103,10 +103,10 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
                 <View className="flex-row items-center justify-between pt-1">
                   <View className="flex-row items-center">
                     <MaterialIcons name="nights-stay" size={18} color="#94A3B8" style={{ marginRight: 8 }} />
-                    <ThemedText className="text-sm opacity-70">Total nights</ThemedText>
+                    <ThemedText className="text-sm opacity-70">Total noches</ThemedText>
                   </View>
                   <ThemedText className="text-base font-bold text-[#6366F1]">
-                    {item.total_nights} night{item.total_nights !== 1 ? "s" : ""}
+{item.total_nights} noche{item.total_nights !== 1 ? "s" : ""}
                   </ThemedText>
                 </View>
               </View>
@@ -138,7 +138,7 @@ function HistoryCard({
           </View>
           <View className="flex-1">
             <ThemedText className="font-semibold text-base">
-              Room {item.room_number || `#${item.room_id}`}
+              Habitación {item.room_number || `#${item.room_id}`}
             </ThemedText>
             {item.room_type && (
               <ThemedText className="text-xs opacity-60 capitalize">{item.room_type}</ThemedText>
@@ -147,7 +147,7 @@ function HistoryCard({
         </View>
         <View className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
           <ThemedText className="text-xs font-semibold opacity-60">
-            {item.total_nights} night{item.total_nights !== 1 ? "s" : ""}
+            {item.total_nights} noche{item.total_nights !== 1 ? "s" : ""}
           </ThemedText>
         </View>
       </View>
@@ -162,7 +162,7 @@ function HistoryCard({
       {item.guests.length > 1 && (
         <View className="ml-6 mb-1">
           <ThemedText className="text-xs opacity-60">
-            +{item.guests.length - 1} additional guest{(item.guests.length - 1) !== 1 ? "s" : ""}
+            +{item.guests.length - 1} {(item.guests.length - 1) !== 1 ? "huéspedes adicionales" : "huésped adicional"}
           </ThemedText>
         </View>
       )}
@@ -170,7 +170,7 @@ function HistoryCard({
       <View className="flex-row items-center mt-1">
         <MaterialIcons name="logout" size={14} color="#EF4444" style={{ marginRight: 4 }} />
         <ThemedText className="text-xs opacity-60" numberOfLines={1}>
-          Checked out: {formatDateShort(item.checked_out)}
+          Salió: {formatDateShort(item.checked_out)}
         </ThemedText>
       </View>
     </TouchableOpacity>
@@ -184,9 +184,9 @@ export function WalkInHistory() {
   function renderHeader() {
     return (
       <View className="px-5 pt-4 pb-2">
-        <ThemedText type="title">Walk-In History</ThemedText>
+        <ThemedText type="title">Historial de Walk-Ins</ThemedText>
         <ThemedText className="opacity-60 text-sm mb-4">
-          {history?.length || 0} completed check-out{(history?.length || 0) !== 1 ? "s" : ""}
+          {history?.length || 0} salida{(history?.length || 0) !== 1 ? "s" : ""} completada{(history?.length || 0) !== 1 ? "s" : ""}
         </ThemedText>
       </View>
     );
@@ -199,9 +199,9 @@ export function WalkInHistory() {
         <View className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4">
           <MaterialIcons name="history" size={32} color="#94A3B8" />
         </View>
-        <ThemedText className="text-lg font-semibold mb-1">No history yet</ThemedText>
+        <ThemedText className="text-lg font-semibold mb-1">Sin historial aún</ThemedText>
         <ThemedText className="text-sm opacity-60 text-center">
-          Completed walk-in check-outs will appear here.
+          Las salidas de walk-in completadas aparecerán aquí.
         </ThemedText>
       </View>
     );
@@ -211,7 +211,7 @@ export function WalkInHistory() {
     <ThemedView className="flex-1">
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
-          <ThemedText className="opacity-60">Loading...</ThemedText>
+          <ThemedText className="opacity-60">Cargando...</ThemedText>
         </View>
       ) : (
         <FlatList
