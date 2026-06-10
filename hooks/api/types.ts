@@ -1,5 +1,4 @@
-// export const BASE_URL = 'http://localhost:3000';
-export const BASE_URL = 'http://192.168.68.102:3000';
+export const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 console.log({BASE_URL})
 
