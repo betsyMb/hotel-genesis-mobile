@@ -46,7 +46,7 @@ export function ClientRoomCard({ item, onPress, exchangeRate }: ClientRoomCardPr
                 <MaterialIcons name="king-bed" size={14} color="#9CA3AF" />
                 <ThemedText className="text-sm opacity-60 capitalize">{item.room_type}</ThemedText>
                 <View className="w-1 h-1 rounded-full bg-gray-300" />
-                <MaterialIcons name="floor" size={14} color="#9CA3AF" />
+                <MaterialIcons name="layers" size={14} color="#9CA3AF" />
                 <ThemedText className="text-sm opacity-60">Piso {item.floor}</ThemedText>
               </View>
             </View>

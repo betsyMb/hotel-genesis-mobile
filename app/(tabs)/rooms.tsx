@@ -119,7 +119,7 @@ export default function RoomsScreen() {
                     <ThemedText className="text-xs opacity-60">Huéspedes</ThemedText>
                   </View>
                   <View className="flex-1 bg-gray-50 dark:bg-gray-800 rounded-xl p-3 items-center">
-                    <MaterialIcons name="floor" size={22} color="#F59E0B" />
+                    <MaterialIcons name="layers" size={22} color="#F59E0B" />
                     <ThemedText className="text-lg font-bold text-[#F59E0B] mt-1">{selectedRoom.floor}</ThemedText>
                     <ThemedText className="text-xs opacity-60">Piso</ThemedText>
                   </View>
