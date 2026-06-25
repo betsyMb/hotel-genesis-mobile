@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-
+import Constants from 'expo-constants';
 interface Rate {
   market: string;
   mid: number;
@@ -14,9 +14,11 @@ interface ExchangeRateResponse {
   fetched_at: string;
 }
 
-const API_URL = process.env.EXPO_PUBLIC_COTIZAVE_API_URL!;
-const API_KEY = process.env.EXPO_PUBLIC_COTIZAVE_KEY!;
 const RATE_KEY = ['exchange-rate'];
+export const API_URL = process.env.EXPO_PUBLIC_COTIZAVE_API_URL || Constants?.expoConfig?.extra?.EXPO_PUBLIC_COTIZAVE_API_URL;
+export const API_KEY = process.env.EXPO_PUBLIC_COTIZAVE_KEY || Constants?.expoConfig?.extra?.EXPO_PUBLIC_COTIZAVE_KEY;
+
+console.log({ API_URL, API_KEY });
 
 async function fetchExchangeRate(): Promise<number> {
   const res = await fetch(API_URL, {

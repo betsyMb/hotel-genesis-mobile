@@ -20,7 +20,6 @@ export default function AdminRoomsScreen() {
   async function handleCreate(data: Partial<Room>) {
     try {
       await createRoom.mutateAsync(data as any);
-      refetch();
       Alert.alert("Éxito", "Habitación creada exitosamente");
     } catch (err: any) {
       Alert.alert("Error", err.message);
@@ -31,7 +30,6 @@ export default function AdminRoomsScreen() {
     if (!editingRoom) return;
     try {
       await updateRoom.mutateAsync({ id: editingRoom.id_room, data });
-      refetch();
       setEditingRoom(null);
       Alert.alert("Éxito", "Habitación actualizada exitosamente");
     } catch (err: any) {
@@ -48,7 +46,6 @@ export default function AdminRoomsScreen() {
         onPress: async () => {
           try {
             await deleteRoom.mutateAsync(id);
-            refetch();
             Alert.alert("Eliminado", "Habitación eliminada exitosamente");
           } catch (err: any) {
             Alert.alert("Error", err.message);

@@ -4,34 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="feature: fix themes and fixing bugs">
-      <change afterPath="$PROJECT_DIR$/assets/images/hotel-logo.png" afterDir="false" />
+    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="fix: eas build">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/booking.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/booking.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/android-icon-background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/android-icon-foreground.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/android-icon-monochrome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/favicon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/partial-react-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/react-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/react-logo@2x.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/react-logo@3x.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/splash-icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/client/ClientRoomCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/ReservationFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationFormModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/RoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/RoomCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/RoomFormModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/RoomFormModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInDashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/walkin/WalkInForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/walkin/WalkInHistory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/rooms.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eas.json" beforeDir="false" afterPath="$PROJECT_DIR$/eas.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hooks/api/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/api/walkin-types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/walkin-types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hooks/use-exchange-rate.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/use-exchange-rate.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="18141" />
+    <option name="cachedIndexableFilesCount" value="18523" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -51,61 +30,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0485022785887916" />
-      <entry key="MS500" value="1.7613711473949207" />
-      <entry key="S2" value="2.8191074381596177" />
-      <entry key="S5" value="4.6334020312290285" />
-      <entry key="S10" value="6.447222412839013" />
-      <entry key="S30" value="8.535836950459707" />
-      <entry key="S60" value="9.234770278467819" />
-      <entry key="M2" value="9.698306323173679" />
-      <entry key="M5" value="10.26481389583185" />
-      <entry key="M10" value="10.95736617558148" />
-      <entry key="M15" value="11.662554187271077" />
-      <entry key="M30" value="13.253439122252312" />
-      <entry key="H1" value="15.452996259165937" />
-      <entry key="H2" value="20.503987431715736" />
-      <entry key="H4" value="28.60258715024727" />
-      <entry key="D1" value="44.12843165399019" />
-      <entry key="W1" value="48.25530311487428" />
+      <entry key="MS100" value="1.0000025519172857" />
+      <entry key="MS500" value="1.0835694999831937" />
+      <entry key="S2" value="1.9180431523875008" />
+      <entry key="S5" value="3.183123581184726" />
+      <entry key="S10" value="4.9265052420219995" />
+      <entry key="S30" value="10.711527261726578" />
+      <entry key="S60" value="16.93931577317904" />
+      <entry key="M2" value="24.41078505395213" />
+      <entry key="M5" value="34.47667155004414" />
+      <entry key="M10" value="46.62502075369124" />
+      <entry key="M15" value="60.73785617876093" />
+      <entry key="M30" value="102.91332991090708" />
+      <entry key="H1" value="155.96192258330302" />
+      <entry key="H2" value="201.7677756540267" />
+      <entry key="H4" value="239.01155187163354" />
+      <entry key="D1" value="312.8067302400853" />
+      <entry key="W1" value="338.8881990842701" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="2.6302422868003658E-39" />
-      <entry key="MS500" value="1.923087970095541E-8" />
-      <entry key="S2" value="0.011776053980924848" />
-      <entry key="S5" value="0.16919982717899879" />
-      <entry key="S10" value="0.41133906595353964" />
-      <entry key="S30" value="0.7437902332958056" />
-      <entry key="S60" value="0.8716809197890889" />
-      <entry key="M2" value="1.0251059418639654" />
-      <entry key="M5" value="1.3888517540056013" />
-      <entry key="M10" value="1.8691182326148799" />
-      <entry key="M15" value="2.2930284018975318" />
-      <entry key="M30" value="3.1474756593631863" />
-      <entry key="H1" value="4.031389943692908" />
-      <entry key="H2" value="5.385881437405293" />
-      <entry key="H4" value="7.453200780847101" />
-      <entry key="D1" value="11.633653034165807" />
-      <entry key="W1" value="12.789649924093624" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="4.8737903089026525E-297" />
+      <entry key="S10" value="6.9812536903500025E-149" />
+      <entry key="S30" value="4.117603015963097E-50" />
+      <entry key="S60" value="2.0291877724752462E-25" />
+      <entry key="M2" value="4.504650677328093E-13" />
+      <entry key="M5" value="1.1520317471469587E-5" />
+      <entry key="M10" value="0.003394159317338202" />
+      <entry key="M15" value="0.022585072237392912" />
+      <entry key="M30" value="0.1502951257247879" />
+      <entry key="H1" value="0.39357766206233663" />
+      <entry key="H2" value="0.8130727244734692" />
+      <entry key="H4" value="2.213388906346597" />
+      <entry key="D1" value="10.818898836941386" />
+      <entry key="W1" value="15.111758503960742" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.0265930879491585" />
-      <entry key="MS500" value="1.7527125324633797" />
-      <entry key="S2" value="2.822887247887084" />
-      <entry key="S5" value="4.772542649257659" />
-      <entry key="S10" value="6.821851189548042" />
-      <entry key="S30" value="9.257161971721157" />
-      <entry key="S60" value="10.093210933942485" />
-      <entry key="M2" value="10.715542848305187" />
-      <entry key="M5" value="11.649227160335144" />
-      <entry key="M10" value="12.822983713699992" />
-      <entry key="M15" value="13.952280978266131" />
-      <entry key="M30" value="16.398150808820773" />
-      <entry key="H1" value="19.48215611514597" />
-      <entry key="H2" value="25.88763577929364" />
-      <entry key="H4" value="36.05373721941497" />
-      <entry key="D1" value="55.76143969570013" />
-      <entry key="W1" value="61.044849317770456" />
+      <entry key="MS100" value="0.9726574295469509" />
+      <entry key="MS500" value="1.0775569719606615" />
+      <entry key="S2" value="1.915125945297171" />
+      <entry key="S5" value="3.1810335408131234" />
+      <entry key="S10" value="4.924841489463256" />
+      <entry key="S30" value="10.710315168661417" />
+      <entry key="S60" value="16.938360337129808" />
+      <entry key="M2" value="24.41009794424311" />
+      <entry key="M5" value="34.47629595372028" />
+      <entry key="M10" value="46.62813524673037" />
+      <entry key="M15" value="60.76013341416192" />
+      <entry key="M30" value="103.06316418546996" />
+      <entry key="H1" value="156.355005217175" />
+      <entry key="H2" value="202.58041770739496" />
+      <entry key="H4" value="241.2243980228447" />
+      <entry key="D1" value="323.625099533507" />
+      <entry key="W1" value="353.99984789224277" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -128,10 +107,10 @@
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/betsy/Desktop/university/hotel-app/app/(receptionist)&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/betsy/Desktop/university/hotel-app/assets&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -145,15 +124,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets" />
+      <recent name="$PROJECT_DIR$/assets/images" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/app/(receptionist)" />
       <recent name="$PROJECT_DIR$/components" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images" />
       <recent name="$PROJECT_DIR$/hooks/reservations" />
       <recent name="$PROJECT_DIR$/hooks/promotions" />
       <recent name="$PROJECT_DIR$/hooks/services" />
       <recent name="$PROJECT_DIR$/hooks/roles" />
-      <recent name="$PROJECT_DIR$/hooks/rooms" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -181,7 +163,11 @@
       <workItem from="1779381669916" duration="18106000" />
       <workItem from="1780402354821" duration="1862000" />
       <workItem from="1780850470435" duration="21639000" />
-      <workItem from="1781046298450" duration="6021000" />
+      <workItem from="1781046298450" duration="14120000" />
+      <workItem from="1781458562367" duration="1878000" />
+      <workItem from="1781621670992" duration="6879000" />
+      <workItem from="1781711181929" duration="6327000" />
+      <workItem from="1782245803438" duration="6084000" />
     </task>
     <task id="LOCAL-00001" summary="feature: reservations">
       <option name="closed" value="true" />
@@ -215,18 +201,82 @@
       <option name="project" value="LOCAL" />
       <updated>1781051201913</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="feat: adding 3 hours service">
+      <option name="closed" value="true" />
+      <created>1781055060544</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1781055060544</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: adding env template">
+      <option name="closed" value="true" />
+      <created>1781055261902</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1781055261902</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: deleting env">
+      <option name="closed" value="true" />
+      <created>1781060422067</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1781060422067</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fix: build">
+      <option name="closed" value="true" />
+      <created>1781061334715</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1781061334715</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix: eas build">
+      <option name="closed" value="true" />
+      <created>1781061769098</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1781061769098</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix: eas build">
+      <option name="closed" value="true" />
+      <created>1781062331942</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1781062331942</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feature: reservations" />
     <MESSAGE value="feature" />
     <MESSAGE value="feature: logic" />
     <MESSAGE value="feature: fix themes and fixing bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature: fix themes and fixing bugs" />
+    <MESSAGE value="feat: adding 3 hours service" />
+    <MESSAGE value="feat: adding env template" />
+    <MESSAGE value="feat: deleting env" />
+    <MESSAGE value="fix: build" />
+    <MESSAGE value="fix: eas build" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: eas build" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -53,6 +53,7 @@
     },
     "extra": {
       "router": {},
+      "backendUrl": "https://hotel-genesis-backend.onrender.com",
       "eas": {
         "projectId": "f64248bc-5451-4b92-94db-afc4b88ad660"
       }
