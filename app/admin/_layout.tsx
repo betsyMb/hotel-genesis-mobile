@@ -18,7 +18,7 @@ const adminLinks = [
   { name: "walkin-history", title: "Historial Walk-in", icon: "history" },
   { name: "users", title: "Usuarios", icon: "people" },
   { name: "reports", title: "Reportes", icon: "assessment" },
-  { name: "settings", title: "Configuración", icon: "settings" },
+  // { name: "settings", title: "Configuración", icon: "settings" },
   { name: "maintenance", title: "Mantenimiento", icon: "build" },
   { name: "profile", title: "Perfil", icon: "person" },
 ];
