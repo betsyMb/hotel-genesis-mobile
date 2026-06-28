@@ -16,6 +16,7 @@ export const ENDPOINTS = {
   users: {
     base: `${BASE_URL}/users`,
     byId: (id: number) => `${BASE_URL}/users/${id}`,
+    password: (id: number) => `${BASE_URL}/users/${id}/password`,
   },
   rooms: {
     base: `${BASE_URL}/rooms`,

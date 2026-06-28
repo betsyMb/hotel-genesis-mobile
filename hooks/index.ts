@@ -2,7 +2,7 @@ export { AuthProvider, useAuth } from './auth/use-auth';
 
 export { useRooms, useRoom, useCreateRoom, useUpdateRoom, useDeleteRoom, useUpdateRoomTasks } from './rooms/use-rooms';
 export { useReservations, useReservation, useCreateReservation, useUpdateReservation, useDeleteReservation } from './reservations/use-reservations';
-export { useUsers, useUser, useCreateUser, useUpdateUser, useDeleteUser } from './use-users';
+export { useUsers, useUser, useCreateUser, useUpdateUser, useUpdatePassword, useDeleteUser } from './use-users';
 export { useRoles, useRole, useCreateRole, useUpdateRole, useDeleteRole } from './roles/use-roles';
 export { useServices, useService, useCreateService, useUpdateService, useDeleteService } from './services/use-services';
 export { usePromotions, usePromotion, useCreatePromotion, useUpdatePromotion, useDeletePromotion } from './promotions/use-promotions';

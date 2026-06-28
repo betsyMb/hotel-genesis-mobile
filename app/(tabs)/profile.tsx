@@ -1,7 +1,7 @@
 import { TouchableOpacity, View, ScrollView, Alert, TextInput, Switch, Linking } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useAuth, useUpdateUser, useBiometric } from "@/hooks";
+import { useAuth, useUpdateUser, useUpdatePassword, useBiometric } from "@/hooks";
 import { useRouter } from "expo-router";
 import { ProfileRow } from "@/components/shared";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -15,6 +15,10 @@ export default function ProfileScreen() {
   const [phoneValue, setPhoneValue] = useState(user?.phone || "");
   const [bioPassword, setBioPassword] = useState("");
   const [showBioPassword, setShowBioPassword] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const updatePassword = useUpdatePassword();
   const { hasHardware, isEnrolled, isEnabled: bioEnabled, loading: bioLoading, toggle: toggleBiometric } = useBiometric();
 
   async function handleSavePhone() {
@@ -27,6 +31,26 @@ export default function ProfileScreen() {
       }
     }
     setEditingPhone(false);
+  }
+
+  async function handleChangePassword() {
+    if (!newPassword || newPassword.length < 6) {
+      Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      Alert.alert("Error", "Las contraseñas no coinciden");
+      return;
+    }
+    try {
+      await updatePassword.mutateAsync({ id: Number(user!.id_user), password: newPassword });
+      Alert.alert("Éxito", "Contraseña actualizada correctamente");
+      setShowPasswordModal(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    }
   }
 
   async function handleLogout() {
@@ -172,6 +196,19 @@ export default function ProfileScreen() {
           )}
         </View>
 
+        <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-5">
+          <TouchableOpacity className="flex-row items-center p-4" onPress={() => setShowPasswordModal(true)}>
+            <View className="w-10 h-10 rounded-xl bg-red-500/10 items-center justify-center mr-3">
+              <MaterialIcons name="lock-outline" size={22} color="#EF4444" />
+            </View>
+            <View className="flex-1">
+              <ThemedText className="font-semibold">Cambiar Contraseña</ThemedText>
+              <ThemedText className="text-xs opacity-60">Actualiza tu contraseña</ThemedText>
+            </View>
+            <MaterialIcons name="chevron-right" size={24} color="#CBD5E1" />
+          </TouchableOpacity>
+        </View>
+
         <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-6">
           <TouchableOpacity className="flex-row items-center p-4">
             <View className="w-10 h-10 rounded-xl bg-amber-500/10 items-center justify-center mr-3">
@@ -212,6 +249,47 @@ export default function ProfileScreen() {
           Hotel App v1.0.0
         </ThemedText>
       </ThemedView>
+
+      {showPasswordModal && (
+        <View className="absolute inset-0 bg-black/50 justify-center px-6">
+          <View className="bg-white dark:bg-gray-900 rounded-2xl p-6">
+            <ThemedText type="title" className="mb-2">Cambiar Contraseña</ThemedText>
+            <ThemedText className="text-sm opacity-60 mb-4">Ingresa tu nueva contraseña</ThemedText>
+            <TextInput
+              value={newPassword}
+              onChangeText={setNewPassword}
+              placeholder="Nueva contraseña"
+              placeholderTextColor="#94A3B8"
+              secureTextEntry
+              className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-3"
+              autoFocus
+            />
+            <TextInput
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="Confirmar contraseña"
+              placeholderTextColor="#94A3B8"
+              secureTextEntry
+              className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-4"
+            />
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                className="flex-1 py-3 rounded-xl items-center bg-gray-100 dark:bg-gray-800"
+                onPress={() => {
+                  setShowPasswordModal(false);
+                  setNewPassword("");
+                  setConfirmPassword("");
+                }}
+              >
+                <ThemedText className="font-semibold opacity-60">Cancelar</ThemedText>
+              </TouchableOpacity>
+              <TouchableOpacity className="flex-1 py-3 rounded-xl items-center bg-[#0EA5E9]" onPress={handleChangePassword}>
+                <ThemedText className="text-white font-semibold">Guardar</ThemedText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
 
       {showBioPassword && (
         <View className="absolute inset-0 bg-black/50 justify-center px-6">
