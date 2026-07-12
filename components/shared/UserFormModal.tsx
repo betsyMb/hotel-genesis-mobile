@@ -48,9 +48,9 @@ function FormInput({
 export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }: UserFormModalProps) {
   const [fullName, setFullName] = useState(editingUser?.full_name || "");
   const [email, setEmail] = useState(editingUser?.email || "");
-  const [phone, setPhone] = useState(editingUser?.phone || "");
+  const [phone, setPhone] = useState(editingUser?.phone ?? "");
   const [password, setPassword] = useState("");
-  const [roleId, setRoleId] = useState(editingUser?.id_rol?.toString() || "");
+  const [roleId, setRoleId] = useState(editingUser?.id_rol?.toString() ?? "");
   const [isActive, setIsActive] = useState(editingUser?.is_active ?? true);
 
   async function handleSubmit() {
@@ -59,9 +59,22 @@ export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }
       return;
     }
 
-    const data: any = { full_name: fullName, email, id_rol: Number(roleId), is_active: isActive };
-    if (phone) data.phone = phone;
-    if (password) data.password_hash = password;
+    const data: any = {};
+    if (editingUser) {
+      if (fullName !== editingUser.full_name) data.full_name = fullName;
+      if (email !== editingUser.email) data.email = email;
+      if (Number(roleId) !== editingUser.id_rol) data.id_rol = Number(roleId);
+      if (isActive !== editingUser.is_active) data.is_active = isActive;
+      if (phone !== editingUser.phone) data.phone = phone;
+      if (password) data.password_hash = password;
+    } else {
+      data.full_name = fullName;
+      data.email = email;
+      data.id_rol = Number(roleId);
+      data.is_active = isActive;
+      if (phone) data.phone = phone;
+      if (password) data.password_hash = password;
+    }
 
     try {
       await onSubmit(data);
