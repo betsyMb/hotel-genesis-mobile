@@ -24,6 +24,7 @@ export default function ManagerProfileScreen() {
   const [bioPassword, setBioPassword] = useState("");
   const [showBioPassword, setShowBioPassword] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [currentPwd, setCurrentPwd] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const updatePassword = useUpdatePassword();
@@ -51,9 +52,10 @@ export default function ManagerProfileScreen() {
       return;
     }
     try {
-      await updatePassword.mutateAsync({ id: Number(user!.id_user), password: newPassword });
+      await updatePassword.mutateAsync({ id: Number(user!.id_user), password: newPassword, currentPassword: currentPwd });
       Alert.alert("Éxito", "Contraseña actualizada correctamente");
       setShowPasswordModal(false);
+      setCurrentPwd("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: any) {
@@ -232,7 +234,16 @@ export default function ManagerProfileScreen() {
         <View className="absolute inset-0 bg-black/50 justify-center px-6">
           <View className="bg-white dark:bg-gray-900 rounded-2xl p-6">
             <ThemedText type="title" className="mb-2">Cambiar Contraseña</ThemedText>
-            <ThemedText className="text-sm opacity-60 mb-4">Ingresa tu nueva contraseña</ThemedText>
+            <ThemedText className="text-sm opacity-60 mb-4">Ingresa tu contraseña actual y la nueva</ThemedText>
+            <TextInput
+              value={currentPwd}
+              onChangeText={setCurrentPwd}
+              placeholder="Contraseña actual"
+              placeholderTextColor="#94A3B8"
+              secureTextEntry
+              className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-3"
+              autoFocus
+            />
             <TextInput
               value={newPassword}
               onChangeText={setNewPassword}
@@ -240,7 +251,6 @@ export default function ManagerProfileScreen() {
               placeholderTextColor="#94A3B8"
               secureTextEntry
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-3"
-              autoFocus
             />
             <TextInput
               value={confirmPassword}
@@ -255,6 +265,7 @@ export default function ManagerProfileScreen() {
                 className="flex-1 py-3 rounded-xl items-center bg-gray-100 dark:bg-gray-800"
                 onPress={() => {
                   setShowPasswordModal(false);
+                  setCurrentPwd("");
                   setNewPassword("");
                   setConfirmPassword("");
                 }}

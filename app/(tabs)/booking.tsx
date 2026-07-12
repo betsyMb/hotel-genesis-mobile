@@ -68,6 +68,20 @@ export default function BookingScreen() {
   const [filter, setFilter] = useState<string>("all");
   const [serviceType, setServiceType] = useState<'nightly' | '3hours'>('nightly');
 
+  useEffect(() => {
+    if (serviceType === '3hours') {
+      const sameDay = new Date(checkIn);
+      sameDay.setHours(sameDay.getHours() + 3);
+      setCheckOut(sameDay);
+    } else {
+      if (checkOut.getTime() - checkIn.getTime() < 12 * 60 * 60 * 1000) {
+        const nextDay = new Date(checkIn);
+        nextDay.setDate(nextDay.getDate() + 1);
+        setCheckOut(nextDay);
+      }
+    }
+  }, [serviceType]);
+
   const myReservations = reservations
     ?.filter((r: Reservation) => Number(r.id_client) === Number(user?.id_user))
     .sort((a: Reservation, b: Reservation) =>
@@ -96,11 +110,7 @@ export default function BookingScreen() {
       return;
     }
 
-    const nights = Math.ceil(
-      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (nights <= 0) {
+    if (checkOut <= checkIn) {
       Alert.alert("Error", "Check-out must be after check-in");
       return;
     }
@@ -110,7 +120,12 @@ export default function BookingScreen() {
     try {
       const totalGuests = Number(guests) + additionalGuests.length;
 
-      const usdAmount = serviceType === 'nightly' ? selectedRoom.price_per_night * nights : selectedRoom.price_per_3hours;
+      const nights = serviceType === 'nightly'
+        ? Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
+        : 0;
+      const usdAmount = serviceType === 'nightly'
+        ? Number(selectedRoom.price_per_night) * nights
+        : Number(selectedRoom.price_per_3hours);
 
       if (editingReservation) {
         await updateReservation.mutateAsync({
@@ -231,6 +246,7 @@ export default function BookingScreen() {
     setCheckOut(parseDate(r.check_out_date));
     setGuests(String(r.number_of_guests || 1));
     setNotes(r.notes || "");
+    setServiceType(r.service_type || 'nightly');
     setShowForm(true);
   }
 
@@ -252,7 +268,7 @@ export default function BookingScreen() {
     const nights = checkIn && checkOut
       ? Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
       : 0;
-    const estimatedTotal = selectedRoom && (serviceType === 'nightly' ? (nights > 0 ? selectedRoom.price_per_night * nights : null) : selectedRoom.price_per_3hours);
+    const estimatedTotal = selectedRoom && (serviceType === 'nightly' ? (nights > 0 ? Number(selectedRoom.price_per_night) * nights : null) : Number(selectedRoom.price_per_3hours));
 
     const availableRooms = (rooms?.filter((r) => r.room_status === "available") || []) as Room[];
 

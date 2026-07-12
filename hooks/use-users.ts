@@ -54,8 +54,8 @@ export function useUpdatePassword() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, password }: { id: number; password: string }) =>
-      api.patch(ENDPOINTS.users.password(id), { password }) as Promise<User>,
+    mutationFn: ({ id, password, currentPassword }: { id: number; password: string; currentPassword?: string }) =>
+      api.patch(ENDPOINTS.users.password(id), { password, ...(currentPassword ? { currentPassword } : {}) }) as Promise<User>,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: USERS_KEY });
       queryClient.invalidateQueries({ queryKey: [...USERS_KEY, data.id_user] });

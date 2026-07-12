@@ -1,4 +1,4 @@
-import { useState, useEffect, Component, type ReactNode } from "react";
+import { useState, useEffect, useCallback, Component, type ReactNode } from "react";
 import { ScrollView, TouchableOpacity, View, Alert, TextInput, FlatList, ActivityIndicator, Text, Platform } from "react-native";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 
@@ -91,6 +91,24 @@ export function ReservationFormModal({
   const [search, setSearch] = useState("");
   const [serviceType, setServiceType] = useState<'nightly' | '3hours'>('nightly');
 
+  const updateCheckOutForServiceType = useCallback((type: 'nightly' | '3hours', checkIn: Date, currentCheckOut: Date) => {
+    if (type === '3hours') {
+      const newOut = new Date(checkIn);
+      newOut.setHours(newOut.getHours() + 3);
+      setCheckOutDate(newOut);
+    } else {
+      if (currentCheckOut.getTime() - checkIn.getTime() < 12 * 60 * 60 * 1000) {
+        const nextDay = new Date(checkIn);
+        nextDay.setDate(nextDay.getDate() + 1);
+        setCheckOutDate(nextDay);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    updateCheckOutForServiceType(serviceType, checkInDate, checkOutDate);
+  }, [serviceType]);
+
   const [clientMode, setClientMode] = useState<"existing" | "new">("existing");
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -135,8 +153,8 @@ export function ReservationFormModal({
   const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
   const estimatedTotal = selectedRoom
     ? serviceType === 'nightly'
-      ? nights > 0 ? selectedRoom.price_per_night * nights : editingReservation?.total_amount || null
-      : selectedRoom.price_per_3hours
+      ? nights > 0 ? Number(selectedRoom.price_per_night) * nights : editingReservation?.total_amount || null
+      : Number(selectedRoom.price_per_3hours)
     : editingReservation?.total_amount || null;
 
   const clientList = users?.filter((u) => u.role === "Client") || [];
@@ -179,7 +197,7 @@ export function ReservationFormModal({
 
     if (nights <= 0) { Alert.alert("Error", "La salida debe ser después de la entrada"); return; }
 
-    const usdAmount = estimatedTotal || 0;
+    const usdAmount = Number(estimatedTotal) || 0;
 
     setSubmitting(true);
     try {
