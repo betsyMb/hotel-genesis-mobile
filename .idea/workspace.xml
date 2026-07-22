@@ -6,24 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="fix: envs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/booking.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/booking.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/home.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/rooms.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/admin/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/maintenance.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reports.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/reservations.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/users.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/users.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/maintenance.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/accounting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/accounting.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/reports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/reports.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/checkin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/checkin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/checkout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/checkout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/reservations.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/reservations.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/maintinence/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/manager/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/receptionist/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/receptionist/rooms.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/rooms.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/receptionist/ReservationCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/shared/ReservationCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/maintinence/MaintenanceRoomCard.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +174,7 @@
       <workItem from="1782245803438" duration="7433000" />
       <workItem from="1782669794528" duration="6979000" />
       <workItem from="1783876299686" duration="7151000" />
-      <workItem from="1784681318813" duration="1039000" />
+      <workItem from="1784681318813" duration="3103000" />
     </task>
     <task id="LOCAL-00001" summary="feature: reservations">
       <option name="closed" value="true" />

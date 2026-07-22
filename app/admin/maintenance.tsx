@@ -21,6 +21,10 @@ export default function AdminMaintenanceScreen() {
   }
 
   async function handleMarkMaintenance(room: Room, tasks: MaintenanceTask[]) {
+    if (room.room_status === "occupied") {
+      Alert.alert("No permitido", "No se puede enviar a mantenimiento una habitación ocupada");
+      return;
+    }
     try {
       await updateRoom.mutateAsync({
         id: room.id_room,

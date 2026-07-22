@@ -134,17 +134,6 @@ export default function ManagerProfileScreen() {
         <ThemedText type="subtitle" className="mb-3">Ajustes</ThemedText>
 
         <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden mb-5">
-          <View className="flex-row items-center p-4 border-b border-gray-100 dark:border-gray-700">
-            <View className="w-10 h-10 rounded-xl bg-[#0EA5E9]/10 items-center justify-center mr-3">
-              <MaterialIcons name="notifications" size={22} color="#0EA5E9" />
-            </View>
-            <View className="flex-1">
-              <ThemedText className="font-semibold">Notificaciones</ThemedText>
-              <ThemedText className="text-xs opacity-60">Alertas del sistema</ThemedText>
-            </View>
-            <MaterialIcons name="chevron-right" size={24} color="#CBD5E1" />
-          </View>
-
           {hasHardware && (
             <View className="flex-row items-center p-4">
               <TouchableOpacity

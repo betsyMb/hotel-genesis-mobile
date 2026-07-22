@@ -171,7 +171,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
         )}
 
         {/* Add task quick button (always visible when not in add mode) */}
-        {!showInput && (
+        {!showInput && item.room_status !== "occupied" && (
           <TouchableOpacity
             className="mt-3 py-2 rounded-xl items-center border border-dashed border-gray-300 dark:border-gray-600"
             onPress={() => openInput(isMaintenance ? "available" : "maintenance")}
@@ -184,7 +184,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
         )}
 
         {/* Main action buttons */}
-        {!isMaintenance && !showInput && (
+        {!isMaintenance && !showInput && item.room_status !== "occupied" && (
           <TouchableOpacity
             className="mt-3 py-3 rounded-xl items-center bg-amber-500"
             onPress={() => openInput("maintenance")}

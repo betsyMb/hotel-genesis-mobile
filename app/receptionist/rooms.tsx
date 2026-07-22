@@ -41,6 +41,10 @@ export default function ReceptionistRoomsScreen() {
   };
 
   function handleSendToMaintenance(room: any) {
+    if (room.room_status === "occupied") {
+      Alert.alert("No permitido", "No se puede enviar a mantenimiento una habitación ocupada");
+      return;
+    }
     setMaintenanceRoom(room);
     setMaintenanceNotes(room.maintenance_notes || "");
     setShowMaintenanceModal(true);
@@ -125,7 +129,7 @@ export default function ReceptionistRoomsScreen() {
         renderItem={({ item }) => (
           <View>
             <RoomCard item={item} exchangeRate={exchangeRate} />
-            {item.room_status !== "maintenance" && (
+            {item.room_status !== "maintenance" && item.room_status !== "occupied" && (
               <TouchableOpacity
                 className="flex-row items-center justify-center py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-3 mx-1"
                 onPress={() => handleSendToMaintenance(item)}
