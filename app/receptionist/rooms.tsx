@@ -164,6 +164,8 @@ export default function ReceptionistRoomsScreen() {
         data={filteredRooms}
         keyExtractor={(item) => item.id_room.toString()}
         className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         renderItem={({ item }) => (
           <View>
             {item.room_status === "maintenance" ? (
@@ -171,6 +173,7 @@ export default function ReceptionistRoomsScreen() {
                 item={item}
                 onMarkMaintenance={handleMarkMaintenance}
                 onMarkAvailable={handleMarkAvailable}
+                canDeleteTasks={true}
               />
             ) : (
               <>

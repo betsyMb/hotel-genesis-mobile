@@ -96,6 +96,7 @@ export default function AdminMaintenanceScreen() {
             item={item}
             onMarkMaintenance={handleMarkMaintenance}
             onMarkAvailable={handleMarkAvailable}
+            canDeleteTasks={true}
           />
         )}
         contentContainerClassName="px-4 py-4"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RefreshControl, ScrollView, TextInput, View, TouchableOpacity } from "react-native";
+import { RefreshControl, ScrollView, View, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useReservations, useUsers, useOccupancies, useExchangeRate, useWalkinHistory } from "@/hooks";
@@ -9,6 +9,7 @@ import { WalkInHistoryItem } from "@/hooks/api/walkin-types";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { getRoomTypeLabel } from "@/components/shared/RoomCard";
+import { DatePickerOverlay } from "@/components/shared/DatePickerOverlay";
 
 export default function AdminReportsScreen() {
   const { data: rooms, refetch: refetchRooms } = useRooms();
@@ -18,10 +19,14 @@ export default function AdminReportsScreen() {
   const { data: exchangeRate } = useExchangeRate();
 
   const [refreshing, setRefreshing] = useState(false);
-  const [occStartDate, setOccStartDate] = useState("");
-  const [occEndDate, setOccEndDate] = useState("");
-  const [walkinStartDate, setWalkinStartDate] = useState("");
-  const [walkinEndDate, setWalkinEndDate] = useState("");
+  const [occStartDate, setOccStartDate] = useState<Date | null>(null);
+  const [occEndDate, setOccEndDate] = useState<Date | null>(null);
+  const [walkinStartDate, setWalkinStartDate] = useState<Date | null>(null);
+  const [walkinEndDate, setWalkinEndDate] = useState<Date | null>(null);
+  const [showOccStartPicker, setShowOccStartPicker] = useState(false);
+  const [showOccEndPicker, setShowOccEndPicker] = useState(false);
+  const [showWalkinStartPicker, setShowWalkinStartPicker] = useState(false);
+  const [showWalkinEndPicker, setShowWalkinEndPicker] = useState(false);
   const { data: walkinHistory } = useWalkinHistory();
 
   async function onRefresh() {
@@ -50,6 +55,14 @@ export default function AdminReportsScreen() {
   const bsFormat = (amount: number) =>
     `Bs. ${amount.toLocaleString("es-ES", { maximumFractionDigits: 2 })}`;
 
+  const formatDateStr = (d: Date | null) => {
+    if (!d) return "";
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const totalRooms = rooms?.length || 0;
   const availableRooms = rooms?.filter((r) => r.room_status === "available").length || 0;
   const occupiedRooms = rooms?.filter((r) => r.room_status === "occupied").length || 0;
@@ -71,33 +84,23 @@ export default function AdminReportsScreen() {
   const activeUsers = users?.filter((u) => u.is_active !== false).length || 0;
   const totalClients = users?.filter((u) => u.role === "Client").length || 0;
 
-  const activeOccupancies = occupancies?.filter((o) => o.occupancy_status === "active").length || 0;
   const completedOccupancies = occupancies?.filter((o) => o.occupancy_status === "completed").length || 0;
 
   const filteredOccupancies = (occupancies || []).filter((o: Occupancy) => {
     if (!occStartDate && !occEndDate) return true;
-    const checkIn = new Date(o.actual_check_in);
-    if (occStartDate && checkIn < new Date(occStartDate)) return false;
-    if (occEndDate) {
-      const end = new Date(occEndDate);
-      end.setHours(23, 59, 59, 999);
-      if (checkIn > end) return false;
-    }
+    const checkInDate = new Date(o.actual_check_in);
+    const checkInStr = formatDateStr(checkInDate);
+    if (occStartDate && checkInStr < formatDateStr(occStartDate)) return false;
+    if (occEndDate && checkInStr > formatDateStr(occEndDate)) return false;
     return true;
   });
 
-  const filteredActiveOccupancies = filteredOccupancies.filter((o: Occupancy) => o.occupancy_status === "active").length;
-  const filteredCompletedOccupancies = filteredOccupancies.filter((o: Occupancy) => o.occupancy_status === "completed").length;
 
   const filteredWalkins = (walkinHistory || []).filter((w: WalkInHistoryItem) => {
     if (!walkinStartDate && !walkinEndDate) return true;
-    const checkIn = new Date(w.checked_in);
-    if (walkinStartDate && checkIn < new Date(walkinStartDate)) return false;
-    if (walkinEndDate) {
-      const end = new Date(walkinEndDate);
-      end.setHours(23, 59, 59, 999);
-      if (checkIn > end) return false;
-    }
+    const checkInStr = formatDateStr(new Date(w.checked_in));
+    if (walkinStartDate && checkInStr < formatDateStr(walkinStartDate)) return false;
+    if (walkinEndDate && checkInStr > formatDateStr(walkinEndDate)) return false;
     return true;
   });
 
@@ -212,7 +215,7 @@ export default function AdminReportsScreen() {
   };
 
   return (
-    <ScrollView className="flex-1" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}>
+    <ScrollView className="flex-1" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
       <ThemedView className="px-5 pt-4 pb-8">
         <ThemedText type="title" className="mb-1">Reportes</ThemedText>
         <ThemedText className="opacity-60 mb-6">Resumen del panel y reportes exportables</ThemedText>
@@ -232,8 +235,6 @@ export default function AdminReportsScreen() {
                <div class="stat-row"><span class="stat-label">En Mantenimiento</span><span class="stat-value">${maintenanceRooms}</span></div>
                <div class="stat-row"><span class="stat-label">Reservada</span><span class="stat-value">${reservedRooms}</span></div>
                <div class="stat-row"><span class="stat-label">Tasa de Ocupación</span><span class="stat-value">${occupancyRate}%</span></div>
-               <div class="stat-row"><span class="stat-label">Estancias Activas</span><span class="stat-value">${filteredActiveOccupancies}</span></div>
-               ${occStartDate || occEndDate ? `<div class="stat-row"><span class="stat-label">Filtro de Fechas</span><span class="stat-value">${occStartDate || '...'} — ${occEndDate || '...'}</span></div>` : ''}
                <div class="section-title">Detalles de Habitación</div>
                <table>
                  <tr><th>Habitación</th><th>Piso</th><th>Tipo</th><th>Precio/Noche</th><th>Estado</th></tr>
@@ -247,21 +248,6 @@ export default function AdminReportsScreen() {
                           <td>${getRoomTypeLabel(r.room_type)}</td>
                           <td>${toBs(r.price_per_night)}</td>
                           <td>${statusBadge(r.room_status)}</td>
-                       </tr>`
-                   )
-                   .join("")}
-               </table>
-               <div class="section-title">Estancias Activas</div>
-               <table>
-                 <tr><th>Habitación</th><th>Entrada</th><th>Estado</th></tr>
-                 ${(occupancies || [])
-                    .filter((o: Occupancy) => o.occupancy_status === "active" && filteredOccupancies.includes(o))
-                   .map(
-                     (o: Occupancy) =>
-                       `<tr>
-                         <td>${o.room?.room_number || "—"}</td>
-                         <td>${new Date(o.actual_check_in).toLocaleDateString()}</td>
-                         <td>${statusBadge(o.occupancy_status)}</td>
                        </tr>`
                    )
                    .join("")}
@@ -283,7 +269,6 @@ export default function AdminReportsScreen() {
             <StatusPill label="Ocupado" value={occupiedRooms} color="#EF4444" />
             <StatusPill label="Mantenimiento" value={maintenanceRooms} color="#F59E0B" />
             <StatusPill label="Reservada" value={reservedRooms} color="#8B5CF6" />
-            <StatusPill label="Estancias Activas" value={filteredActiveOccupancies} color="#3B82F6" />
           </View>
           {(occStartDate || occEndDate || filteredOccupancies.length !== occupancies?.length) && (
             <View className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
@@ -296,23 +281,27 @@ export default function AdminReportsScreen() {
           <View className="flex-row gap-3 mt-3">
             <View className="flex-1">
               <ThemedText className="text-xs opacity-60 mb-1">Desde</ThemedText>
-              <TextInput
-                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
-                placeholder="AAAA-MM-DD"
-                placeholderTextColor="#94A3B8"
-                value={occStartDate}
-                onChangeText={setOccStartDate}
-              />
+              <TouchableOpacity
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg flex-row items-center justify-between"
+                onPress={() => setShowOccStartPicker(true)}
+              >
+                <ThemedText className={`text-sm ${occStartDate ? "" : "opacity-40"}`}>
+                  {occStartDate ? formatDateStr(occStartDate) : "Seleccionar fecha"}
+                </ThemedText>
+                <MaterialIcons name="calendar-today" size={16} color="#94A3B8" />
+              </TouchableOpacity>
             </View>
             <View className="flex-1">
               <ThemedText className="text-xs opacity-60 mb-1">Hasta</ThemedText>
-              <TextInput
-                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
-                placeholder="AAAA-MM-DD"
-                placeholderTextColor="#94A3B8"
-                value={occEndDate}
-                onChangeText={setOccEndDate}
-              />
+              <TouchableOpacity
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg flex-row items-center justify-between"
+                onPress={() => setShowOccEndPicker(true)}
+              >
+                <ThemedText className={`text-sm ${occEndDate ? "" : "opacity-40"}`}>
+                  {occEndDate ? formatDateStr(occEndDate) : "Seleccionar fecha"}
+                </ThemedText>
+                <MaterialIcons name="calendar-today" size={16} color="#94A3B8" />
+              </TouchableOpacity>
             </View>
           </View>
           <CollapsibleList label="Detalles de Habitación">
@@ -695,7 +684,7 @@ export default function AdminReportsScreen() {
               "Reporte de Walk-ins Completados",
               `<div class="section-title">Resumen</div>
                <div class="stat-row"><span class="stat-label">Total Walk-ins</span><span class="stat-value">${filteredWalkins.length}</span></div>
-               ${walkinStartDate || walkinEndDate ? `<div class="stat-row"><span class="stat-label">Filtro de Fechas</span><span class="stat-value">${walkinStartDate || '...'} — ${walkinEndDate || '...'}</span></div>` : ''}
+               ${walkinStartDate || walkinEndDate ? `<div class="stat-row"><span class="stat-label">Filtro de Fechas</span><span class="stat-value">${walkinStartDate ? formatDateStr(walkinStartDate) : '...'} — ${walkinEndDate ? formatDateStr(walkinEndDate) : '...'}</span></div>` : ''}
                <div class="section-title">Detalle de Walk-ins</div>
                <table>
                  <tr><th>Habitación</th><th>Tipo</th><th>Huésped</th><th>Entrada</th><th>Salida</th><th>Servicio</th></tr>
@@ -724,23 +713,27 @@ export default function AdminReportsScreen() {
           <View className="flex-row gap-3 mb-3">
             <View className="flex-1">
               <ThemedText className="text-xs opacity-60 mb-1">Desde</ThemedText>
-              <TextInput
-                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
-                placeholder="AAAA-MM-DD"
-                placeholderTextColor="#94A3B8"
-                value={walkinStartDate}
-                onChangeText={setWalkinStartDate}
-              />
+              <TouchableOpacity
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg flex-row items-center justify-between"
+                onPress={() => setShowWalkinStartPicker(true)}
+              >
+                <ThemedText className={`text-sm ${walkinStartDate ? "" : "opacity-40"}`}>
+                  {walkinStartDate ? formatDateStr(walkinStartDate) : "Seleccionar fecha"}
+                </ThemedText>
+                <MaterialIcons name="calendar-today" size={16} color="#94A3B8" />
+              </TouchableOpacity>
             </View>
             <View className="flex-1">
               <ThemedText className="text-xs opacity-60 mb-1">Hasta</ThemedText>
-              <TextInput
-                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
-                placeholder="AAAA-MM-DD"
-                placeholderTextColor="#94A3B8"
-                value={walkinEndDate}
-                onChangeText={setWalkinEndDate}
-              />
+              <TouchableOpacity
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg flex-row items-center justify-between"
+                onPress={() => setShowWalkinEndPicker(true)}
+              >
+                <ThemedText className={`text-sm ${walkinEndDate ? "" : "opacity-40"}`}>
+                  {walkinEndDate ? formatDateStr(walkinEndDate) : "Seleccionar fecha"}
+                </ThemedText>
+                <MaterialIcons name="calendar-today" size={16} color="#94A3B8" />
+              </TouchableOpacity>
             </View>
           </View>
           <CollapsibleList label="Detalle de Walk-ins">
@@ -768,6 +761,34 @@ export default function AdminReportsScreen() {
           </CollapsibleList>
         </ReportSection>
       </ThemedView>
+      {showOccStartPicker && (
+        <DatePickerOverlay
+          date={occStartDate || new Date()}
+          onChange={(d) => { setOccStartDate(d); setShowOccStartPicker(false); }}
+          onClose={() => setShowOccStartPicker(false)}
+        />
+      )}
+      {showOccEndPicker && (
+        <DatePickerOverlay
+          date={occEndDate || new Date()}
+          onChange={(d) => { setOccEndDate(d); setShowOccEndPicker(false); }}
+          onClose={() => setShowOccEndPicker(false)}
+        />
+      )}
+      {showWalkinStartPicker && (
+        <DatePickerOverlay
+          date={walkinStartDate || new Date()}
+          onChange={(d) => { setWalkinStartDate(d); setShowWalkinStartPicker(false); }}
+          onClose={() => setShowWalkinStartPicker(false)}
+        />
+      )}
+      {showWalkinEndPicker && (
+        <DatePickerOverlay
+          date={walkinEndDate || new Date()}
+          onChange={(d) => { setWalkinEndDate(d); setShowWalkinEndPicker(false); }}
+          onClose={() => setShowWalkinEndPicker(false)}
+        />
+      )}
     </ScrollView>
   );
 }

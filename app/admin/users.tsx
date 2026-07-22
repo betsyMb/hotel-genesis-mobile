@@ -122,6 +122,8 @@ export default function AdminUsersScreen() {
         data={filteredUsers}
         keyExtractor={(item) => item.id_user.toString()}
         className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         renderItem={({ item }) => (
           <UserCard
             item={item}

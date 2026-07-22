@@ -149,7 +149,7 @@ export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles, 
             </TouchableOpacity>
           </View>
 
-          <ScrollView className="flex-1">
+          <ScrollView className="flex-1" keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">NOMBRE COMPLETO *</ThemedText>
             <FormInput value={fullName} onChangeText={setFullName} placeholder="Juan Pérez" autoCapitalize="words" />
             <View className="mb-4" />

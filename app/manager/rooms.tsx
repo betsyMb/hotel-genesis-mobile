@@ -46,6 +46,8 @@ export default function ManagerRoomsScreen() {
         data={rooms}
         keyExtractor={(item: Room) => item.id_room.toString()}
         className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
         renderItem={({ item }) => (

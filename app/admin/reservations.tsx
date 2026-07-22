@@ -207,7 +207,7 @@ export default function AdminReservationsScreen() {
           <StatBadge label="Ingresos" value={stats.revenue.toLocaleString("es-ES", { maximumFractionDigits: 0 })} color="#8B5CF6" prefix="Bs. " />
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
           <View className="flex-row gap-2">
             {statusFilters.map((f) => (
               <TouchableOpacity
@@ -231,6 +231,8 @@ export default function AdminReservationsScreen() {
         data={filteredReservations}
         keyExtractor={(item: Reservation) => item.id_reservation.toString()}
         className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           const isCheckedIn = activeOccupancyRoomIds.has(item.id_room);

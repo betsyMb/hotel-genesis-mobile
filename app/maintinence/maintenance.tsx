@@ -95,6 +95,7 @@ export default function MaintenanceTasksScreen() {
             item={item}
             onMarkMaintenance={handleMarkMaintenance}
             onMarkAvailable={handleMarkAvailable}
+            canDeleteTasks={false}
           />
         )}
         contentContainerClassName="px-4 py-4"

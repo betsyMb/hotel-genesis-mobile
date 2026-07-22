@@ -313,7 +313,7 @@ export default function BookingScreen() {
           <ThemedText type="title">{editingReservation ? "Editar Reserva" : "Nueva Reserva"}</ThemedText>
         </View>
 
-        <ScrollView className="flex-1" contentContainerClassName="p-5">
+        <ScrollView className="flex-1" contentContainerClassName="p-5" keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
           <ThemedText className="font-semibold text-sm opacity-60 mb-1.5 uppercase">Room *</ThemedText>
           {selectedRoom ? (
             <TouchableOpacity
@@ -599,6 +599,8 @@ export default function BookingScreen() {
           data={filteredReservations}
           keyExtractor={(item) => item.id_reservation.toString()}
           className="flex-1"
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           renderItem={({ item }) => (
             <ClientReservationCard
               item={item as Reservation}

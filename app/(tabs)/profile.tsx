@@ -82,7 +82,7 @@ export default function ProfileScreen() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1">
-    <ScrollView className="flex-1">
+    <ScrollView className="flex-1" keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
       <ThemedView className="px-5 pt-8 pb-6 items-center">
         <View
           className="w-24 h-24 rounded-full items-center justify-center mb-4"

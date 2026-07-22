@@ -155,6 +155,8 @@ export default function ReceptionistReservationsScreen() {
         data={filteredReservations}
         keyExtractor={(item: Reservation) => item.id_reservation.toString()}
         className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <ReservationCard

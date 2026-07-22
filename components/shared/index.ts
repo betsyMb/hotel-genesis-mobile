@@ -7,5 +7,6 @@ export { UserCard } from "./UserCard";
 export { UserFormModal } from "./UserFormModal";
 export { ReservationCard, getReservationStatusConfig } from "./ReservationCard";
 export { ReservationFormModal } from "./ReservationFormModal";
+export { DatePickerOverlay } from "./DatePickerOverlay";
 export { StatusPickerModal } from "./StatusPickerModal";
 export { NotificationBell } from "./NotificationsModal";

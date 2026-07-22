@@ -113,7 +113,7 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
             </TouchableOpacity>
           </View>
 
-          <ScrollView className="flex-1">
+          <ScrollView className="flex-1" keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">NÚMERO DE HABITACIÓN *</ThemedText>
             <FormInput value={roomNumber} onChangeText={setRoomNumber} placeholder="101" />
             <View className="mb-4" />

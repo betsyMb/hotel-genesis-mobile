@@ -13,9 +13,10 @@ interface MaintenanceRoomCardProps {
   item: Room;
   onMarkMaintenance: (r: Room, tasks: MaintenanceTask[]) => void;
   onMarkAvailable: (r: Room, tasks: MaintenanceTask[]) => void;
+  canDeleteTasks?: boolean;
 }
 
-export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }: MaintenanceRoomCardProps) {
+export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable, canDeleteTasks = true }: MaintenanceRoomCardProps) {
   const isMaintenance = item.room_status === "maintenance";
   const updateTasks = useUpdateRoomTasks();
 
@@ -113,9 +114,11 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
                 <ThemedText className={`flex-1 text-sm ${task.completed ? "line-through opacity-40" : ""}`}>
                   {task.description}
                 </ThemedText>
-                <TouchableOpacity onPress={() => removeTask(task.id)} className="ml-2">
-                  <MaterialIcons name="close" size={18} color="#EF4444" />
-                </TouchableOpacity>
+                {canDeleteTasks && (
+                  <TouchableOpacity onPress={() => removeTask(task.id)} className="ml-2">
+                    <MaterialIcons name="close" size={18} color="#EF4444" />
+                  </TouchableOpacity>
+                )}
               </View>
             ))}
           </View>

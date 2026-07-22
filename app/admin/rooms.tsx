@@ -84,6 +84,8 @@ export default function AdminRoomsScreen() {
         data={rooms || []}
         keyExtractor={(item) => item.id_room.toString()}
         className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         renderItem={({ item }) => (
           <RoomCard item={item} onEdit={(r) => { setEditingRoom(r); setShowForm(true); }} onDelete={handleDelete} exchangeRate={exchangeRate} />
         )}
