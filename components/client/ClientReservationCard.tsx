@@ -16,7 +16,7 @@ const statusConfig: Record<string, { color: string; label: string }> = {
   no_show: { color: "#6B7280", label: "No show" },
 };
 
-const actionableStatuses = ["pending", "confirmed"];
+const actionableStatuses = ["pending"];
 
 interface ClientReservationCardProps {
   item: Reservation;

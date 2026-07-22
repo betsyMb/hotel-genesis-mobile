@@ -237,6 +237,11 @@ export default function BookingScreen() {
                 data: { reservation_status: "cancelled" },
               });
               refetch();
+              Alert.alert(
+                "Reserva Cancelada",
+                "La reserva ha sido cancelada. Por favor deslice hacia abajo para actualizar la página.",
+                [{ text: "OK" }],
+              );
             } catch (err: any) {
               Alert.alert("Error", err.message);
             }
