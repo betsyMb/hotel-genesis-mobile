@@ -13,6 +13,7 @@ export interface WalkInCheckinPayload {
     last_name: string;
     dni: string;
     phone_number?: string;
+    email?: string;
   };
   additional_guests?: Array<{
     first_name: string;

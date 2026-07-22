@@ -10,6 +10,17 @@ const statusConfig: Record<string, { color: string; icon: string; bg: string; la
   reserved: { color: "#3B82F6", icon: "event", bg: "#EFF6FF", label: "Reservada" },
 };
 
+const roomTypeLabels: Record<string, string> = {
+  simple: "Sencilla",
+  double: "Doble",
+  suite: "Suite",
+  family: "Familiar",
+};
+
+export function getRoomTypeLabel(type: string): string {
+  return roomTypeLabels[type] || type.charAt(0).toUpperCase() + type.slice(1);
+}
+
 interface RoomCardProps {
   item: Room;
   onEdit?: (room: Room) => void;
@@ -32,7 +43,7 @@ export function RoomCard({ item, onEdit, onDelete, showActions = true, exchangeR
             <View className="flex-1">
               <ThemedText type="defaultSemiBold">Hab. {item.room_number}</ThemedText>
               <ThemedText className="text-sm opacity-60">
-                {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)}
+                {getRoomTypeLabel(item.room_type)}
               </ThemedText>
             </View>
           </View>

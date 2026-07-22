@@ -5,6 +5,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useExchangeRate } from "@/hooks";
 import { ClientRoomCard } from "@/components/client/ClientRoomCard";
 import { EmptyState, StatBadge } from "@/components/shared";
+import { getRoomTypeLabel } from "@/components/shared/RoomCard";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Room } from "@/hooks/api/types";
 import { useRouter } from "expo-router";
@@ -97,7 +98,7 @@ export default function RoomsScreen() {
                     <View>
                       <ThemedText type="title">Habitación {selectedRoom.room_number}</ThemedText>
                       <View className="flex-row items-center gap-1 mt-0.5">
-                        <ThemedText className="opacity-60 capitalize">{selectedRoom.room_type}</ThemedText>
+                        <ThemedText className="opacity-60">{getRoomTypeLabel(selectedRoom.room_type)}</ThemedText>
                         <View className="w-1 h-1 rounded-full bg-gray-300" />
                         <ThemedText className="opacity-60">Piso {selectedRoom.floor}</ThemedText>
                       </View>

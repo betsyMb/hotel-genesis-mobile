@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Modal, ScrollView, TextInput } from "react-nati
 import { ThemedText } from "@/components/ThemedText";
 import { Room } from "@/hooks/api/types";
 import { MaterialIcons } from "@expo/vector-icons";
-import { getRoomStatusConfig } from "./RoomCard";
+import { getRoomStatusConfig, getRoomTypeLabel } from "./RoomCard";
 
 const roomTypes = ["simple", "double", "suite", "family"] as const;
 const statusConfig = getRoomStatusConfig();
@@ -127,7 +127,7 @@ export function RoomFormModal({ visible, onClose, onSubmit, editingRoom }: RoomF
                   onPress={() => setRoomType(type)}
                 >
                   <ThemedText className={roomType === type ? "text-white font-semibold" : ""}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                    {getRoomTypeLabel(type)}
                   </ThemedText>
                 </TouchableOpacity>
               ))}

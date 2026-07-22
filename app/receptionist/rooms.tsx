@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { FlatList, RefreshControl, View, TouchableOpacity, Alert, TextInput } from "react-native";
+import { FlatList, RefreshControl, View, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useExchangeRate, useUpdateRoom } from "@/hooks";
 import { EmptyState, StatBadge, RoomCard } from "@/components/shared";
+import { MaintenanceRoomCard } from "@/components/maintinence";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Room, MaintenanceTask } from "@/hooks/api/types";
 
 const statusFilters = [
   { key: "all", label: "Todas", color: "#0EA5E9" },
@@ -98,6 +100,42 @@ export default function ReceptionistRoomsScreen() {
     );
   }
 
+  async function handleMarkMaintenance(room: Room, tasks: MaintenanceTask[]) {
+    if (room.room_status === "occupied") {
+      Alert.alert("No permitido", "No se puede enviar a mantenimiento una habitación ocupada");
+      return;
+    }
+    try {
+      await updateRoom.mutateAsync({
+        id: room.id_room,
+        data: {
+          room_status: "maintenance" as any,
+          maintenance_tasks: tasks,
+        },
+      });
+      await refetch();
+      Alert.alert("Éxito", `Habitación ${room.room_number} en mantenimiento`);
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function handleMarkAvailable(room: Room, tasks: MaintenanceTask[]) {
+    try {
+      await updateRoom.mutateAsync({
+        id: room.id_room,
+        data: {
+          room_status: "available" as any,
+          maintenance_tasks: tasks,
+        },
+      });
+      await refetch();
+      Alert.alert("Éxito", `Habitación ${room.room_number} disponible`);
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
   return (
     <ThemedView className="flex-1">
       <View className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
@@ -128,24 +166,25 @@ export default function ReceptionistRoomsScreen() {
         className="flex-1"
         renderItem={({ item }) => (
           <View>
-            <RoomCard item={item} exchangeRate={exchangeRate} />
-            {item.room_status !== "maintenance" && item.room_status !== "occupied" && (
-              <TouchableOpacity
-                className="flex-row items-center justify-center py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-3 mx-1"
-                onPress={() => handleSendToMaintenance(item)}
-              >
-                <MaterialIcons name="build" size={16} color="#F59E0B" style={{ marginRight: 4 }} />
-                <ThemedText className="text-xs font-semibold text-amber-600">Enviar a Mantenimiento</ThemedText>
-              </TouchableOpacity>
-            )}
-            {item.room_status === "maintenance" && (
-              <TouchableOpacity
-                className="flex-row items-center justify-center py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl mb-3 mx-1"
-                onPress={() => handleRestoreFromMaintenance(item)}
-              >
-                <MaterialIcons name="check-circle" size={16} color="#10B981" style={{ marginRight: 4 }} />
-                <ThemedText className="text-xs font-semibold text-green-600">Restaurar a Disponible</ThemedText>
-              </TouchableOpacity>
+            {item.room_status === "maintenance" ? (
+              <MaintenanceRoomCard
+                item={item}
+                onMarkMaintenance={handleMarkMaintenance}
+                onMarkAvailable={handleMarkAvailable}
+              />
+            ) : (
+              <>
+                <RoomCard item={item} exchangeRate={exchangeRate} />
+                {item.room_status !== "occupied" && (
+                  <TouchableOpacity
+                    className="flex-row items-center justify-center py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-3 mx-1"
+                    onPress={() => handleSendToMaintenance(item)}
+                  >
+                    <MaterialIcons name="build" size={16} color="#F59E0B" style={{ marginRight: 4 }} />
+                    <ThemedText className="text-xs font-semibold text-amber-600">Enviar a Mantenimiento</ThemedText>
+                  </TouchableOpacity>
+                )}
+              </>
             )}
           </View>
         )}
@@ -158,8 +197,9 @@ export default function ReceptionistRoomsScreen() {
       />
 
       {showMaintenanceModal && (
-        <View className="absolute inset-0 z-50 justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="absolute inset-0 z-50" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
           <TouchableOpacity className="absolute inset-0" activeOpacity={1} onPress={() => { setShowMaintenanceModal(false); setMaintenanceRoom(null); }} />
+          <View className="flex-1 justify-center">
           <View className="mx-6 bg-white dark:bg-gray-800 rounded-2xl p-6">
             <ThemedText type="title" className="mb-1">Enviar a Mantenimiento</ThemedText>
             <ThemedText className="text-sm opacity-60 mb-4">
@@ -191,7 +231,8 @@ export default function ReceptionistRoomsScreen() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+          </View>
+        </KeyboardAvoidingView>
       )}
     </ThemedView>
   );

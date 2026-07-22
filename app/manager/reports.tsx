@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { ScrollView, View, TouchableOpacity, RefreshControl } from "react-native";
+import { ScrollView, View, TouchableOpacity, RefreshControl, TextInput } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useRooms, useReservations, useUsers, useOccupancies, useServices, usePromotions, useExchangeRate } from "@/hooks";
+import { useRooms, useReservations, useUsers, useOccupancies, useServices, usePromotions, useExchangeRate, useWalkinHistory } from "@/hooks";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Reservation, Room, User, Occupancy } from "@/hooks/api/types";
+import { WalkInHistoryItem } from "@/hooks/api/walkin-types";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import { getRoomTypeLabel } from "@/components/shared/RoomCard";
 
 export default function ManagerReportsScreen() {
   const { data: rooms, refetch: refetchRooms } = useRooms();
@@ -17,6 +19,11 @@ export default function ManagerReportsScreen() {
   const { data: promotions, refetch: refetchPromotions } = usePromotions();
   const { data: exchangeRate } = useExchangeRate();
   const [refreshing, setRefreshing] = useState(false);
+  const [occStartDate, setOccStartDate] = useState("");
+  const [occEndDate, setOccEndDate] = useState("");
+  const [walkinStartDate, setWalkinStartDate] = useState("");
+  const [walkinEndDate, setWalkinEndDate] = useState("");
+  const { data: walkinHistory } = useWalkinHistory();
 
   async function onRefresh() {
     setRefreshing(true);
@@ -66,6 +73,33 @@ export default function ManagerReportsScreen() {
 
   const activeOccupancies = occupancies?.filter((o) => o.occupancy_status === "active").length || 0;
   const completedOccupancies = occupancies?.filter((o) => o.occupancy_status === "completed").length || 0;
+
+  const filteredOccupancies = (occupancies || []).filter((o: Occupancy) => {
+    if (!occStartDate && !occEndDate) return true;
+    const checkIn = new Date(o.actual_check_in);
+    if (occStartDate && checkIn < new Date(occStartDate)) return false;
+    if (occEndDate) {
+      const end = new Date(occEndDate);
+      end.setHours(23, 59, 59, 999);
+      if (checkIn > end) return false;
+    }
+    return true;
+  });
+
+  const filteredActiveOccupancies = filteredOccupancies.filter((o: Occupancy) => o.occupancy_status === "active").length;
+  const filteredCompletedOccupancies = filteredOccupancies.filter((o: Occupancy) => o.occupancy_status === "completed").length;
+
+  const filteredWalkins = (walkinHistory || []).filter((w: WalkInHistoryItem) => {
+    if (!walkinStartDate && !walkinEndDate) return true;
+    const checkIn = new Date(w.checked_in);
+    if (walkinStartDate && checkIn < new Date(walkinStartDate)) return false;
+    if (walkinEndDate) {
+      const end = new Date(walkinEndDate);
+      end.setHours(23, 59, 59, 999);
+      if (checkIn > end) return false;
+    }
+    return true;
+  });
 
   const roleCounts: Record<string, number> = {};
   users?.forEach((u) => {
@@ -198,7 +232,8 @@ export default function ManagerReportsScreen() {
                 <div class="stat-row"><span class="stat-label">En Mantenimiento</span><span class="stat-value">${maintenanceRooms}</span></div>
                 <div class="stat-row"><span class="stat-label">Reservadas</span><span class="stat-value">${reservedRooms}</span></div>
                 <div class="stat-row"><span class="stat-label">Tasa de Ocupación</span><span class="stat-value">${occupancyRate}%</span></div>
-                <div class="stat-row"><span class="stat-label">Estancias Activas</span><span class="stat-value">${activeOccupancies}</span></div>
+                <div class="stat-row"><span class="stat-label">Estancias Activas</span><span class="stat-value">${filteredActiveOccupancies}</span></div>
+                ${occStartDate || occEndDate ? `<div class="stat-row"><span class="stat-label">Filtro de Fechas</span><span class="stat-value">${occStartDate || '...'} — ${occEndDate || '...'}</span></div>` : ''}
                 <div class="section-title">Detalle de Habitaciones</div>
                 <table>
                   <tr><th>Habitación</th><th>Piso</th><th>Tipo</th><th>Precio/Noche</th><th>Estado</th></tr>
@@ -209,7 +244,7 @@ export default function ManagerReportsScreen() {
                         `<tr>
                           <td>${r.room_number}</td>
                           <td>${r.floor}</td>
-                          <td style="text-transform:capitalize">${r.room_type}</td>
+                          <td>${getRoomTypeLabel(r.room_type)}</td>
                           <td>${toBs(r.price_per_night)}</td>
                           <td>${statusBadge(r.room_status)}</td>
                         </tr>`
@@ -220,7 +255,7 @@ export default function ManagerReportsScreen() {
                 <table>
                   <tr><th>Habitación</th><th>Entrada</th><th>Estado</th></tr>
                   ${(occupancies || [])
-                    .filter((o: Occupancy) => o.occupancy_status === "active")
+                    .filter((o: Occupancy) => o.occupancy_status === "active" && filteredOccupancies.includes(o))
                     .map(
                       (o: Occupancy) =>
                         `<tr>
@@ -248,7 +283,37 @@ export default function ManagerReportsScreen() {
             <StatusPill label="Ocupadas" value={occupiedRooms} color="#EF4444" />
             <StatusPill label="Mantenimiento" value={maintenanceRooms} color="#F59E0B" />
             <StatusPill label="Reservadas" value={reservedRooms} color="#8B5CF6" />
-            <StatusPill label="Estancias Activas" value={activeOccupancies} color="#3B82F6" />
+            <StatusPill label="Estancias Activas" value={filteredActiveOccupancies} color="#3B82F6" />
+          </View>
+          {(occStartDate || occEndDate || filteredOccupancies.length !== occupancies?.length) && (
+            <View className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+              <ThemedText className="text-xs font-semibold text-blue-600 mb-1">Filtrado por fechas</ThemedText>
+              <ThemedText className="text-xs opacity-60">
+                {filteredOccupancies.length} de {occupancies?.length || 0} ocupaciones
+              </ThemedText>
+            </View>
+          )}
+          <View className="flex-row gap-3 mt-3">
+            <View className="flex-1">
+              <ThemedText className="text-xs opacity-60 mb-1">Desde</ThemedText>
+              <TextInput
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+                placeholder="AAAA-MM-DD"
+                placeholderTextColor="#94A3B8"
+                value={occStartDate}
+                onChangeText={setOccStartDate}
+              />
+            </View>
+            <View className="flex-1">
+              <ThemedText className="text-xs opacity-60 mb-1">Hasta</ThemedText>
+              <TextInput
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+                placeholder="AAAA-MM-DD"
+                placeholderTextColor="#94A3B8"
+                value={occEndDate}
+                onChangeText={setOccEndDate}
+              />
+            </View>
           </View>
           <CollapsibleList label="Detalle de Habitaciones">
             {(rooms || [])
@@ -260,7 +325,7 @@ export default function ManagerReportsScreen() {
                   </View>
                   <View className="flex-1">
                     <View className="flex-row items-center gap-2">
-                      <ThemedText className="text-sm font-medium capitalize">{r.room_type}</ThemedText>
+                      <ThemedText className="text-sm font-medium">{getRoomTypeLabel(r.room_type)}</ThemedText>
                       <View className="w-1 h-1 rounded-full bg-gray-300" />
                       <ThemedText className="text-xs opacity-60">Piso {r.floor}</ThemedText>
                     </View>
@@ -570,6 +635,89 @@ export default function ManagerReportsScreen() {
               );
             })}
           </View>
+        </ReportSection>
+
+        {/* Walk-in Completed Report */}
+        <ReportSection
+          title="Reporte de Walk-ins Completados"
+          icon="directions-walk"
+          iconBg="#F97316"
+          onDownload={() =>
+            generatePDF(
+              "Reporte de Walk-ins Completados",
+              `<div class="section-title">Resumen</div>
+               <div class="stat-row"><span class="stat-label">Total Walk-ins</span><span class="stat-value">${filteredWalkins.length}</span></div>
+               ${walkinStartDate || walkinEndDate ? `<div class="stat-row"><span class="stat-label">Filtro de Fechas</span><span class="stat-value">${walkinStartDate || '...'} — ${walkinEndDate || '...'}</span></div>` : ''}
+               <div class="section-title">Detalle de Walk-ins</div>
+               <table>
+                 <tr><th>Habitación</th><th>Tipo</th><th>Huésped</th><th>Entrada</th><th>Salida</th><th>Servicio</th></tr>
+                 ${filteredWalkins
+                   .map(
+                     (w: WalkInHistoryItem) =>
+                       `<tr>
+                         <td>${w.room_number}</td>
+                         <td>${getRoomTypeLabel(w.room_type)}</td>
+                         <td>${w.guest_signature}</td>
+                         <td>${new Date(w.checked_in).toLocaleDateString()}</td>
+                         <td>${new Date(w.checked_out).toLocaleDateString()}</td>
+                         <td>${w.service_type === '3hours' ? '3 Horas' : 'Noche'}</td>
+                       </tr>`
+                   )
+                   .join("")}
+               </table>`
+            )
+          }
+        >
+          <View className="flex-row gap-3 mb-3">
+            <ReportCard icon="directions-walk" label="Total" value={filteredWalkins.length} color="#F97316" />
+            <ReportCard icon="nights-stay" label="Noche" value={filteredWalkins.filter((w) => w.service_type !== '3hours').length} color="#0EA5E9" />
+            <ReportCard icon="schedule" label="3 Horas" value={filteredWalkins.filter((w) => w.service_type === '3hours').length} color="#8B5CF6" />
+          </View>
+          <View className="flex-row gap-3 mb-3">
+            <View className="flex-1">
+              <ThemedText className="text-xs opacity-60 mb-1">Desde</ThemedText>
+              <TextInput
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+                placeholder="AAAA-MM-DD"
+                placeholderTextColor="#94A3B8"
+                value={walkinStartDate}
+                onChangeText={setWalkinStartDate}
+              />
+            </View>
+            <View className="flex-1">
+              <ThemedText className="text-xs opacity-60 mb-1">Hasta</ThemedText>
+              <TextInput
+                className="text-sm dark:text-white py-2 px-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg"
+                placeholder="AAAA-MM-DD"
+                placeholderTextColor="#94A3B8"
+                value={walkinEndDate}
+                onChangeText={setWalkinEndDate}
+              />
+            </View>
+          </View>
+          <CollapsibleList label="Detalle de Walk-ins">
+            {filteredWalkins.length === 0 ? (
+              <ThemedText className="text-sm opacity-60 italic py-4 text-center">No hay walk-ins en este rango de fechas</ThemedText>
+            ) : (
+              filteredWalkins.map((w: WalkInHistoryItem) => (
+                <View key={w.id_occupancy} className="flex-row items-center py-2.5 border-b border-gray-100 dark:border-gray-700">
+                  <View className="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-900/20 items-center justify-center mr-3">
+                    <MaterialIcons name="directions-walk" size={18} color="#F97316" />
+                  </View>
+                  <View className="flex-1">
+                    <ThemedText className="text-sm font-medium">{w.guest_signature}</ThemedText>
+                    <ThemedText className="text-xs opacity-60">Hab. {w.room_number} · {getRoomTypeLabel(w.room_type)}</ThemedText>
+                  </View>
+                  <View className="items-end">
+                    <ThemedText className="text-xs opacity-60">
+                      {new Date(w.checked_in).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+                    </ThemedText>
+                    <ThemedText className="text-xs font-semibold text-orange-500">{w.service_type === '3hours' ? '3h' : `${w.total_nights}n`}</ThemedText>
+                  </View>
+                </View>
+              ))
+            )}
+          </CollapsibleList>
         </ReportSection>
       </ThemedView>
     </ScrollView>

@@ -7,6 +7,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useWalkinHistory } from "@/hooks";
 import { WalkInHistoryItem } from "@/hooks/api/walkin-types";
+import { getRoomTypeLabel } from "@/components/shared/RoomCard";
 
 function formatDate(iso: string) {
   const d = new Date(iso);
@@ -49,7 +50,7 @@ function DetailModal({ item, visible, onClose }: { item: WalkInHistoryItem | nul
                   Habitación {item.room_number || `#${item.room_id}`}
                 </ThemedText>
                 {item.room_type && (
-                  <ThemedText className="text-sm opacity-60 capitalize">{item.room_type}</ThemedText>
+                  <ThemedText className="text-sm opacity-60">{getRoomTypeLabel(item.room_type)}</ThemedText>
                 )}
               </View>
             </View>
@@ -141,7 +142,7 @@ function HistoryCard({
               Habitación {item.room_number || `#${item.room_id}`}
             </ThemedText>
             {item.room_type && (
-              <ThemedText className="text-xs opacity-60 capitalize">{item.room_type}</ThemedText>
+              <ThemedText className="text-xs opacity-60">{getRoomTypeLabel(item.room_type)}</ThemedText>
             )}
           </View>
         </View>

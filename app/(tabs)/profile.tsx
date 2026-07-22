@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, ScrollView, Alert, TextInput, Switch, Linking } from "react-native";
+import { TouchableOpacity, View, ScrollView, Alert, TextInput, Switch, Linking, KeyboardAvoidingView, Platform } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth, useUpdateUser, useUpdatePassword, useBiometric } from "@/hooks";
@@ -81,6 +81,7 @@ export default function ProfileScreen() {
   const roleIcon = roleIcons[userRole] || "person";
 
   return (
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1">
     <ScrollView className="flex-1">
       <ThemedView className="px-5 pt-8 pb-6 items-center">
         <View
@@ -330,5 +331,6 @@ export default function ProfileScreen() {
         </View>
       )}
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

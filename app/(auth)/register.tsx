@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TouchableOpacity, ActivityIndicator } from "react-native";
+import { TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import ThemedTextInput from "@/components/ThemedTextInput";
@@ -59,13 +59,19 @@ export default function RegisterScreen() {
       const user = await login(email, password);
       router.replace(getRouteByRole(user.role) as any);
     } catch (err: any) {
-      setError(err.message || "Registration failed. Email may already be in use.");
+      const msg = err.message || "";
+      if (msg.includes("ya está registrado")) {
+        setError("Este correo ya está registrado. Comuníquese con el hotel para asignarle una contraseña.");
+      } else {
+        setError(msg || "Error al registrarse");
+      }
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1">
     <ThemedView className="flex-1 justify-center px-6">
       <ThemedText type="title" className="text-center mb-8">Registrarse</ThemedText>
 
@@ -123,5 +129,6 @@ export default function RegisterScreen() {
         </ThemedText>
       </TouchableOpacity>
     </ThemedView>
+    </KeyboardAvoidingView>
   );
 }

@@ -4,6 +4,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Room, MaintenanceTask } from "@/hooks/api/types";
 import { useUpdateRoomTasks } from "@/hooks";
+import { getRoomTypeLabel } from "@/components/shared/RoomCard";
 
 let taskIdCounter = Date.now();
 function genId() { return (++taskIdCounter).toString(); }
@@ -85,7 +86,7 @@ export function MaintenanceRoomCard({ item, onMarkMaintenance, onMarkAvailable }
             <View>
               <ThemedText type="defaultSemiBold">Hab. {item.room_number}</ThemedText>
               <ThemedText className="text-sm opacity-60">
-                {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)} · Piso {item.floor}
+                {getRoomTypeLabel(item.room_type)} · Piso {item.floor}
               </ThemedText>
             </View>
           </View>

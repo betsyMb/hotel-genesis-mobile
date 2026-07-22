@@ -8,6 +8,7 @@ export const ENDPOINTS = {
   auth: {
     login: `${BASE_URL}/auth/login`,
     register: `${BASE_URL}/auth/register`,
+    verifyPassword: `${BASE_URL}/auth/verify-password`,
   },
   roles: {
     base: `${BASE_URL}/roles`,

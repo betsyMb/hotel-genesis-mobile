@@ -8,6 +8,7 @@ import { useAuth, useRooms, useReservations, useExchangeRate } from "@/hooks";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Reservation } from "@/hooks/api/types";
+import { getRoomTypeLabel } from "@/components/shared/RoomCard";
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -126,7 +127,7 @@ export default function HomeScreen() {
                 </View>
               </View>
               <ThemedText className="text-sm opacity-60">
-                {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)}
+                {getRoomTypeLabel(item.room_type)}
               </ThemedText>
               <ThemedText className="text-lg font-bold text-[#0EA5E9] mt-1">
                 {exchangeRate ? `Bs. ${(item.price_per_night * exchangeRate).toLocaleString("es-ES", { maximumFractionDigits: 2 })}` : `$${item.price_per_night}`}

@@ -1,7 +1,7 @@
 export { StatBadge } from "./StatBadge";
 export { EmptyState } from "./EmptyState";
 export { InfoRow as ProfileRow, SettingRow } from "./ProfileRow";
-export { RoomCard } from "./RoomCard";
+export { RoomCard, getRoomTypeLabel } from "./RoomCard";
 export { RoomFormModal } from "./RoomFormModal";
 export { UserCard } from "./UserCard";
 export { UserFormModal } from "./UserFormModal";

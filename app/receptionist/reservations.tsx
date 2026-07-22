@@ -59,13 +59,14 @@ export default function ReceptionistReservationsScreen() {
     }
   }
 
-  async function handleCreateClient(data: { full_name: string; email: string; phone?: string }): Promise<number> {
+  async function handleCreateClient(data: { full_name: string; email: string; phone?: string; dni?: string }): Promise<number> {
     const clientRole = roles?.find((r) => r.role_name === "Client");
     if (!clientRole) throw new Error("Rol de cliente no encontrado");
     const user = await createUser.mutateAsync({
       full_name: data.full_name,
       email: data.email,
       phone: data.phone,
+      dni: data.dni,
       id_rol: clientRole.id_rol,
       password_hash: "reservation123",
       is_active: true,
@@ -77,9 +78,13 @@ export default function ReceptionistReservationsScreen() {
   async function confirmStatusChange(newStatus: string) {
     if (!statusReservation) return;
     try {
+      const updateData: any = { reservation_status: newStatus as any };
+      if ((newStatus === "cancelled" || newStatus === "no_show") && exchangeRate) {
+        updateData.total_amount_bs = Number(statusReservation.total_amount) * exchangeRate;
+      }
       await updateReservation.mutateAsync({
         id: statusReservation.id_reservation,
-        data: { reservation_status: newStatus as any },
+        data: updateData,
       });
       setShowStatusPicker(false);
       setStatusReservation(null);

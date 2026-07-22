@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TouchableOpacity, View, Modal, TextInput } from "react-native";
+import { TouchableOpacity, View, Modal, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -17,11 +17,11 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
   const [dni, setDni] = useState("");
 
   function handleSave() {
-    if (!firstName.trim() || !lastName.trim() || !dni.trim()) return;
+    if (!firstName.trim() || !lastName.trim() || !dni.trim() || !phoneNumber.trim() || !email.trim()) return;
     onSave({
       first_name: firstName.trim(),
       last_name: lastName.trim(),
-      email: email.trim() || `walkin-${dni.trim()}@hotel.app`,
+      email: email.trim(),
       dni: dni.trim(),
       phone_number: phoneNumber.trim(),
     });
@@ -43,7 +43,7 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <View className="flex-1 justify-end bg-black/50">
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1 justify-end bg-black/50">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6">
           <View className="flex-row justify-between items-center mb-5">
             <ThemedText type="title">Nuevo Huésped</ThemedText>
@@ -96,7 +96,7 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
 
           <View className="mb-4">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">
-              TELÉFONO
+              TELÉFONO *
             </ThemedText>
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
@@ -110,7 +110,7 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
 
           <View className="mb-6">
             <ThemedText className="font-semibold text-sm opacity-60 mb-1.5">
-              CORREO ELECTRÓNICO
+              CORREO ELECTRÓNICO *
             </ThemedText>
             <TextInput
               className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
@@ -126,12 +126,12 @@ export function NewUserModal({ visible, onClose, onSave }: NewUserModalProps) {
           <TouchableOpacity
             className="bg-[#0EA5E9] py-4 rounded-xl items-center disabled:opacity-50"
             onPress={handleSave}
-            disabled={!firstName.trim() || !lastName.trim() || !dni.trim()}
+            disabled={!firstName.trim() || !lastName.trim() || !dni.trim() || !phoneNumber.trim() || !email.trim()}
           >
             <ThemedText className="text-white font-semibold">Añadir Huésped</ThemedText>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

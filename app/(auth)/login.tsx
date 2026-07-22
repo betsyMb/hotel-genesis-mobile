@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TouchableOpacity, ActivityIndicator, View } from "react-native";
+import { TouchableOpacity, ActivityIndicator, View, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import ThemedTextInput from "@/components/ThemedTextInput";
@@ -82,6 +82,7 @@ export default function LoginScreen() {
   }
 
   return (
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1">
     <ThemedView className="flex-1 justify-center px-6">
       <ThemedText type="title" className="text-center mb-8">Iniciar Sesión</ThemedText>
 
@@ -142,5 +143,6 @@ export default function LoginScreen() {
         </ThemedText>
       </TouchableOpacity>
     </ThemedView>
+    </KeyboardAvoidingView>
   );
 }

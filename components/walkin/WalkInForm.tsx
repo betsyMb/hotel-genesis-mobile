@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  ScrollView, TouchableOpacity, View, Alert, TextInput, Modal, FlatList,
+  ScrollView, TouchableOpacity, View, Alert, TextInput, Modal, FlatList, KeyboardAvoidingView, Platform,
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -33,6 +33,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
   const [mainLastName, setMainLastName] = useState("");
   const [mainDni, setMainDni] = useState("");
   const [mainPhone, setMainPhone] = useState("");
+  const [mainEmail, setMainEmail] = useState("");
 
   const [guests, setGuests] = useState<WalkInGuest[]>([{ first_name: "", last_name: "", dni: "", phone_number: "" }]);
   const [submitting, setSubmitting] = useState(false);
@@ -62,6 +63,18 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
       Alert.alert("Error", "Ingresa el nombre y apellido del huésped principal");
       return;
     }
+    if (!mainDni.trim()) {
+      Alert.alert("Error", "El DNI es obligatorio");
+      return;
+    }
+    if (!mainPhone.trim()) {
+      Alert.alert("Error", "El teléfono es obligatorio");
+      return;
+    }
+    if (!mainEmail.trim()) {
+      Alert.alert("Error", "El correo electrónico es obligatorio");
+      return;
+    }
 
     setSubmitting(true);
 
@@ -72,8 +85,9 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
         guest: {
           first_name: mainFirstName.trim(),
           last_name: mainLastName.trim(),
-          dni: mainDni.trim() || "",
-          phone_number: mainPhone.trim() || undefined,
+          dni: mainDni.trim(),
+          phone_number: mainPhone.trim(),
+          email: mainEmail.trim(),
         },
         additional_guests: guests
           .filter((g) => g.first_name.trim())
@@ -92,6 +106,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
       setMainLastName("");
       setMainDni("");
       setMainPhone("");
+      setMainEmail("");
       setGuests([{ first_name: "", last_name: "", dni: "", phone_number: "" }]);
       onSuccess?.();
     } catch (err: any) {
@@ -102,8 +117,9 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
   }
 
   return (
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1">
     <ThemedView className="flex-1">
-      <ScrollView contentContainerClassName="p-5">
+      <ScrollView contentContainerClassName="p-5" keyboardShouldPersistTaps="handled">
         <View className="mb-6">
           <ThemedText className="font-semibold text-sm opacity-60 mb-2 uppercase">
             Seleccionar Habitación *
@@ -188,7 +204,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             <View className="flex-1">
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                placeholder="DNI"
+                placeholder="DNI *"
                 placeholderTextColor="#94A3B8"
                 value={mainDni}
                 onChangeText={setMainDni}
@@ -198,7 +214,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             <View className="flex-1">
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                placeholder="Teléfono"
+                placeholder="Teléfono *"
                 placeholderTextColor="#94A3B8"
                 value={mainPhone}
                 onChangeText={setMainPhone}
@@ -206,6 +222,16 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
               />
             </View>
           </View>
+
+          <TextInput
+            className="text-sm dark:text-white py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-3"
+            placeholder="Correo electrónico *"
+            placeholderTextColor="#94A3B8"
+            value={mainEmail}
+            onChangeText={setMainEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
           <TouchableOpacity
             className="flex-row items-center py-2"
@@ -253,7 +279,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
             <TouchableOpacity
               className="bg-[#0EA5E9] py-4 rounded-xl items-center disabled:opacity-50"
               onPress={handleSubmit}
-              disabled={submitting || walkinCheckin.isPending}
+              disabled={submitting || walkinCheckin.isPending || !mainDni.trim() || !mainPhone.trim() || !mainEmail.trim()}
             >
               <ThemedText className="text-white font-semibold text-base">
                 {submitting || walkinCheckin.isPending ? "Procesando..." : "Registrar Entrada"}
@@ -269,6 +295,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
           setMainLastName(data.last_name);
           setMainDni(data.dni);
           setMainPhone(data.phone_number);
+          setMainEmail(data.email);
           setSelectedUser(null);
           setShowNewUserModal(false);
         }}
@@ -370,6 +397,7 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
                         setMainLastName(names.slice(1).join(" ") || "");
                         setMainDni("");
                         setMainPhone(item.phone || "");
+                        setMainEmail(item.email || "");
                         setUserSearch("");
                         setShowUserPicker(false);
                       }}
@@ -393,5 +421,6 @@ export function WalkInForm({ onSuccess }: WalkInFormProps) {
         </View>
       </Modal>
     </ThemedView>
+    </KeyboardAvoidingView>
   );
 }

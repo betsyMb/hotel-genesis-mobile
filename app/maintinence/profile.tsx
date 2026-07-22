@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, ScrollView, Alert, TextInput, Switch, Linking } from "react-native";
+import { TouchableOpacity, View, ScrollView, Alert, TextInput, Switch, Linking, KeyboardAvoidingView, Platform } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth, useUpdateUser, useUpdatePassword, useBiometric } from "@/hooks";
@@ -63,6 +63,7 @@ export default function MaintenanceProfileScreen() {
   const roleColor = "#6B7280";
 
   return (
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1">
     <ScrollView className="flex-1">
       <ThemedView className="px-5 pt-8 pb-6 items-center">
         <View className="w-24 h-24 rounded-full items-center justify-center mb-4" style={{ backgroundColor: `${roleColor}20` }}>
@@ -282,5 +283,6 @@ export default function MaintenanceProfileScreen() {
         </View>
       )}
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

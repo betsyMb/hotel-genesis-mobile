@@ -2,6 +2,7 @@ import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Room } from "@/hooks/api/types";
+import { getRoomTypeLabel } from "@/components/shared/RoomCard";
 
 interface ClientRoomCardProps {
   item: Room;
@@ -44,7 +45,7 @@ export function ClientRoomCard({ item, onPress, exchangeRate }: ClientRoomCardPr
               <ThemedText type="defaultSemiBold" className="text-lg">Habitación {item.room_number}</ThemedText>
               <View className="flex-row items-center gap-1.5 mt-0.5">
                 <MaterialIcons name="king-bed" size={14} color="#9CA3AF" />
-                <ThemedText className="text-sm opacity-60 capitalize">{item.room_type}</ThemedText>
+                <ThemedText className="text-sm opacity-60">{getRoomTypeLabel(item.room_type)}</ThemedText>
                 <View className="w-1 h-1 rounded-full bg-gray-300" />
                 <MaterialIcons name="layers" size={14} color="#9CA3AF" />
                 <ThemedText className="text-sm opacity-60">Piso {item.floor}</ThemedText>

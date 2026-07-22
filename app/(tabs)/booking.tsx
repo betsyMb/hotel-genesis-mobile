@@ -49,10 +49,15 @@ export default function BookingScreen() {
   const [showForm, setShowForm] = useState(false);
   const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-  const [checkIn, setCheckIn] = useState(new Date());
+  const [checkIn, setCheckIn] = useState(() => {
+    const d = new Date();
+    d.setHours(14, 0, 0, 0);
+    return d;
+  });
   const [checkOut, setCheckOut] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 1);
+    d.setHours(12, 0, 0, 0);
     return d;
   });
   const [showCheckInPicker, setShowCheckInPicker] = useState(false);
@@ -113,7 +118,15 @@ export default function BookingScreen() {
       return;
     }
     if (!editingReservation && !dni.trim()) {
-      Alert.alert("Error", "DNI is required");
+      Alert.alert("Error", "El DNI es obligatorio");
+      return;
+    }
+    if (!editingReservation && !phone.trim()) {
+      Alert.alert("Error", "El teléfono es obligatorio");
+      return;
+    }
+    if (!editingReservation && !email.trim()) {
+      Alert.alert("Error", "El correo electrónico es obligatorio");
       return;
     }
 
@@ -176,9 +189,12 @@ export default function BookingScreen() {
       setShowForm(false);
       setEditingReservation(null);
       setSelectedRoom(null);
-      setCheckIn(new Date());
+      const now = new Date();
+      now.setHours(14, 0, 0, 0);
+      setCheckIn(now);
       const nextDay = new Date();
       nextDay.setDate(nextDay.getDate() + 1);
+      nextDay.setHours(12, 0, 0, 0);
       setCheckOut(nextDay);
       setGuests("1");
       setNotes("");
@@ -232,9 +248,13 @@ export default function BookingScreen() {
           style: "destructive",
           onPress: async () => {
             try {
+              const updateData: any = { reservation_status: "cancelled" };
+              if (exchangeRate) {
+                updateData.total_amount_bs = Number(r.total_amount) * exchangeRate;
+              }
               await updateReservation.mutateAsync({
                 id: r.id_reservation,
-                data: { reservation_status: "cancelled" },
+                data: updateData,
               });
               refetch();
               Alert.alert(
@@ -405,7 +425,7 @@ export default function BookingScreen() {
               />
               <TextInput
                 className="text-sm dark:text-white py-3 px-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl mb-2"
-                placeholder="Teléfono"
+                placeholder="Teléfono *"
                 placeholderTextColor="#94A3B8"
                 value={phone}
                 onChangeText={setPhone}
@@ -487,7 +507,7 @@ export default function BookingScreen() {
           <TouchableOpacity
             className="bg-[#0EA5E9] py-4 rounded-xl items-center disabled:opacity-50"
             onPress={handleCreateReservation}
-            disabled={submitting || !selectedRoom || !checkIn || !checkOut || (!editingReservation && !dni.trim())}
+            disabled={submitting || !selectedRoom || !checkIn || !checkOut || (!editingReservation && (!dni.trim() || !phone.trim() || !email.trim()))}
           >
             {submitting ? (
               <ActivityIndicator color="white" />

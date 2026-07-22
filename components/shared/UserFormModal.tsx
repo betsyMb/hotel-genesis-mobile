@@ -3,6 +3,7 @@ import { TouchableOpacity, View, Modal, ScrollView, Alert, TextInput } from "rea
 import { ThemedText } from "@/components/ThemedText";
 import { User, RoleEntity } from "@/hooks/api/types";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useAuth } from "@/hooks";
 
 interface UserFormModalProps {
   visible: boolean;
@@ -10,6 +11,7 @@ interface UserFormModalProps {
   onSubmit: (data: any) => void;
   editingUser: User | null;
   roles: RoleEntity[];
+  allUsers?: User[];
 }
 
 function FormInput({
@@ -45,20 +47,20 @@ function FormInput({
   );
 }
 
-export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }: UserFormModalProps) {
+export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles, allUsers = [] }: UserFormModalProps) {
+  const { user: adminUser, verifyPassword } = useAuth();
   const [fullName, setFullName] = useState(editingUser?.full_name || "");
   const [email, setEmail] = useState(editingUser?.email || "");
   const [phone, setPhone] = useState(editingUser?.phone ?? "");
   const [password, setPassword] = useState("");
   const [roleId, setRoleId] = useState(editingUser?.id_rol?.toString() ?? "");
   const [isActive, setIsActive] = useState(editingUser?.is_active ?? true);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [pendingData, setPendingData] = useState<any>(null);
+  const [verifying, setVerifying] = useState(false);
 
-  async function handleSubmit() {
-    if (!fullName || !email || (!editingUser && !password)) {
-      Alert.alert("Error", "Complete los campos obligatorios");
-      return;
-    }
-
+  function buildData(): any {
     const data: any = {};
     if (editingUser) {
       if (fullName !== editingUser.full_name) data.full_name = fullName;
@@ -75,12 +77,64 @@ export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }
       if (phone) data.phone = phone;
       if (password) data.password_hash = password;
     }
+    return data;
+  }
+
+  async function handleSubmit() {
+    if (!fullName || !email || (!editingUser && !password)) {
+      Alert.alert("Error", "Complete los campos obligatorios");
+      return;
+    }
+
+    const data = buildData();
+    const roleChanged = editingUser && Number(roleId) !== editingUser.id_rol;
+
+    if (roleChanged && editingUser) {
+      const isEditingSelf = editingUser.id_user === adminUser?.id_user;
+      const adminCount = allUsers.filter((u) => u.role === "Administrator").length;
+      if (isEditingSelf && adminCount <= 1) {
+        Alert.alert(
+          "No permitido",
+          "No puedes cambiar tu propio rol siendo el único administrador. La app quedaría sin administrador."
+        );
+        return;
+      }
+
+      setPendingData(data);
+      setShowPasswordModal(true);
+      return;
+    }
 
     try {
       await onSubmit(data);
       onClose();
     } catch {
       // error handled by parent
+    }
+  }
+
+  async function confirmWithPassword() {
+    if (!adminPassword.trim() || !adminUser) return;
+    setVerifying(true);
+    try {
+      const valid = await verifyPassword(adminUser.email, adminPassword);
+      if (!valid) {
+        Alert.alert("Error", "Contraseña incorrecta");
+        setVerifying(false);
+        return;
+      }
+      setShowPasswordModal(false);
+      setAdminPassword("");
+      try {
+        await onSubmit(pendingData);
+        onClose();
+      } catch {
+        // error handled by parent
+      }
+    } catch (err: any) {
+      Alert.alert("Error", err.message || "No se pudo verificar la contraseña");
+    } finally {
+      setVerifying(false);
     }
   }
 
@@ -143,6 +197,44 @@ export function UserFormModal({ visible, onClose, onSubmit, editingUser, roles }
           </ScrollView>
         </View>
       </View>
+
+      {showPasswordModal && (
+        <View className="absolute inset-0 z-50 justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <View className="mx-6 bg-white dark:bg-gray-800 rounded-2xl p-6">
+            <View className="flex-row items-center mb-4">
+              <MaterialIcons name="lock" size={24} color="#F59E0B" />
+              <ThemedText type="title" className="ml-2">Confirmar Cambio de Rol</ThemedText>
+            </View>
+            <ThemedText className="text-sm opacity-60 mb-4">
+              Ingrese su contraseña para confirmar el cambio de rol del usuario.
+            </ThemedText>
+            <TextInput
+              className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl mb-4"
+              placeholder="Su contraseña"
+              placeholderTextColor="#94A3B8"
+              value={adminPassword}
+              onChangeText={setAdminPassword}
+              secureTextEntry
+              autoFocus
+            />
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                className="flex-1 py-3 rounded-xl items-center bg-gray-100 dark:bg-gray-700"
+                onPress={() => { setShowPasswordModal(false); setAdminPassword(""); setPendingData(null); }}
+              >
+                <ThemedText className="font-semibold opacity-60">Cancelar</ThemedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-1 py-3 rounded-xl items-center bg-[#0EA5E9] disabled:opacity-50"
+                onPress={confirmWithPassword}
+                disabled={!adminPassword.trim() || verifying}
+              >
+                <ThemedText className="text-white font-semibold">{verifying ? "Verificando..." : "Confirmar"}</ThemedText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
     </Modal>
   );
 }

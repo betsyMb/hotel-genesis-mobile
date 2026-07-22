@@ -48,6 +48,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   hasRole: (...roles: Role[]) => boolean;
   refreshUser: (updates: Partial<User>) => Promise<void>;
+  verifyPassword: (email: string, password: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -132,6 +133,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await setUserData(updated);
   }
 
+  async function verifyPassword(email: string, password: string): Promise<boolean> {
+    const data = await api.postPublic(`${BASE_URL}/auth/verify-password`, { email, password });
+    return data.valid;
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -143,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         hasRole,
         refreshUser,
+        verifyPassword,
       }}
     >
       {children}

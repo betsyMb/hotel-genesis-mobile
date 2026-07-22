@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, Component, type ReactNode } from "react";
-import { ScrollView, TouchableOpacity, View, Alert, TextInput, FlatList, ActivityIndicator, Text, Platform } from "react-native";
+import { ScrollView, TouchableOpacity, View, Alert, TextInput, FlatList, ActivityIndicator, Text, Platform, KeyboardAvoidingView } from "react-native";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 
 class ErrorBoundary extends Component<{children: ReactNode}> {
@@ -30,7 +30,7 @@ interface ReservationFormModalProps {
   editingReservation: Reservation | null;
   rooms: Room[];
   users: User[];
-  onCreateClient?: (data: { full_name: string; email: string; phone?: string }) => Promise<number>;
+  onCreateClient?: (data: { full_name: string; email: string; phone?: string; dni?: string }) => Promise<number>;
   exchangeRate?: number;
 }
 
@@ -75,10 +75,15 @@ export function ReservationFormModal({
 }: ReservationFormModalProps) {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [selectedClient, setSelectedClient] = useState<User | null>(null);
-  const [checkInDate, setCheckInDate] = useState(new Date());
+  const [checkInDate, setCheckInDate] = useState(() => {
+    const d = new Date();
+    d.setHours(14, 0, 0, 0);
+    return d;
+  });
   const [checkOutDate, setCheckOutDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 1);
+    d.setHours(12, 0, 0, 0);
     return d;
   });
   const [showCheckInPicker, setShowCheckInPicker] = useState(false);
@@ -113,6 +118,7 @@ export function ReservationFormModal({
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newPhone, setNewPhone] = useState("");
+  const [newDni, setNewDni] = useState("");
 
 
 
@@ -131,9 +137,12 @@ export function ReservationFormModal({
       } else {
         setSelectedRoom(null);
         setSelectedClient(null);
-        setCheckInDate(new Date());
+        const now = new Date();
+        now.setHours(14, 0, 0, 0);
+        setCheckInDate(now);
         const nextDay = new Date();
         nextDay.setDate(nextDay.getDate() + 1);
+        nextDay.setHours(12, 0, 0, 0);
         setCheckOutDate(nextDay);
         setGuests("1");
         setNotes("");
@@ -143,6 +152,7 @@ export function ReservationFormModal({
         setNewName("");
         setNewEmail("");
         setNewPhone("");
+        setNewDni("");
       }
       setPicker(null);
       setSearch("");
@@ -182,13 +192,13 @@ export function ReservationFormModal({
       if (!selectedClient) { Alert.alert("Error", "Seleccione un cliente"); return; }
       clientId = selectedClient.id_user;
     } else {
-      if (!newName.trim() || !newEmail.trim()) {
-        Alert.alert("Error", "Ingrese el nombre y email del cliente");
+      if (!newName.trim() || !newEmail.trim() || !newPhone.trim() || !newDni.trim()) {
+        Alert.alert("Error", "Nombre, email, teléfono y DNI son obligatorios");
         return;
       }
       if (!onCreateClient) { Alert.alert("Error", "Creación de cliente no disponible"); return; }
       try {
-        clientId = await onCreateClient({ full_name: newName.trim(), email: newEmail.trim(), phone: newPhone.trim() || undefined });
+        clientId = await onCreateClient({ full_name: newName.trim(), email: newEmail.trim(), phone: newPhone.trim(), dni: newDni.trim() });
       } catch (err: any) {
         Alert.alert("Error", err.message);
         return;
@@ -239,7 +249,7 @@ export function ReservationFormModal({
 
   return (
     <View className="absolute inset-0 z-50">
-      <View className="flex-1 justify-end bg-black/50">
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1 justify-end bg-black/50">
         <View className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 flex-1 max-h-[80%]">
           {picker === "room" ? (
             <>
@@ -403,12 +413,20 @@ export function ReservationFormModal({
                       autoCapitalize="none"
                     />
                     <TextInput
-                      className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
-                      placeholder="Teléfono (opcional)"
+                      className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl mb-2"
+                      placeholder="Teléfono *"
                       placeholderTextColor="#94A3B8"
                       value={newPhone}
                       onChangeText={setNewPhone}
                       keyboardType="phone-pad"
+                    />
+                    <TextInput
+                      className="text-sm dark:text-white py-3 px-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
+                      placeholder="DNI *"
+                      placeholderTextColor="#94A3B8"
+                      value={newDni}
+                      onChangeText={setNewDni}
+                      autoCapitalize="characters"
                     />
                   </View>
                 )}
@@ -575,7 +593,7 @@ export function ReservationFormModal({
             </>
           )}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }

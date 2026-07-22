@@ -4,6 +4,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import {useRooms, useExchangeRate, Room} from "@/hooks";
 import { EmptyState, StatBadge } from "@/components/shared";
+import { getRoomTypeLabel } from "@/components/shared/RoomCard";
 
 const statusLabels: Record<string, string> = {
   available: "Disponible",
@@ -58,7 +59,7 @@ export default function ManagerRoomsScreen() {
                   <View>
                     <ThemedText type="defaultSemiBold">Hab. {item.room_number}</ThemedText>
                     <ThemedText className="text-sm opacity-60">
-                      {item.room_type.charAt(0).toUpperCase() + item.room_type.slice(1)} · Piso {item.floor}
+                      {getRoomTypeLabel(item.room_type)} · Piso {item.floor}
                     </ThemedText>
                   </View>
                 </View>

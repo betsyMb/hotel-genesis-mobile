@@ -180,6 +180,7 @@ export default function AdminUsersScreen() {
         onSubmit={editingUser ? handleUpdate : handleCreate}
         editingUser={editingUser}
         roles={roles || []}
+        allUsers={users || []}
       />
     </ThemedView>
   );
