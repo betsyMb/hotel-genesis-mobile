@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, View, TouchableOpacity } from "react-native";
+import { RefreshControl, ScrollView, View, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useReservations, useUsers, useOccupancies, useExchangeRate } from "@/hooks";
@@ -9,11 +9,19 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 
 export default function AdminReportsScreen() {
-  const { data: rooms } = useRooms();
-  const { data: reservations } = useReservations();
-  const { data: users } = useUsers();
-  const { data: occupancies } = useOccupancies();
+  const { data: rooms, refetch: refetchRooms } = useRooms();
+  const { data: reservations, refetch: refetchReservations } = useReservations();
+  const { data: users, refetch: refetchUsers } = useUsers();
+  const { data: occupancies, refetch: refetchOccupancies } = useOccupancies();
   const { data: exchangeRate } = useExchangeRate();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await Promise.all([refetchRooms(), refetchReservations(), refetchUsers(), refetchOccupancies()]);
+    setRefreshing(false);
+  }
 
   const toBs = (amount: number) => {
     const num = Number(amount);
@@ -170,7 +178,7 @@ export default function AdminReportsScreen() {
   };
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView className="flex-1" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}>
       <ThemedView className="px-5 pt-4 pb-8">
         <ThemedText type="title" className="mb-1">Reportes</ThemedText>
         <ThemedText className="opacity-60 mb-6">Resumen del panel y reportes exportables</ThemedText>

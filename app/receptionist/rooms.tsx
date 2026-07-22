@@ -1,12 +1,20 @@
-import { FlatList, View } from "react-native";
+import { useState } from "react";
+import { FlatList, RefreshControl, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useExchangeRate } from "@/hooks";
 import { EmptyState, StatBadge, RoomCard } from "@/components/shared";
 
 export default function ReceptionistRoomsScreen() {
-  const { data: rooms, isLoading } = useRooms();
+  const { data: rooms, isLoading, refetch } = useRooms();
   const { data: exchangeRate } = useExchangeRate();
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
 
   const stats = {
     total: rooms?.length || 0,
@@ -31,6 +39,9 @@ export default function ReceptionistRoomsScreen() {
         renderItem={({ item }) => <RoomCard item={item} exchangeRate={exchangeRate} />}
         contentContainerClassName="px-4 py-4"
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />
+        }
         ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No rooms found" /> : null}
       />
     </ThemedView>

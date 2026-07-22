@@ -114,7 +114,7 @@ export function ReservationCard({ item, onEdit, onDelete, onStatusChange, onChec
                 <ThemedText className="ml-1 text-xs font-semibold text-white">Check In</ThemedText>
               </TouchableOpacity>
             )}
-            {onCheckOut && (
+            {item.reservation_status !== "cancelled" && item.reservation_status !== "no_show" && item.reservation_status !== "completed" && onCheckOut && (
               <TouchableOpacity
                 className="flex-row items-center px-3 py-1.5 rounded-lg bg-red-500"
                 onPress={() => onCheckOut(item)}

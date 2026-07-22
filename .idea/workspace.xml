@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="fix: env">
+    <list default="true" id="b8a1db86-d247-4eab-9906-e469efb0c26c" name="Changes" comment="fix: envs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/admin/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/maintinence/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/maintinence/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/manager/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/manager/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/receptionist/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/receptionist/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/api/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/api/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/use-users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/use-users.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="18525" />
+    <option name="cachedIndexableFilesCount" value="18524" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -33,61 +25,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0009407179816732" />
-      <entry key="MS500" value="1.4498942716523464" />
-      <entry key="S2" value="2.9880973543899225" />
-      <entry key="S5" value="4.587321004523005" />
-      <entry key="S10" value="6.487949815238915" />
-      <entry key="S30" value="12.414971073931198" />
-      <entry key="S60" value="18.710665434238916" />
-      <entry key="M2" value="26.24829945686709" />
-      <entry key="M5" value="36.38574666163532" />
-      <entry key="M10" value="48.563947011117484" />
-      <entry key="M15" value="62.68506113653306" />
-      <entry key="M30" value="104.86888684555353" />
-      <entry key="H1" value="157.92835210830282" />
-      <entry key="H2" value="203.74609054900344" />
-      <entry key="H4" value="240.9987173512267" />
-      <entry key="D1" value="314.80393336936095" />
-      <entry key="W1" value="340.8877663204997" />
+      <entry key="MS100" value="1.0000000097631916" />
+      <entry key="MS500" value="1.0249987540103984" />
+      <entry key="S2" value="1.3976304097956318" />
+      <entry key="S5" value="1.6914994456822887" />
+      <entry key="S10" value="1.8315644567213587" />
+      <entry key="S30" value="1.9403697265667752" />
+      <entry key="S60" value="1.9697266246560292" />
+      <entry key="M2" value="1.9847469850961865" />
+      <entry key="M5" value="1.9938706461114921" />
+      <entry key="M10" value="1.9969393852652515" />
+      <entry key="M15" value="2.0000007862796805" />
+      <entry key="M30" value="2.609004686151226" />
+      <entry key="H1" value="14.293916382006556" />
+      <entry key="H2" value="60.203880637473254" />
+      <entry key="H4" value="133.82328592221194" />
+      <entry key="D1" value="296.5570313733317" />
+      <entry key="W1" value="351.3548103640992" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
       <entry key="S2" value="0.0" />
-      <entry key="S5" value="4.178091771777254E-297" />
-      <entry key="S10" value="6.463816033719686E-149" />
-      <entry key="S30" value="4.0132510608970297E-50" />
-      <entry key="S60" value="2.003310026155958E-25" />
-      <entry key="M2" value="4.4758351468256255E-13" />
-      <entry key="M5" value="1.1490783256976701E-5" />
-      <entry key="M10" value="0.0033898057845517977" />
-      <entry key="M15" value="0.02256575554760712" />
-      <entry key="M30" value="0.15023083933857825" />
-      <entry key="H1" value="0.39349347971895215" />
-      <entry key="H2" value="0.8129857657429862" />
-      <entry key="H4" value="2.2132705413897256" />
-      <entry key="D1" value="10.818802408110365" />
-      <entry key="W1" value="15.111739262303876" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="8.634515168715283E-188" />
+      <entry key="S60" value="2.938454554475053E-94" />
+      <entry key="M2" value="1.7141920996420003E-47" />
+      <entry key="M5" value="1.9661823611571288E-19" />
+      <entry key="M10" value="4.4341654921279516E-10" />
+      <entry key="M15" value="5.81488682861138E-7" />
+      <entry key="M30" value="7.62614024048869E-4" />
+      <entry key="H1" value="0.028035634359792685" />
+      <entry key="H2" value="0.21700481247021275" />
+      <entry key="H4" value="1.1434777417944098" />
+      <entry key="D1" value="9.691211186913634" />
+      <entry key="W1" value="14.875984549309154" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9803127979894745" />
-      <entry key="MS500" value="1.441161643719789" />
-      <entry key="S2" value="2.9824743173737764" />
-      <entry key="S5" value="4.5838052514320085" />
-      <entry key="S10" value="6.485495235591927" />
-      <entry key="S30" value="12.413472642038066" />
-      <entry key="S60" value="18.70956206150625" />
-      <entry key="M2" value="26.24753627990803" />
-      <entry key="M5" value="36.38533974620392" />
-      <entry key="M10" value="48.5670413521297" />
-      <entry key="M15" value="62.70730854345586" />
-      <entry key="M30" value="105.01865164151087" />
-      <entry key="H1" value="158.3213479705916" />
-      <entry key="H2" value="204.55864434202832" />
-      <entry key="H4" value="243.21144449264085" />
-      <entry key="D1" value="325.62220612635673" />
-      <entry key="W1" value="355.9993958709102" />
+      <entry key="MS100" value="0.9726549568429071" />
+      <entry key="MS500" value="1.0192962436762176" />
+      <entry key="S2" value="1.395556631566855" />
+      <entry key="S5" value="1.6904659368413795" />
+      <entry key="S10" value="1.8309990879376963" />
+      <entry key="S30" value="1.9401686817172934" />
+      <entry key="S60" value="1.969624403923038" />
+      <entry key="M2" value="1.9846954402596" />
+      <entry key="M5" value="1.9938499226141753" />
+      <entry key="M10" value="1.9969290062080658" />
+      <entry key="M15" value="1.999994434653318" />
+      <entry key="M30" value="2.60976134878417" />
+      <entry key="H1" value="14.321914005305784" />
+      <entry key="H2" value="60.42076776315502" />
+      <entry key="H4" value="134.96648103019783" />
+      <entry key="D1" value="306.2477676224733" />
+      <entry key="W1" value="366.2306868373409" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -144,7 +136,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.25134.101" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.26222.58" />
       </set>
     </attachedChunks>
   </component>
@@ -171,7 +163,8 @@
       <workItem from="1781621670992" duration="6879000" />
       <workItem from="1781711181929" duration="6327000" />
       <workItem from="1782245803438" duration="7433000" />
-      <workItem from="1782669794528" duration="792000" />
+      <workItem from="1782669794528" duration="6979000" />
+      <workItem from="1783876299686" duration="7151000" />
     </task>
     <task id="LOCAL-00001" summary="feature: reservations">
       <option name="closed" value="true" />
@@ -261,7 +254,31 @@
       <option name="project" value="LOCAL" />
       <updated>1782351944782</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fix: change password">
+      <option name="closed" value="true" />
+      <created>1782670607882</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1782670607882</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fix: removing configuration page from admin">
+      <option name="closed" value="true" />
+      <created>1782670958697</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1782670958697</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fix: envs">
+      <option name="closed" value="true" />
+      <created>1782684324408</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1782684324408</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -289,7 +306,10 @@
     <MESSAGE value="fix: build" />
     <MESSAGE value="fix: eas build" />
     <MESSAGE value="fix: env" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: env" />
+    <MESSAGE value="fix: change password" />
+    <MESSAGE value="fix: removing configuration page from admin" />
+    <MESSAGE value="fix: envs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: envs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

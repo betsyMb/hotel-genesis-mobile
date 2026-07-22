@@ -21,9 +21,10 @@ interface ReservationCardProps {
   item: Reservation;
   onEdit: (r: Reservation) => void;
   onStatusChange: (r: Reservation) => void;
+  onConfirm?: (r: Reservation) => void;
 }
 
-export function ReservationCard({ item, onEdit, onStatusChange }: ReservationCardProps) {
+export function ReservationCard({ item, onEdit, onStatusChange, onConfirm }: ReservationCardProps) {
   const { data: exchangeRate } = useExchangeRate();
   const toBs = (amount: number) => {
     const num = Number(amount);
@@ -110,7 +111,16 @@ export function ReservationCard({ item, onEdit, onStatusChange }: ReservationCar
           </View>
         )}
 
-        <View className="flex-row justify-end mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+        <View className="flex-row justify-end mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 gap-2">
+          {item.reservation_status === "pending" && onConfirm && (
+            <TouchableOpacity
+              className="flex-row items-center px-3 py-1.5 rounded-lg bg-green-500"
+              onPress={() => onConfirm(item)}
+            >
+              <MaterialIcons name="check-circle" size={16} color="white" />
+              <ThemedText className="ml-1 text-xs font-semibold text-white">Confirmar</ThemedText>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity className="flex-row items-center px-3 py-1.5" onPress={() => onEdit(item)}>
             <MaterialIcons name="edit" size={16} color="#3B82F6" />
             <ThemedText className="ml-1 text-xs font-semibold text-blue-500">Editar</ThemedText>

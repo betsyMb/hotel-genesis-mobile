@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useOccupancies, useUpdateOccupancy, useUpdateRoom } from "@/hooks";
@@ -15,6 +15,13 @@ export default function ReceptionistCheckoutScreen() {
 
   const [selectedOccupancy, setSelectedOccupancy] = useState<Occupancy | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetchOccupancies();
+    setRefreshing(false);
+  }
 
   const activeOccupancies = occupancies?.filter(
     (o: Occupancy) => o.occupancy_status === "active"
@@ -70,6 +77,9 @@ export default function ReceptionistCheckoutScreen() {
           <OccupancyCard item={item as Occupancy} onCheckOut={handleCheckOut} />
         )}
         contentContainerClassName="px-4 py-4"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />
+        }
         ListEmptyComponent={
           !isLoading ? (
             <EmptyState icon="logout" title="Sin Estancias Activas" subtitle="No hay huéspedes con check-in actualmente" />

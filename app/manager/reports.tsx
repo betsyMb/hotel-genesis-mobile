@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, View, TouchableOpacity } from "react-native";
+import { ScrollView, View, TouchableOpacity, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useReservations, useUsers, useOccupancies, useServices, usePromotions, useExchangeRate } from "@/hooks";
@@ -9,13 +9,20 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 
 export default function ManagerReportsScreen() {
-  const { data: rooms } = useRooms();
-  const { data: reservations } = useReservations();
-  const { data: users } = useUsers();
-  const { data: occupancies } = useOccupancies();
-  const { data: services } = useServices();
-  const { data: promotions } = usePromotions();
+  const { data: rooms, refetch: refetchRooms } = useRooms();
+  const { data: reservations, refetch: refetchReservations } = useReservations();
+  const { data: users, refetch: refetchUsers } = useUsers();
+  const { data: occupancies, refetch: refetchOccupancies } = useOccupancies();
+  const { data: services, refetch: refetchServices } = useServices();
+  const { data: promotions, refetch: refetchPromotions } = usePromotions();
   const { data: exchangeRate } = useExchangeRate();
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await Promise.all([refetchRooms(), refetchReservations(), refetchUsers(), refetchOccupancies(), refetchServices(), refetchPromotions()]);
+    setRefreshing(false);
+  }
 
   const toBs = (amount: number) => {
     const num = Number(amount);
@@ -171,7 +178,7 @@ export default function ManagerReportsScreen() {
   };
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView className="flex-1" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}>
       <ThemedView className="px-5 pt-4 pb-8">
         <ThemedText type="title" className="mb-1">Reportes</ThemedText>
         <ThemedText className="opacity-60 mb-6">Dashboard y reportes</ThemedText>

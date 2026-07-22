@@ -1,4 +1,5 @@
-import { FlatList, View } from "react-native";
+import { useState } from "react";
+import { FlatList, View, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import {useRooms, useExchangeRate, Room} from "@/hooks";
@@ -12,8 +13,15 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function ManagerRoomsScreen() {
-  const { data: rooms, isLoading } = useRooms();
+  const { data: rooms, isLoading, refetch: refetchRooms } = useRooms();
   const { data: exchangeRate } = useExchangeRate();
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetchRooms();
+    setRefreshing(false);
+  }
 
   const stats = {
     total: rooms?.length || 0,
@@ -38,6 +46,7 @@ export default function ManagerRoomsScreen() {
         keyExtractor={(item: Room) => item.id_room.toString()}
         className="flex-1"
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
         renderItem={({ item }) => (
           <ThemedView className="rounded-2xl shadow-sm overflow-hidden mb-3 border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
             <View className="p-4">

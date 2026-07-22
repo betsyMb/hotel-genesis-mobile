@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useUpdateRoom } from "@/hooks";
@@ -11,7 +11,14 @@ import { EmptyState, StatBadge } from "@/components/shared";
 export default function AdminMaintenanceScreen() {
   const { data: rooms, isLoading, refetch } = useRooms();
   const updateRoom = useUpdateRoom();
+  const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<"all" | "maintenance">("all");
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
 
   async function handleMarkMaintenance(room: Room, tasks: MaintenanceTask[]) {
     try {
@@ -94,6 +101,7 @@ export default function AdminMaintenanceScreen() {
             <EmptyState icon="check-circle" title="No hay habitaciones" />
           ) : null
         }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
       />
     </ThemedView>
   );

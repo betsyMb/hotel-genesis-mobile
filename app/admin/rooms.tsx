@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { RoomCard, RoomFormModal, StatBadge, EmptyState } from "@/components/shared";
@@ -14,8 +14,15 @@ export default function AdminRoomsScreen() {
   const updateRoom = useUpdateRoom();
   const deleteRoom = useDeleteRoom();
 
+  const [refreshing, setRefreshing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
 
   async function handleCreate(data: Partial<Room>) {
     try {
@@ -83,10 +90,11 @@ export default function AdminRoomsScreen() {
         showsHorizontalScrollIndicator={false}
         contentContainerClassName="px-4 py-4"
         ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No hay habitaciones" /> : null}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
       />
 
       <TouchableOpacity
-        className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
+        className="absolute bottom-24 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
         onPress={() => { setEditingRoom(null); setShowForm(true); }}
       >
         <MaterialIcons name="add" size={28} color="white" />

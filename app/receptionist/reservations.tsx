@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useReservations, useRooms, useUsers, useRoles, useCreateReservation, useUpdateReservation, useCreateUser, useExchangeRate } from "@/hooks";
@@ -15,7 +15,7 @@ const filterLabels: Record<string, string> = {
 };
 
 export default function ReceptionistReservationsScreen() {
-  const { data: reservations, isLoading } = useReservations();
+  const { data: reservations, isLoading, refetch } = useReservations();
   const { data: rooms } = useRooms();
   const { data: users } = useUsers();
   const { data: roles } = useRoles();
@@ -29,6 +29,13 @@ export default function ReceptionistReservationsScreen() {
   const [statusReservation, setStatusReservation] = useState<Reservation | null>(null);
   const [showStatusPicker, setShowStatusPicker] = useState(false);
   const [filter, setFilter] = useState<string>("all");
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
 
   async function handleStatusChange(reservation: Reservation) {
     setStatusReservation(reservation);
@@ -81,6 +88,30 @@ export default function ReceptionistReservationsScreen() {
     }
   }
 
+  function handleConfirm(reservation: Reservation) {
+    Alert.alert(
+      "Confirmar Reserva",
+      `¿Confirmar la reserva de ${reservation.client?.full_name || `Cliente #${reservation.id_client}`}?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Confirmar",
+          onPress: async () => {
+            try {
+              await updateReservation.mutateAsync({
+                id: reservation.id_reservation,
+                data: { reservation_status: "confirmed" as any },
+              });
+              Alert.alert("Éxito", "Reserva confirmada");
+            } catch (err: any) {
+              Alert.alert("Error", err.message);
+            }
+          },
+        },
+      ],
+    );
+  }
+
   const filteredReservations = filter === "all"
     ? reservations || []
     : reservations?.filter((r: Reservation) => r.reservation_status === filter) || [];
@@ -125,9 +156,13 @@ export default function ReceptionistReservationsScreen() {
             item={item as Reservation}
             onEdit={(r) => { setEditingReservation(r); setShowForm(true); }}
             onStatusChange={handleStatusChange}
+            onConfirm={handleConfirm}
           />
         )}
         contentContainerClassName="px-4 py-4"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />
+        }
         ListEmptyComponent={
           !isLoading ? (
             <EmptyState icon="event-note" title="No se encontraron reservas" />
@@ -136,7 +171,7 @@ export default function ReceptionistReservationsScreen() {
       />
 
       <TouchableOpacity
-        className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
+        className="absolute bottom-24 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
         onPress={() => { setShowForm(true); }}
       >
         <MaterialIcons name="add" size={28} color="white" />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View, Alert } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useReservations, useOccupancies, useCreateOccupancy, useUpdateRoom, useExchangeRate } from "@/hooks";
@@ -109,12 +109,19 @@ function CheckInCard({ item, onCheckIn }: { item: Reservation; onCheckIn: (r: Re
 
 export default function ReceptionistCheckinScreen() {
   const { data: reservations, isLoading, refetch: refetchReservations } = useReservations();
-  const { data: occupancies } = useOccupancies();
+  const { data: occupancies, refetch: refetchOccupancies } = useOccupancies();
   const createOccupancy = useCreateOccupancy();
   const updateRoom = useUpdateRoom();
 
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await Promise.all([refetchReservations(), refetchOccupancies()]);
+    setRefreshing(false);
+  }
 
   const upcomingReservations = reservations?.filter(
     (r: Reservation) => r.reservation_status === "pending" || r.reservation_status === "confirmed"
@@ -183,6 +190,9 @@ export default function ReceptionistCheckinScreen() {
           <CheckInCard item={item as Reservation} onCheckIn={handleCheckIn} />
         )}
         contentContainerClassName="px-4 py-4"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />
+        }
         ListEmptyComponent={
           !isLoading ? (
             <EmptyState icon="check-circle" title="¡Todo al día!" subtitle="No hay check-ins pendientes para hoy" />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert, Modal, TextInput, ScrollView } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View, Alert, Modal, TextInput, ScrollView } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { StatBadge, EmptyState, ReservationCard, ReservationFormModal, StatusPickerModal, getReservationStatusConfig } from "@/components/shared";
@@ -31,8 +31,15 @@ export default function AdminReservationsScreen() {
   const updateRoom = useUpdateRoom();
   const walkinCheckout = useWalkinCheckout();
 
+  const [refreshing, setRefreshing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetchReservations();
+    setRefreshing(false);
+  }
   const [showStatusPicker, setShowStatusPicker] = useState(false);
   const [statusReservation, setStatusReservation] = useState<Reservation | null>(null);
   const [checkInReservation, setCheckInReservation] = useState<Reservation | null>(null);
@@ -223,23 +230,24 @@ export default function AdminReservationsScreen() {
         renderItem={({ item }) => {
           const isCheckedIn = activeOccupancyRoomIds.has(item.id_room);
           return (
-            <ReservationCard
+              <ReservationCard
               item={item as Reservation}
               onEdit={(r) => { setEditingReservation(r); setShowForm(true); }}
               onDelete={handleDelete}
               onStatusChange={(r) => { setStatusReservation(r); setShowStatusPicker(true); }}
-              onCheckIn={!isCheckedIn ? handleCheckIn : undefined}
-              onCheckOut={isCheckedIn ? handleCheckOut : undefined}
+              onCheckIn={!isCheckedIn && item.reservation_status === "confirmed" ? handleCheckIn : undefined}
+              onCheckOut={isCheckedIn && item.reservation_status !== "cancelled" && item.reservation_status !== "no_show" && item.reservation_status !== "completed" ? handleCheckOut : undefined}
               exchangeRate={exchangeRate}
             />
           );
         }}
         contentContainerClassName="px-4 py-4"
         ListEmptyComponent={!isLoading ? <EmptyState icon="event-note" title="No hay reservas" /> : null}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
       />
 
       <TouchableOpacity
-        className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
+        className="absolute bottom-24 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
         onPress={() => { setEditingReservation(null); setShowForm(true); }}
       >
         <MaterialIcons name="add" size={28} color="white" />

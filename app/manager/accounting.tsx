@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ScrollView, View, TouchableOpacity, Dimensions } from "react-native";
+import { ScrollView, View, TouchableOpacity, Dimensions, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "@/hooks/use-theme";
@@ -15,12 +15,19 @@ type Period = "all" | "month" | "quarter" | "year";
 const screenWidth = Dimensions.get("window").width - 40;
 
 export default function ManagerAccountingScreen() {
-  const { data: reservations } = useReservations();
-  const { data: rooms } = useRooms();
-  const { data: occupancies } = useOccupancies();
-  const { data: services } = useServices();
+  const { data: reservations, refetch: refetchReservations } = useReservations();
+  const { data: rooms, refetch: refetchRooms } = useRooms();
+  const { data: occupancies, refetch: refetchOccupancies } = useOccupancies();
+  const { data: services, refetch: refetchServices } = useServices();
   const { data: exchangeRate } = useExchangeRate();
   const { resolvedTheme } = useTheme();
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await Promise.all([refetchReservations(), refetchRooms(), refetchOccupancies(), refetchServices()]);
+    setRefreshing(false);
+  }
 
   const toBs = (amount: number) => {
     const num = Number(amount);
@@ -215,7 +222,7 @@ export default function ManagerAccountingScreen() {
   const hasMonthlyData = monthlyRevenue.some((m) => m.revenue > 0);
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView className="flex-1" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}>
       <ThemedView className="px-5 pt-4 pb-8">
         <View className="flex-row items-center justify-between mb-1">
           <ThemedText type="title" className="text-2xl">Contabilidad</ThemedText>

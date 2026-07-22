@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, TouchableOpacity, View, Alert, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useUpdateRoom } from "@/hooks";
@@ -11,6 +11,13 @@ export default function MaintenanceTasksScreen() {
   const { data: rooms, isLoading, refetch } = useRooms();
   const updateRoom = useUpdateRoom();
   const [filter, setFilter] = useState<"all" | "maintenance">("all");
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
 
   async function handleMarkMaintenance(room: Room, tasks: MaintenanceTask[]) {
     try {
@@ -93,6 +100,7 @@ export default function MaintenanceTasksScreen() {
             <EmptyState icon="check-circle" title="No rooms in maintenance" />
           ) : null
         }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
       />
     </ThemedView>
   );

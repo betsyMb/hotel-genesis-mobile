@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FlatList, TouchableOpacity, View, Alert, ActivityIndicator, ScrollView, TextInput, Platform } from "react-native";
+import { FlatList, TouchableOpacity, View, Alert, ActivityIndicator, ScrollView, TextInput, Platform, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth, useReservations, useRooms, useCreateReservation, useUpdateReservation, useUpdateUser, useExchangeRate } from "@/hooks";
@@ -40,7 +40,7 @@ function formatTime(d: Date): string {
 export default function BookingScreen() {
   const { user } = useAuth();
   const { data: reservations, isLoading, refetch } = useReservations();
-  const { data: rooms } = useRooms();
+  const { data: rooms, refetch: refetchRooms } = useRooms();
   const { data: exchangeRate } = useExchangeRate();
   const createReservation = useCreateReservation();
   const updateReservation = useUpdateReservation();
@@ -67,6 +67,13 @@ export default function BookingScreen() {
   const [additionalGuests, setAdditionalGuests] = useState<WalkInGuest[]>([]);
   const [filter, setFilter] = useState<string>("all");
   const [serviceType, setServiceType] = useState<'nightly' | '3hours'>('nightly');
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await Promise.all([refetch(), refetchRooms()]);
+    setRefreshing(false);
+  }
 
   useEffect(() => {
     if (serviceType === '3hours') {
@@ -576,6 +583,7 @@ export default function BookingScreen() {
             />
           )}
           contentContainerClassName="px-4 py-4"
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
         />
       )}
     </ThemedView>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ScrollView, View, ActivityIndicator, TouchableOpacity, FlatList, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -11,9 +12,16 @@ import { Reservation } from "@/hooks/api/types";
 export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
-  const { data: rooms, isLoading: roomsLoading } = useRooms();
-  const { data: reservations } = useReservations();
+  const { data: rooms, isLoading: roomsLoading, refetch: refetchRooms } = useRooms();
+  const { data: reservations, refetch: refetchReservations } = useReservations();
   const { data: exchangeRate } = useExchangeRate();
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await Promise.all([refetchRooms(), refetchReservations()]);
+    setRefreshing(false);
+  }
 
   const availableRooms = rooms?.filter((r) => r.room_status === "available") || [];
   const myReservations = reservations?.filter(
@@ -35,7 +43,7 @@ export default function HomeScreen() {
   const { resolvedTheme } = useTheme();
 
   return (
-    <ScrollView className="flex-1" style={{ backgroundColor }}>
+    <ScrollView className="flex-1" style={{ backgroundColor }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}>
       <View className="px-5 pt-6 pb-4">
         <View className="flex-row justify-between items-center mb-6">
           <View>

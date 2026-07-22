@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, TouchableOpacity, View, Alert, Modal } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, View, Alert, Modal } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { StatBadge, EmptyState, UserCard, UserFormModal } from "@/components/shared";
@@ -8,13 +8,20 @@ import { User } from "@/hooks/api/types";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function AdminUsersScreen() {
-  const { data: users, isLoading } = useUsers();
+  const { data: users, isLoading, refetch } = useUsers();
   const { data: roles } = useRoles();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
 
+  const [refreshing, setRefreshing] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [showFilter, setShowFilter] = useState(false);
@@ -125,10 +132,11 @@ export default function AdminUsersScreen() {
         contentContainerClassName="px-4 py-4"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={!isLoading ? <EmptyState icon="people" title="No hay usuarios" /> : null}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
       />
 
       <TouchableOpacity
-        className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
+        className="absolute bottom-24 right-6 w-14 h-14 rounded-full bg-[#0EA5E9] items-center justify-center shadow-lg"
         onPress={() => { setEditingUser(null); setShowForm(true); }}
       >
         <MaterialIcons name="add" size={28} color="white" />

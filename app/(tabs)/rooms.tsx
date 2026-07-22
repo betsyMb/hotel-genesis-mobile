@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, View, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
+import { FlatList, View, ActivityIndicator, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useRooms, useExchangeRate } from "@/hooks";
@@ -10,10 +10,17 @@ import { Room } from "@/hooks/api/types";
 import { useRouter } from "expo-router";
 
 export default function RoomsScreen() {
-  const { data: rooms, isLoading, error } = useRooms();
+  const { data: rooms, isLoading, error, refetch: refetchRooms } = useRooms();
   const { data: exchangeRate } = useExchangeRate();
   const router = useRouter();
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await refetchRooms();
+    setRefreshing(false);
+  }
 
   if (isLoading) {
     return (
@@ -72,6 +79,7 @@ export default function RoomsScreen() {
         contentContainerClassName="px-4 py-4"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={!isLoading ? <EmptyState icon="hotel" title="No hay habitaciones" /> : null}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0EA5E9"]} tintColor="#0EA5E9" />}
       />
 
       {/* Room Detail Overlay */}
