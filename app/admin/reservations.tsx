@@ -12,6 +12,7 @@ const statusConfig = getReservationStatusConfig();
 const statusFilters = [
   { key: "all", label: "Todas", color: "#0EA5E9" },
   { key: "pending", label: "Pendiente", color: "#F59E0B" },
+  { key: "confirmed", label: "Confirmada", color: "#10B981" },
   { key: "cancelled", label: "Cancelada", color: "#EF4444" },
   { key: "completed", label: "Completada", color: "#3B82F6" },
 ];
